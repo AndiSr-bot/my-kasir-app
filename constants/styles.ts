@@ -33,6 +33,24 @@ export const globalStyles = StyleSheet.create({
         color: "white",
         textAlign: "center",
     },
+    buttonSuccess: {
+        backgroundColor: "#24953eff",
+        padding: 12,
+        borderRadius: 8,
+        marginTop: 24,
+    },
+    buttonDanger: {
+        backgroundColor: "#d43545ff",
+        padding: 12,
+        borderRadius: 8,
+        marginTop: 12,
+    },
+    buttonSecondary: {
+        backgroundColor: "#f2f2f2",
+        padding: 12,
+        borderRadius: 8,
+        marginTop: 12,
+    },
     emptyText: {
         textAlign: "center",
         marginTop: 16,
@@ -49,18 +67,6 @@ export const globalStyles = StyleSheet.create({
         borderRadius: 8,
         padding: 8,
         backgroundColor: "#fff",
-    },
-    buttonSuccess: {
-        backgroundColor: "#24953eff",
-        padding: 12,
-        borderRadius: 8,
-        marginTop: 24,
-    },
-    buttonDanger: {
-        backgroundColor: "#d43545ff",
-        padding: 12,
-        borderRadius: 8,
-        marginTop: 12,
     },
     imagePreview: {
         width: 100,

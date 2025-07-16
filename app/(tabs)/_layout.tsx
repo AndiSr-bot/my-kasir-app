@@ -33,7 +33,6 @@ export default function TabLayout() {
                     ),
                 }}
             />
-            {/* 
             <Tabs.Screen
                 name="stok"
                 options={{
@@ -44,6 +43,7 @@ export default function TabLayout() {
                     ),
                 }}
             />
+            {/* 
             <Tabs.Screen
                 name="transaksi"
                 options={{

@@ -2,64 +2,35 @@ import { globalStyles } from "@/constants/styles";
 import { db } from "@/services/firebase";
 import { Picker } from "@react-native-picker/picker";
 import { useRouter } from "expo-router";
-import {
-    collection,
-    collectionGroup,
-    getDocs,
-    onSnapshot,
-} from "firebase/firestore";
+import { collection, getDocs, onSnapshot } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 
-export default function PegawaiTab() {
+export default function StokListScreen() {
     const [data, setData] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
+    const router = useRouter();
+    // const { perusahaanId } = useLocalSearchParams(); // Ambil ID perusahaan dari URL
     const [perusahaanId, setPerusahaanId] = useState("");
     const [perusahaanList, setPerusahaanList] = useState<any[]>([]);
-    const router = useRouter();
 
-    const fetchData = async () => {
-        try {
-            if (!perusahaanId) setData([]);
-            setLoading(true);
-            const querySnapshot = await getDocs(collectionGroup(db, "pegawai"));
-            const pegawaiList: any[] = [];
-            querySnapshot.forEach((doc) => {
-                pegawaiList.push({ id: doc.id, ...doc.data() });
-            });
-            setData(pegawaiList);
-        } catch (error) {
-            console.log("Error fetching data:", error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    // useEffect(() => {
-    //     fetchData();
-    // }, [perusahaanId]);
-    // useFocusEffect(
-    //     useCallback(() => {
-    //         fetchData();
-    //     }, [])
-    // );
     useEffect(() => {
         if (!perusahaanId) return;
 
         setLoading(true);
-        const pegawaiRef = collection(
+        const stokRef = collection(
             db,
             "perusahaan",
             perusahaanId as string,
-            "pegawai"
+            "stok"
         );
 
-        const unsubscribe = onSnapshot(pegawaiRef, (snapshot) => {
-            const pegawaiList: any[] = [];
+        const unsubscribe = onSnapshot(stokRef, (snapshot) => {
+            const stokList: any[] = [];
             snapshot.forEach((doc) => {
-                pegawaiList.push({ id: doc.id, ...doc.data() });
+                stokList.push({ id: doc.id, ...doc.data() });
             });
-            setData(pegawaiList);
+            setData(stokList);
             setLoading(false);
         });
 
@@ -89,27 +60,26 @@ export default function PegawaiTab() {
                 { flexDirection: "row", alignItems: "center" },
             ]}
             onPress={() =>
-                router.push(
-                    `/pegawai/${item.id}?perusahaanId=${item.perusahaanId}`
-                )
+                router.push(`/stok/${item.id}?perusahaanId=${perusahaanId}`)
             }>
             <Image
                 source={
-                    item.foto
-                        ? { uri: item.foto }
-                        : require("@/assets/default-avatar.png")
+                    item.gambar
+                        ? { uri: item.gambar }
+                        : require("@/assets/default-image.png")
                 }
                 style={{
                     width: 50,
                     height: 50,
-                    borderRadius: 25,
+                    borderRadius: 8,
                     marginRight: 10,
                 }}
             />
             <View>
                 <Text style={globalStyles.title}>{item.nama}</Text>
+                <Text>Harga: Rp {item.harga}</Text>
                 <Text>
-                    {item.jabatan} • {item.role}
+                    Stok: {item.stok_sisa} / {item.stok_awal}
                 </Text>
             </View>
         </TouchableOpacity>
@@ -138,8 +108,10 @@ export default function PegawaiTab() {
             </View>
             <TouchableOpacity
                 style={globalStyles.buttonPrimary}
-                onPress={() => router.push("/pegawai/tambah")}>
-                <Text style={globalStyles.buttonText}>+ Tambah Pegawai</Text>
+                onPress={() =>
+                    router.push(`/stok/tambah?perusahaanId=${perusahaanId}`)
+                }>
+                <Text style={globalStyles.buttonText}>+ Tambah Produk</Text>
             </TouchableOpacity>
 
             <FlatList
@@ -147,11 +119,9 @@ export default function PegawaiTab() {
                 keyExtractor={(item) => item.id}
                 renderItem={renderItem}
                 refreshing={loading}
-                onRefresh={fetchData}
+                onRefresh={() => {}}
                 ListEmptyComponent={
-                    <Text style={globalStyles.emptyText}>
-                        Belum ada pegawai
-                    </Text>
+                    <Text style={globalStyles.emptyText}>Belum ada produk</Text>
                 }
             />
         </View>
