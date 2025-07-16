@@ -23,7 +23,7 @@ export default function TabLayout() {
                     ),
                 }}
             />
-            {/* <Tabs.Screen
+            <Tabs.Screen
                 name="pegawai"
                 options={{
                     title: "Pegawai",
@@ -33,6 +33,7 @@ export default function TabLayout() {
                     ),
                 }}
             />
+            {/* 
             <Tabs.Screen
                 name="stok"
                 options={{
@@ -52,7 +53,8 @@ export default function TabLayout() {
                         <Ionicons name="cart" color={color} size={size} />
                     ),
                 }}
-            /> */}
+            /> 
+            */}
         </Tabs>
     );
 }

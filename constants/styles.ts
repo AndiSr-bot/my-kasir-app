@@ -51,13 +51,13 @@ export const globalStyles = StyleSheet.create({
         backgroundColor: "#fff",
     },
     buttonSuccess: {
-        backgroundColor: "#28a745",
+        backgroundColor: "#24953eff",
         padding: 12,
         borderRadius: 8,
         marginTop: 24,
     },
     buttonDanger: {
-        backgroundColor: "#dc3545",
+        backgroundColor: "#d43545ff",
         padding: 12,
         borderRadius: 8,
         marginTop: 12,
