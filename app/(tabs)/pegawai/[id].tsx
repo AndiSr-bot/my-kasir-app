@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { globalStyles } from "@/constants/styles";
 import { db } from "@/services/firebase";
+import { TPegawaiUpdate } from "@/types/pegawai_repositories";
 import { Picker } from "@react-native-picker/picker";
 import * as FileSystem from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
@@ -17,10 +18,11 @@ import {
 } from "react-native";
 
 export default function EditPegawai() {
-    const { id, perusahaanId } = useLocalSearchParams();
     const router = useRouter();
+    const { id, perusahaanId } = useLocalSearchParams();
 
     const [nama, setNama] = useState("");
+    const [noHp, setNoHp] = useState("");
     const [jabatan, setJabatan] = useState("");
     const [role, setRole] = useState("");
     const [foto, setFoto] = useState("");
@@ -43,6 +45,7 @@ export default function EditPegawai() {
             if (docSnap.exists()) {
                 const data = docSnap.data();
                 setNama(data.nama);
+                setNoHp(data.no_hp);
                 setJabatan(data.jabatan);
                 setRole(data.role);
                 setFoto(data.foto || "");
@@ -82,11 +85,16 @@ export default function EditPegawai() {
                 "pegawai",
                 String(id)
             );
-            await updateDoc(docRef, {
+            const dataPegawai: TPegawaiUpdate = {
+                perusahaanId: String(perusahaanId),
                 nama,
                 jabatan,
-                role,
+                role: role as "admin" | "staff",
+                no_hp: noHp,
                 foto: foto || null,
+            };
+            await updateDoc(docRef, {
+                ...dataPegawai,
             });
             Alert.alert("Sukses", "Pegawai diperbarui");
             router.back();
@@ -157,6 +165,12 @@ export default function EditPegawai() {
                 style={globalStyles.input}
                 value={nama}
                 onChangeText={setNama}
+            />
+            <Text style={globalStyles.label}>No HP</Text>
+            <TextInput
+                style={globalStyles.input}
+                value={noHp}
+                onChangeText={setNoHp}
             />
 
             <Text style={globalStyles.label}>Jabatan</Text>

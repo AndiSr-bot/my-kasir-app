@@ -1,5 +1,6 @@
 import { globalStyles } from "@/constants/styles";
 import { db } from "@/services/firebase";
+import { TPerusahaanCreate } from "@/types/perusahaan_repositories";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import { addDoc, collection } from "firebase/firestore";
@@ -28,12 +29,13 @@ export default function TambahPerusahaan() {
         if (!nama.trim()) return alert("Nama perusahaan wajib diisi.");
 
         try {
-            await addDoc(collection(db, "perusahaan"), {
+            const dataPerusahaan: TPerusahaanCreate = {
                 nama,
                 alamat,
                 telepon,
                 logo,
-            });
+            };
+            await addDoc(collection(db, "perusahaan"), dataPerusahaan);
             router.replace("/perusahaan");
         } catch (error) {
             console.log("Error adding document:", error);

@@ -1,5 +1,7 @@
 import { globalStyles } from "@/constants/styles";
 import { db } from "@/services/firebase";
+import { TPegawaiCreate } from "@/types/pegawai_repositories";
+import { TPerusahaan } from "@/types/perusahaan_repositories";
 import { Picker } from "@react-native-picker/picker";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
@@ -10,11 +12,12 @@ import { Image, Text, TextInput, TouchableOpacity, View } from "react-native";
 export default function TambahPegawai() {
     const router = useRouter();
     const [nama, setNama] = useState("");
+    const [noHp, setNoHp] = useState("");
     const [jabatan, setJabatan] = useState("");
     const [role, setRole] = useState("");
     const [perusahaanId, setPerusahaanId] = useState("");
     const [foto, setFoto] = useState("");
-    const [perusahaanList, setPerusahaanList] = useState<any[]>([]);
+    const [perusahaanList, setPerusahaanList] = useState<TPerusahaan[]>([]);
 
     useEffect(() => {
         fetchPerusahaan();
@@ -23,9 +26,15 @@ export default function TambahPegawai() {
     const fetchPerusahaan = async () => {
         try {
             const snapshot = await getDocs(collection(db, "perusahaan"));
-            const list: any[] = [];
+            const list: TPerusahaan[] = [];
             snapshot.forEach((doc) => {
-                list.push({ id: doc.id, ...doc.data() });
+                list.push({
+                    id: doc.id,
+                    alamat: doc.data().alamat,
+                    nama: doc.data().nama,
+                    telepon: doc.data().telepon,
+                    logo: doc.data().logo,
+                });
             });
             setPerusahaanList(list);
         } catch (error) {
@@ -51,15 +60,18 @@ export default function TambahPegawai() {
         }
 
         try {
+            // TPegawaiCreate
+            const dataPegawai: TPegawaiCreate = {
+                perusahaanId,
+                nama,
+                jabatan,
+                role: role as "admin" | "staff",
+                no_hp: noHp,
+                foto: foto || null,
+            };
             await addDoc(
                 collection(db, "perusahaan", perusahaanId, "pegawai"),
-                {
-                    nama,
-                    jabatan,
-                    role,
-                    foto: foto || null, // Simpan path foto (jika ada)
-                    perusahaanId,
-                }
+                dataPegawai
             );
             alert("Pegawai berhasil ditambahkan");
             router.back();
@@ -102,6 +114,12 @@ export default function TambahPegawai() {
                 style={globalStyles.input}
                 value={nama}
                 onChangeText={setNama}
+            />
+            <Text style={globalStyles.label}>No HP</Text>
+            <TextInput
+                style={globalStyles.input}
+                value={noHp}
+                onChangeText={setNoHp}
             />
 
             <Text style={globalStyles.label}>Jabatan</Text>

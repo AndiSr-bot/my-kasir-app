@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { globalStyles } from "@/constants/styles";
 import { db } from "@/services/firebase";
+import { TPerusahaanUpdate } from "@/types/perusahaan_repositories";
 import * as ImagePicker from "expo-image-picker";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
@@ -63,7 +64,13 @@ export default function EditPerusahaan() {
     const handleSave = async () => {
         try {
             const docRef = doc(db, "perusahaan", String(id));
-            await updateDoc(docRef, { nama, alamat, telepon, logo });
+            const dataPerusahaan: TPerusahaanUpdate = {
+                nama,
+                alamat,
+                telepon,
+                logo,
+            };
+            await updateDoc(docRef, { ...dataPerusahaan });
             alert("Perusahaan berhasil diperbarui");
             router.replace("/perusahaan");
         } catch (error) {

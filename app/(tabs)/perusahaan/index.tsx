@@ -1,5 +1,6 @@
 import { globalStyles } from "@/constants/styles";
 import { db } from "@/services/firebase";
+import { TPerusahaan } from "@/types/perusahaan_repositories";
 import { useRouter } from "expo-router";
 import { collection, getDocs } from "firebase/firestore";
 import { useEffect, useState } from "react";
@@ -13,7 +14,7 @@ import {
 } from "react-native";
 
 export default function PerusahaanListScreen() {
-    const [data, setData] = useState<any[]>([]);
+    const [data, setData] = useState<TPerusahaan[]>([]);
     const [loading, setLoading] = useState(false);
     const router = useRouter();
 
@@ -21,9 +22,15 @@ export default function PerusahaanListScreen() {
         try {
             setLoading(true);
             const querySnapshot = await getDocs(collection(db, "perusahaan"));
-            const perusahaanList: any[] = [];
+            const perusahaanList: TPerusahaan[] = [];
             querySnapshot.forEach((doc) => {
-                perusahaanList.push({ id: doc.id, ...doc.data() });
+                perusahaanList.push({
+                    id: doc.id,
+                    alamat: doc.data().alamat,
+                    nama: doc.data().nama,
+                    telepon: doc.data().telepon,
+                    logo: doc.data().logo,
+                });
             });
             setData(perusahaanList);
         } catch (error) {
@@ -37,7 +44,7 @@ export default function PerusahaanListScreen() {
         fetchData();
     }, []);
 
-    const renderItem = ({ item }: any) => (
+    const renderItem = ({ item }: { item: TPerusahaan }) => (
         <TouchableOpacity
             style={globalStyles.card}
             onPress={() => router.push(`/perusahaan/${item.id}`)}>
@@ -67,7 +74,7 @@ export default function PerusahaanListScreen() {
 
             <FlatList
                 data={data}
-                keyExtractor={(item) => item.id}
+                keyExtractor={(item) => item.id || ""}
                 renderItem={renderItem}
                 refreshControl={
                     <RefreshControl

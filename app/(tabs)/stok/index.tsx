@@ -1,41 +1,63 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { globalStyles } from "@/constants/styles";
 import { db } from "@/services/firebase";
+import { TPerusahaan } from "@/types/perusahaan_repositories";
+import { TStok } from "@/types/stok_repositories";
 import { Picker } from "@react-native-picker/picker";
-import { useRouter } from "expo-router";
-import { collection, getDocs, onSnapshot } from "firebase/firestore";
-import { useEffect, useState } from "react";
+import { useFocusEffect, useRouter } from "expo-router";
+import { collection, getDocs } from "firebase/firestore";
+import { useCallback, useEffect, useState } from "react";
 import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 
 export default function StokListScreen() {
-    const [data, setData] = useState<any[]>([]);
-    const [loading, setLoading] = useState(false);
     const router = useRouter();
-    // const { perusahaanId } = useLocalSearchParams(); // Ambil ID perusahaan dari URL
+    const [data, setData] = useState<TStok[]>([]);
+    const [loading, setLoading] = useState(false);
     const [perusahaanId, setPerusahaanId] = useState("");
-    const [perusahaanList, setPerusahaanList] = useState<any[]>([]);
+    const [perusahaanList, setPerusahaanList] = useState<TPerusahaan[]>([]);
+    const fetchData = async () => {
+        try {
+            if (!perusahaanId) {
+                setData([]);
+            } else {
+                setLoading(true);
+                const querySnapshot = await getDocs(
+                    collection(db, "perusahaan", perusahaanId, "stok")
+                );
+                const stokList: TStok[] = [];
+                querySnapshot.forEach((doc) => {
+                    stokList.push({
+                        id: doc.id,
+                        harga: doc.data().harga,
+                        perusahaanId: doc.data().perusahaanId || perusahaanId,
+                        nama: doc.data().nama,
+                        no_barcode: doc.data().no_barcode,
+                        stok_awal: doc.data().stok_awal,
+                        stok_sisa: doc.data().stok_sisa,
+                        stok_terjual: doc.data().stok_terjual,
+                        created_at: doc.data().created_at,
+                        gambar: doc.data().gambar,
+                        updated_at: doc.data().updated_at,
+                    });
+                });
+                setData(stokList);
+            }
+        } catch (error) {
+            console.log("Error fetching data:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        if (!perusahaanId) return;
-
-        setLoading(true);
-        const stokRef = collection(
-            db,
-            "perusahaan",
-            perusahaanId as string,
-            "stok"
-        );
-
-        const unsubscribe = onSnapshot(stokRef, (snapshot) => {
-            const stokList: any[] = [];
-            snapshot.forEach((doc) => {
-                stokList.push({ id: doc.id, ...doc.data() });
-            });
-            setData(stokList);
-            setLoading(false);
-        });
-
-        return () => unsubscribe();
+        fetchData();
     }, [perusahaanId]);
+    useFocusEffect(
+        useCallback(() => {
+            setPerusahaanId("");
+            fetchData();
+        }, [])
+    );
     useEffect(() => {
         fetchPerusahaan();
     }, []);
@@ -43,9 +65,15 @@ export default function StokListScreen() {
     const fetchPerusahaan = async () => {
         try {
             const snapshot = await getDocs(collection(db, "perusahaan"));
-            const list: any[] = [];
+            const list: TPerusahaan[] = [];
             snapshot.forEach((doc) => {
-                list.push({ id: doc.id, ...doc.data() });
+                list.push({
+                    id: doc.id,
+                    alamat: doc.data().alamat,
+                    nama: doc.data().nama,
+                    telepon: doc.data().telepon,
+                    logo: doc.data().logo,
+                });
             });
             setPerusahaanList(list);
         } catch (error) {
@@ -53,7 +81,7 @@ export default function StokListScreen() {
         }
     };
 
-    const renderItem = ({ item }: any) => (
+    const renderItem = ({ item }: { item: TStok }) => (
         <TouchableOpacity
             style={[
                 globalStyles.card,
@@ -116,12 +144,16 @@ export default function StokListScreen() {
 
             <FlatList
                 data={data}
-                keyExtractor={(item) => item.id}
+                keyExtractor={(item) => item.id || ""}
                 renderItem={renderItem}
                 refreshing={loading}
                 onRefresh={() => {}}
                 ListEmptyComponent={
-                    <Text style={globalStyles.emptyText}>Belum ada produk</Text>
+                    <Text style={globalStyles.emptyText}>
+                        {perusahaanId
+                            ? "Belum ada produk"
+                            : "Silahkan pilih perusahaan"}
+                    </Text>
                 }
             />
         </View>

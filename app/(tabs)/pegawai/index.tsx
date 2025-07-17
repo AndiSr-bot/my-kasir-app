@@ -1,33 +1,44 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { globalStyles } from "@/constants/styles";
 import { db } from "@/services/firebase";
+import { TPegawai } from "@/types/pegawai_repositories";
+import { TPerusahaan } from "@/types/perusahaan_repositories";
 import { Picker } from "@react-native-picker/picker";
-import { useRouter } from "expo-router";
-import {
-    collection,
-    collectionGroup,
-    getDocs,
-    onSnapshot,
-} from "firebase/firestore";
-import { useEffect, useState } from "react";
+import { useFocusEffect, useRouter } from "expo-router";
+import { collection, getDocs } from "firebase/firestore";
+import { useCallback, useEffect, useState } from "react";
 import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 
 export default function PegawaiTab() {
-    const [data, setData] = useState<any[]>([]);
+    const [data, setData] = useState<TPegawai[]>([]);
     const [loading, setLoading] = useState(false);
     const [perusahaanId, setPerusahaanId] = useState("");
-    const [perusahaanList, setPerusahaanList] = useState<any[]>([]);
+    const [perusahaanList, setPerusahaanList] = useState<TPerusahaan[]>([]);
     const router = useRouter();
 
     const fetchData = async () => {
         try {
-            if (!perusahaanId) setData([]);
-            setLoading(true);
-            const querySnapshot = await getDocs(collectionGroup(db, "pegawai"));
-            const pegawaiList: any[] = [];
-            querySnapshot.forEach((doc) => {
-                pegawaiList.push({ id: doc.id, ...doc.data() });
-            });
-            setData(pegawaiList);
+            if (!perusahaanId) {
+                setData([]);
+            } else {
+                setLoading(true);
+                const querySnapshot = await getDocs(
+                    collection(db, "perusahaan", perusahaanId, "pegawai")
+                );
+                const pegawaiList: TPegawai[] = [];
+                querySnapshot.forEach((doc) => {
+                    pegawaiList.push({
+                        id: doc.id,
+                        perusahaanId: perusahaanId,
+                        nama: doc.data().nama,
+                        jabatan: doc.data().jabatan,
+                        role: doc.data().role,
+                        no_hp: doc.data().no_hp,
+                        foto: doc.data().foto,
+                    });
+                });
+                setData(pegawaiList);
+            }
         } catch (error) {
             console.log("Error fetching data:", error);
         } finally {
@@ -35,36 +46,16 @@ export default function PegawaiTab() {
         }
     };
 
-    // useEffect(() => {
-    //     fetchData();
-    // }, [perusahaanId]);
-    // useFocusEffect(
-    //     useCallback(() => {
-    //         fetchData();
-    //     }, [])
-    // );
     useEffect(() => {
-        if (!perusahaanId) return;
-
-        setLoading(true);
-        const pegawaiRef = collection(
-            db,
-            "perusahaan",
-            perusahaanId as string,
-            "pegawai"
-        );
-
-        const unsubscribe = onSnapshot(pegawaiRef, (snapshot) => {
-            const pegawaiList: any[] = [];
-            snapshot.forEach((doc) => {
-                pegawaiList.push({ id: doc.id, ...doc.data() });
-            });
-            setData(pegawaiList);
-            setLoading(false);
-        });
-
-        return () => unsubscribe();
+        setPerusahaanId("");
+        fetchData();
     }, [perusahaanId]);
+    useFocusEffect(
+        useCallback(() => {
+            setPerusahaanId("");
+            fetchData();
+        }, [])
+    );
     useEffect(() => {
         fetchPerusahaan();
     }, []);
@@ -72,9 +63,14 @@ export default function PegawaiTab() {
     const fetchPerusahaan = async () => {
         try {
             const snapshot = await getDocs(collection(db, "perusahaan"));
-            const list: any[] = [];
+            const list: TPerusahaan[] = [];
             snapshot.forEach((doc) => {
-                list.push({ id: doc.id, ...doc.data() });
+                list.push({
+                    id: doc.id,
+                    nama: doc.data().nama,
+                    alamat: doc.data().alamat,
+                    telepon: doc.data().telepon,
+                });
             });
             setPerusahaanList(list);
         } catch (error) {
@@ -82,7 +78,7 @@ export default function PegawaiTab() {
         }
     };
 
-    const renderItem = ({ item }: any) => (
+    const renderItem = ({ item }: { item: TPegawai }) => (
         <TouchableOpacity
             style={[
                 globalStyles.card,
@@ -144,13 +140,15 @@ export default function PegawaiTab() {
 
             <FlatList
                 data={data}
-                keyExtractor={(item) => item.id}
+                keyExtractor={(item) => item.id || ""}
                 renderItem={renderItem}
                 refreshing={loading}
                 onRefresh={fetchData}
                 ListEmptyComponent={
                     <Text style={globalStyles.emptyText}>
-                        Belum ada pegawai
+                        {perusahaanId
+                            ? "Belum ada pegawai"
+                            : "Silahkan pilih perusahaan"}
                     </Text>
                 }
             />

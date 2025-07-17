@@ -1,5 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { globalStyles } from "@/constants/styles";
 import { db } from "@/services/firebase";
+import { TPerusahaan } from "@/types/perusahaan_repositories";
+import { TStokCreate } from "@/types/stok_repositories";
 import { Picker } from "@react-native-picker/picker";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import * as ImagePicker from "expo-image-picker";
@@ -14,6 +17,7 @@ import { useEffect, useState } from "react";
 import {
     Alert,
     Image,
+    ScrollView,
     Text,
     TextInput,
     TouchableOpacity,
@@ -21,8 +25,8 @@ import {
 } from "react-native";
 
 export default function TambahStokScreen() {
-    // const { perusahaanId } = useLocalSearchParams();
     const router = useRouter();
+    const [permission, requestPermission] = useCameraPermissions();
 
     const [nama, setNama] = useState("");
     const [harga, setHarga] = useState("");
@@ -30,9 +34,7 @@ export default function TambahStokScreen() {
     const [barcode, setBarcode] = useState("");
     const [gambar, setGambar] = useState<string | null>(null);
     const [perusahaanId, setPerusahaanId] = useState("");
-    const [perusahaanList, setPerusahaanList] = useState<any[]>([]);
-
-    const [permission, requestPermission] = useCameraPermissions();
+    const [perusahaanList, setPerusahaanList] = useState<TPerusahaan[]>([]);
     const [scanned, setScanned] = useState(false);
 
     useEffect(() => {
@@ -46,9 +48,15 @@ export default function TambahStokScreen() {
     const fetchPerusahaan = async () => {
         try {
             const snapshot = await getDocs(collection(db, "perusahaan"));
-            const list: any[] = [];
+            const list: TPerusahaan[] = [];
             snapshot.forEach((doc) => {
-                list.push({ id: doc.id, ...doc.data() });
+                list.push({
+                    id: doc.id,
+                    alamat: doc.data().alamat,
+                    nama: doc.data().nama,
+                    telepon: doc.data().telepon,
+                    logo: doc.data().logo,
+                });
             });
             setPerusahaanList(list);
         } catch (error) {
@@ -81,19 +89,21 @@ export default function TambahStokScreen() {
         }
 
         try {
+            const dataStok: TStokCreate = {
+                perusahaanId,
+                nama,
+                harga: parseFloat(harga),
+                stok_awal: parseInt(stokAwal),
+                stok_terjual: 0,
+                stok_sisa: parseInt(stokAwal),
+                no_barcode: barcode,
+                gambar: gambar || null,
+                created_at: serverTimestamp(),
+                updated_at: serverTimestamp(),
+            };
             await addDoc(
                 collection(db, "perusahaan", perusahaanId as string, "stok"),
-                {
-                    nama,
-                    harga: parseFloat(harga),
-                    stok_awal: parseInt(stokAwal),
-                    stok_terjual: 0,
-                    stok_sisa: parseInt(stokAwal),
-                    no_barcode: barcode,
-                    gambar: gambar || null,
-                    created_at: serverTimestamp(),
-                    updated_at: serverTimestamp(),
-                }
+                dataStok
             );
             Alert.alert("Sukses", "Produk berhasil ditambahkan");
             router.back();
@@ -104,7 +114,7 @@ export default function TambahStokScreen() {
     };
 
     return (
-        <View style={globalStyles.container}>
+        <ScrollView style={globalStyles.container}>
             {/* Kamera untuk scan barcode */}
             {!scanned && (
                 <CameraView
@@ -187,10 +197,13 @@ export default function TambahStokScreen() {
 
             {/* Tombol Simpan */}
             <TouchableOpacity
-                style={[globalStyles.buttonPrimary, { marginTop: 20 }]}
+                style={[
+                    globalStyles.buttonPrimary,
+                    { marginTop: 20, marginBottom: 30 },
+                ]}
                 onPress={handleSave}>
                 <Text style={globalStyles.buttonText}>Simpan Produk</Text>
             </TouchableOpacity>
-        </View>
+        </ScrollView>
     );
 }
