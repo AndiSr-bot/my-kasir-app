@@ -51,6 +51,11 @@ export const globalStyles = StyleSheet.create({
         borderRadius: 8,
         marginTop: 12,
     },
+    text: {
+        fontSize: 16,
+        marginBottom: 8,
+        textAlign: "center",
+    },
     emptyText: {
         textAlign: "center",
         marginTop: 16,
@@ -86,7 +91,6 @@ export const globalStyles = StyleSheet.create({
         backgroundColor: "#f2f2f2",
         borderRadius: 8,
         padding: 10,
-        // shadow
         shadowColor: "#000",
         shadowOffset: {
             width: 0,

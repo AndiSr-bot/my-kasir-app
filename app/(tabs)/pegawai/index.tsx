@@ -36,6 +36,7 @@ export default function PegawaiTab() {
                         no_hp: doc.data().no_hp,
                         email: doc.data().email,
                         foto: doc.data().foto,
+                        auth_uid: doc.data().auth_uid,
                     });
                 });
                 setData(pegawaiList);

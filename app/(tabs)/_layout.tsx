@@ -1,7 +1,25 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Ionicons } from "@expo/vector-icons";
-import { Tabs } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Tabs, useRouter } from "expo-router";
+import { useEffect } from "react";
 
 export default function TabLayout() {
+    const router = useRouter();
+    const middleware = async () => {
+        const user: any = await AsyncStorage.getItem("user");
+        const userData: any = JSON.parse(user);
+        if (!userData.id) {
+            router.replace("/login");
+            return;
+        } else {
+            router.replace("/(tabs)");
+            return;
+        }
+    };
+    useEffect(() => {
+        middleware();
+    }, []);
     return (
         <Tabs>
             <Tabs.Screen
@@ -40,6 +58,16 @@ export default function TabLayout() {
                     headerShown: false,
                     tabBarIcon: ({ color, size }) => (
                         <Ionicons name="cube" color={color} size={size} />
+                    ),
+                }}
+            />
+            <Tabs.Screen
+                name="profil"
+                options={{
+                    title: "Profil",
+                    headerShown: false,
+                    tabBarIcon: ({ color, size }) => (
+                        <Ionicons name="person" color={color} size={size} />
                     ),
                 }}
             />

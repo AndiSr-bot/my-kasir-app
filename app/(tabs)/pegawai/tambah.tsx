@@ -1,10 +1,11 @@
 import { globalStyles } from "@/constants/styles";
-import { db } from "@/services/firebase";
+import { auth, db } from "@/services/firebase";
 import { TPegawaiCreate } from "@/types/pegawai_repositories";
 import { TPerusahaan } from "@/types/perusahaan_repositories";
 import { Picker } from "@react-native-picker/picker";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import { addDoc, collection, getDocs } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { Image, Text, TextInput, TouchableOpacity, View } from "react-native";
@@ -61,7 +62,12 @@ export default function TambahPegawai() {
         }
 
         try {
-            // TPegawaiCreate
+            const userCredential = await createUserWithEmailAndPassword(
+                auth,
+                email,
+                "defaultpassword123"
+            ); // Bisa generate random atau kirim email reset
+            const uid = userCredential.user.uid;
             const dataPegawai: TPegawaiCreate = {
                 perusahaanId,
                 nama,
@@ -70,6 +76,7 @@ export default function TambahPegawai() {
                 no_hp: noHp,
                 email,
                 foto: foto || null,
+                auth_uid: uid,
             };
             await addDoc(
                 collection(db, "perusahaan", perusahaanId, "pegawai"),
@@ -77,8 +84,11 @@ export default function TambahPegawai() {
             );
             alert("Pegawai berhasil ditambahkan");
             router.back();
-        } catch (error) {
+        } catch (error: any) {
             console.log("Error adding pegawai:", error);
+            if (error.code === "auth/email-already-in-use") {
+                alert("Email sudah terdaftar!");
+            }
         }
     };
 

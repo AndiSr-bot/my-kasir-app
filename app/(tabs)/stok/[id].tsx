@@ -174,9 +174,7 @@ export default function EditStokScreen() {
                 </View>
                 <View style={globalStyles.stokItem}>
                     <Text style={globalStyles.stokLabel}>Stok Sisa</Text>
-                    <Text style={globalStyles.stokValue}>
-                        {parseInt(stokAwal) - stokTerjual}
-                    </Text>
+                    <Text style={globalStyles.stokValue}>{stokSisa}</Text>
                 </View>
                 <View style={globalStyles.stokItem}>
                     <Text style={globalStyles.stokLabel}>Terjual</Text>

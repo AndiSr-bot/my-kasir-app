@@ -1,3 +1,5 @@
+import { TPerusahaan } from "./perusahaan_repositories";
+
 export interface TPegawai {
     id?: string;
     perusahaanId: string;
@@ -7,6 +9,8 @@ export interface TPegawai {
     no_hp: string;
     email: string;
     foto?: string | null;
+    auth_uid: string;
+    perusahaan?: TPerusahaan;
 }
 
 export interface TPegawaiCreate {
@@ -17,6 +21,7 @@ export interface TPegawaiCreate {
     no_hp: string;
     email: string;
     foto?: string | null;
+    auth_uid: string;
 }
 
 export interface TPegawaiUpdate {
