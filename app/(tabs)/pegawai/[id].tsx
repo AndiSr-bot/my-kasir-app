@@ -23,6 +23,7 @@ export default function EditPegawai() {
 
     const [nama, setNama] = useState("");
     const [noHp, setNoHp] = useState("");
+    const [email, setEmail] = useState("");
     const [jabatan, setJabatan] = useState("");
     const [role, setRole] = useState("");
     const [foto, setFoto] = useState("");
@@ -46,6 +47,7 @@ export default function EditPegawai() {
                 const data = docSnap.data();
                 setNama(data.nama);
                 setNoHp(data.no_hp);
+                setEmail(data.email);
                 setJabatan(data.jabatan);
                 setRole(data.role);
                 setFoto(data.foto || "");
@@ -166,6 +168,13 @@ export default function EditPegawai() {
                 value={nama}
                 onChangeText={setNama}
             />
+            <Text style={globalStyles.label}>Email</Text>
+            <TextInput
+                style={[globalStyles.input, { backgroundColor: "#f0f0f0" }]}
+                value={email}
+                onChangeText={setEmail}
+                editable={false}
+            />
             <Text style={globalStyles.label}>No HP</Text>
             <TextInput
                 style={globalStyles.input}
@@ -188,6 +197,10 @@ export default function EditPegawai() {
                     style={{ color: "#000" }}>
                     <Picker.Item label="-- Pilih Role --" value="" />
                     <Picker.Item label="Admin" value="admin" />
+                    <Picker.Item
+                        label="Admin Perusahaan"
+                        value="admin_perusahaan"
+                    />
                     <Picker.Item label="Staff" value="staff" />
                 </Picker>
             </View>

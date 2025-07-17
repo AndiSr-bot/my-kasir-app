@@ -34,6 +34,7 @@ export default function PegawaiTab() {
                         jabatan: doc.data().jabatan,
                         role: doc.data().role,
                         no_hp: doc.data().no_hp,
+                        email: doc.data().email,
                         foto: doc.data().foto,
                     });
                 });
@@ -47,7 +48,6 @@ export default function PegawaiTab() {
     };
 
     useEffect(() => {
-        setPerusahaanId("");
         fetchData();
     }, [perusahaanId]);
     useFocusEffect(

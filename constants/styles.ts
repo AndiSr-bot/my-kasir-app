@@ -74,4 +74,34 @@ export const globalStyles = StyleSheet.create({
         borderRadius: 8,
         marginTop: 8,
     },
+    stokRow: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        marginVertical: 15,
+        gap: 10,
+    },
+    stokItem: {
+        alignItems: "center",
+        flex: 1,
+        backgroundColor: "#f2f2f2",
+        borderRadius: 8,
+        padding: 10,
+        // shadow
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+    stokLabel: {
+        fontWeight: "bold",
+        fontSize: 14,
+    },
+    stokValue: {
+        fontSize: 14,
+        marginTop: 4,
+    },
 });

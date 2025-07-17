@@ -30,6 +30,7 @@ export default function EditStokScreen() {
     const [nama, setNama] = useState("");
     const [harga, setHarga] = useState("");
     const [stokAwal, setStokAwal] = useState("");
+    const [stokSisa, setStokSisa] = useState("");
     const [stokTerjual, setStokTerjual] = useState(0);
     const [barcode, setBarcode] = useState("");
     const [gambar, setGambar] = useState<string | null>(null);
@@ -52,7 +53,8 @@ export default function EditStokScreen() {
                 const data = docSnap.data();
                 setNama(data.nama);
                 setHarga(data.harga.toString());
-                setStokAwal(data.stok_awal.toString());
+                setStokAwal(data.stok_awal);
+                setStokSisa(data.stok_sisa);
                 setStokTerjual(data.stok_terjual);
                 setBarcode(data.no_barcode);
                 setGambar(data.gambar || null);
@@ -151,6 +153,37 @@ export default function EditStokScreen() {
 
     return (
         <ScrollView style={globalStyles.container}>
+            <TouchableOpacity
+                onPress={pickImage}
+                style={{
+                    alignItems: "center",
+                }}>
+                <Image
+                    source={
+                        gambar
+                            ? { uri: gambar }
+                            : require("@/assets/default-image.png")
+                    }
+                    style={globalStyles.imagePreview}
+                />
+            </TouchableOpacity>
+            <View style={globalStyles.stokRow}>
+                <View style={globalStyles.stokItem}>
+                    <Text style={globalStyles.stokLabel}>Stok Awal</Text>
+                    <Text style={globalStyles.stokValue}>{stokAwal}</Text>
+                </View>
+                <View style={globalStyles.stokItem}>
+                    <Text style={globalStyles.stokLabel}>Stok Sisa</Text>
+                    <Text style={globalStyles.stokValue}>
+                        {parseInt(stokAwal) - stokTerjual}
+                    </Text>
+                </View>
+                <View style={globalStyles.stokItem}>
+                    <Text style={globalStyles.stokLabel}>Terjual</Text>
+                    <Text style={globalStyles.stokValue}>{stokTerjual}</Text>
+                </View>
+            </View>
+
             {/* Nama Produk */}
             <Text style={globalStyles.label}>Nama Produk</Text>
             <TextInput
@@ -170,16 +203,6 @@ export default function EditStokScreen() {
                 onChangeText={setHarga}
             />
 
-            {/* Stok Awal */}
-            <Text style={globalStyles.label}>Stok Awal</Text>
-            <TextInput
-                placeholder="Stok Awal"
-                style={globalStyles.input}
-                keyboardType="numeric"
-                value={stokAwal}
-                onChangeText={setStokAwal}
-            />
-
             {/* Barcode */}
             <Text style={globalStyles.label}>No Barcode</Text>
             <TextInput
@@ -188,19 +211,6 @@ export default function EditStokScreen() {
                 value={barcode}
                 editable={false}
             />
-
-            {/* Gambar Produk */}
-            <Text style={globalStyles.label}>Gambar Produk</Text>
-            <TouchableOpacity onPress={pickImage}>
-                <Image
-                    source={
-                        gambar
-                            ? { uri: gambar }
-                            : require("@/assets/default-image.png")
-                    }
-                    style={globalStyles.imagePreview}
-                />
-            </TouchableOpacity>
 
             {/* Tombol Update */}
             <TouchableOpacity

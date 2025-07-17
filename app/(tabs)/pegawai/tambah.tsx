@@ -13,6 +13,7 @@ export default function TambahPegawai() {
     const router = useRouter();
     const [nama, setNama] = useState("");
     const [noHp, setNoHp] = useState("");
+    const [email, setEmail] = useState("");
     const [jabatan, setJabatan] = useState("");
     const [role, setRole] = useState("");
     const [perusahaanId, setPerusahaanId] = useState("");
@@ -67,6 +68,7 @@ export default function TambahPegawai() {
                 jabatan,
                 role: role as "admin" | "staff",
                 no_hp: noHp,
+                email,
                 foto: foto || null,
             };
             await addDoc(
@@ -115,6 +117,12 @@ export default function TambahPegawai() {
                 value={nama}
                 onChangeText={setNama}
             />
+            <Text style={globalStyles.label}>Email</Text>
+            <TextInput
+                style={globalStyles.input}
+                value={noHp}
+                onChangeText={setEmail}
+            />
             <Text style={globalStyles.label}>No HP</Text>
             <TextInput
                 style={globalStyles.input}
@@ -137,6 +145,10 @@ export default function TambahPegawai() {
                     style={{ color: "#000" }}>
                     <Picker.Item label="-- Pilih Role --" value="" />
                     <Picker.Item label="Admin" value="admin" />
+                    <Picker.Item
+                        label="Admin Perusahaan"
+                        value="admin_perusahaan"
+                    />
                     <Picker.Item label="Staff" value="staff" />
                 </Picker>
             </View>
