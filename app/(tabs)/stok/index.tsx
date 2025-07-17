@@ -1,8 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { globalStyles } from "@/constants/styles";
 import { db } from "@/services/firebase";
+import { TPegawai } from "@/types/pegawai_repositories";
 import { TPerusahaan } from "@/types/perusahaan_repositories";
 import { TStok } from "@/types/stok_repositories";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Picker } from "@react-native-picker/picker";
 import { useFocusEffect, useRouter } from "expo-router";
 import { collection, getDocs } from "firebase/firestore";
@@ -15,7 +17,10 @@ export default function StokListScreen() {
     const [loading, setLoading] = useState(false);
     const [perusahaanId, setPerusahaanId] = useState("");
     const [perusahaanList, setPerusahaanList] = useState<TPerusahaan[]>([]);
+    const [userDataLocal, setUserDataLocal] = useState<TPegawai | null>(null);
+
     const fetchData = async () => {
+        setData([]);
         try {
             if (!perusahaanId) {
                 setData([]);
@@ -48,7 +53,17 @@ export default function StokListScreen() {
             setLoading(false);
         }
     };
-
+    const getUserData = async () => {
+        try {
+            const jsonValue = await AsyncStorage.getItem("user");
+            if (jsonValue != null) {
+                setPerusahaanId(JSON.parse(jsonValue).perusahaanId);
+                setUserDataLocal(JSON.parse(jsonValue));
+            }
+        } catch (e) {
+            console.log("Error loading user data", e);
+        }
+    };
     useEffect(() => {
         fetchData();
     }, [perusahaanId]);
@@ -56,6 +71,7 @@ export default function StokListScreen() {
         useCallback(() => {
             setPerusahaanId("");
             fetchData();
+            getUserData();
         }, [])
     );
     useEffect(() => {
@@ -115,25 +131,27 @@ export default function StokListScreen() {
 
     return (
         <View style={globalStyles.container}>
-            <View
-                style={[
-                    globalStyles.input,
-                    { padding: 0, height: 50, marginBottom: 12 },
-                ]}>
-                <Picker
-                    selectedValue={perusahaanId}
-                    onValueChange={setPerusahaanId}
-                    style={{ color: "#000" }}>
-                    <Picker.Item label="-- Pilih Perusahaan --" value="" />
-                    {perusahaanList.map((item) => (
-                        <Picker.Item
-                            key={item.id}
-                            label={item.nama}
-                            value={item.id}
-                        />
-                    ))}
-                </Picker>
-            </View>
+            {userDataLocal?.role === "admin" && (
+                <View
+                    style={[
+                        globalStyles.input,
+                        { padding: 0, height: 50, marginBottom: 12 },
+                    ]}>
+                    <Picker
+                        selectedValue={perusahaanId}
+                        onValueChange={setPerusahaanId}
+                        style={{ color: "#000" }}>
+                        <Picker.Item label="-- Pilih Perusahaan --" value="" />
+                        {perusahaanList.map((item) => (
+                            <Picker.Item
+                                key={item.id}
+                                label={item.nama}
+                                value={item.id}
+                            />
+                        ))}
+                    </Picker>
+                </View>
+            )}
             <TouchableOpacity
                 style={globalStyles.buttonPrimary}
                 onPress={() =>
@@ -147,13 +165,19 @@ export default function StokListScreen() {
                 keyExtractor={(item) => item.id || ""}
                 renderItem={renderItem}
                 refreshing={loading}
-                onRefresh={() => {}}
+                onRefresh={fetchData}
                 ListEmptyComponent={
-                    <Text style={globalStyles.emptyText}>
-                        {perusahaanId
-                            ? "Belum ada produk"
-                            : "Silahkan pilih perusahaan"}
-                    </Text>
+                    !loading ? (
+                        <Text style={globalStyles.emptyText}>
+                            {perusahaanId
+                                ? "Belum ada produk"
+                                : "Silahkan pilih perusahaan"}
+                        </Text>
+                    ) : (
+                        <Text style={globalStyles.emptyText}>
+                            Memuat data...
+                        </Text>
+                    )
                 }
             />
         </View>

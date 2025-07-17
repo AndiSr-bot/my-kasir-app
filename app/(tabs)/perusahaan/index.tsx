@@ -19,6 +19,7 @@ export default function PerusahaanListScreen() {
     const router = useRouter();
 
     const fetchData = async () => {
+        setData([]);
         try {
             setLoading(true);
             const querySnapshot = await getDocs(collection(db, "perusahaan"));
@@ -83,9 +84,15 @@ export default function PerusahaanListScreen() {
                     />
                 }
                 ListEmptyComponent={
-                    <Text style={globalStyles.emptyText}>
-                        Belum ada perusahaan
-                    </Text>
+                    !loading ? (
+                        <Text style={globalStyles.emptyText}>
+                            Belum ada perusahaan
+                        </Text>
+                    ) : (
+                        <Text style={globalStyles.emptyText}>
+                            Memuat data...
+                        </Text>
+                    )
                 }
             />
         </View>

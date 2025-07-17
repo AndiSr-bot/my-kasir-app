@@ -3,28 +3,51 @@ import { globalStyles } from "@/constants/styles";
 import { db } from "@/services/firebase";
 import { TPegawai } from "@/types/pegawai_repositories";
 import { TPerusahaan } from "@/types/perusahaan_repositories";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Picker } from "@react-native-picker/picker";
 import { useFocusEffect, useRouter } from "expo-router";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { useCallback, useEffect, useState } from "react";
 import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 
 export default function PegawaiTab() {
+    const router = useRouter();
     const [data, setData] = useState<TPegawai[]>([]);
     const [loading, setLoading] = useState(false);
     const [perusahaanId, setPerusahaanId] = useState("");
+    const [userDataLocal, setUserDataLocal] = useState<TPegawai | null>(null);
     const [perusahaanList, setPerusahaanList] = useState<TPerusahaan[]>([]);
-    const router = useRouter();
-
-    const fetchData = async () => {
+    const getUserData = async () => {
         try {
-            if (!perusahaanId) {
+            const jsonValue = await AsyncStorage.getItem("user");
+            if (jsonValue != null) {
+                setPerusahaanId(JSON.parse(jsonValue).perusahaanId);
+                setUserDataLocal(JSON.parse(jsonValue));
+            }
+        } catch (e) {
+            console.log("Error loading user data", e);
+        }
+    };
+    const fetchData = async () => {
+        setData([]);
+        try {
+            if (
+                !perusahaanId ||
+                !userDataLocal?.email ||
+                userDataLocal?.role === "staff"
+            ) {
                 setData([]);
             } else {
                 setLoading(true);
-                const querySnapshot = await getDocs(
-                    collection(db, "perusahaan", perusahaanId, "pegawai")
+                const options =
+                    userDataLocal?.role === "admin_perusahaan"
+                        ? ["staff"]
+                        : ["staff", "admin_perusahaan"];
+                const q = query(
+                    collection(db, "perusahaan", perusahaanId, "pegawai"),
+                    where("role", "in", options)
                 );
+                const querySnapshot = await getDocs(q);
                 const pegawaiList: TPegawai[] = [];
                 querySnapshot.forEach((doc) => {
                     pegawaiList.push({
@@ -55,6 +78,7 @@ export default function PegawaiTab() {
         useCallback(() => {
             setPerusahaanId("");
             fetchData();
+            getUserData();
         }, [])
     );
     useEffect(() => {
@@ -114,25 +138,27 @@ export default function PegawaiTab() {
 
     return (
         <View style={globalStyles.container}>
-            <View
-                style={[
-                    globalStyles.input,
-                    { padding: 0, height: 50, marginBottom: 12 },
-                ]}>
-                <Picker
-                    selectedValue={perusahaanId}
-                    onValueChange={setPerusahaanId}
-                    style={{ color: "#000" }}>
-                    <Picker.Item label="-- Pilih Perusahaan --" value="" />
-                    {perusahaanList.map((item) => (
-                        <Picker.Item
-                            key={item.id}
-                            label={item.nama}
-                            value={item.id}
-                        />
-                    ))}
-                </Picker>
-            </View>
+            {userDataLocal?.role === "admin" && (
+                <View
+                    style={[
+                        globalStyles.input,
+                        { padding: 0, height: 50, marginBottom: 12 },
+                    ]}>
+                    <Picker
+                        selectedValue={perusahaanId}
+                        onValueChange={setPerusahaanId}
+                        style={{ color: "#000" }}>
+                        <Picker.Item label="-- Pilih Perusahaan --" value="" />
+                        {perusahaanList.map((item) => (
+                            <Picker.Item
+                                key={item.id}
+                                label={item.nama}
+                                value={item.id}
+                            />
+                        ))}
+                    </Picker>
+                </View>
+            )}
             <TouchableOpacity
                 style={globalStyles.buttonPrimary}
                 onPress={() => router.push("/pegawai/tambah")}>
@@ -146,11 +172,17 @@ export default function PegawaiTab() {
                 refreshing={loading}
                 onRefresh={fetchData}
                 ListEmptyComponent={
-                    <Text style={globalStyles.emptyText}>
-                        {perusahaanId
-                            ? "Belum ada pegawai"
-                            : "Silahkan pilih perusahaan"}
-                    </Text>
+                    !loading ? (
+                        <Text style={globalStyles.emptyText}>
+                            {perusahaanId
+                                ? "Belum ada pegawai"
+                                : "Silahkan pilih perusahaan"}
+                        </Text>
+                    ) : (
+                        <Text style={globalStyles.emptyText}>
+                            Memuat data...
+                        </Text>
+                    )
                 }
             />
         </View>
