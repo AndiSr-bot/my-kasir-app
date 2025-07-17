@@ -61,6 +61,16 @@ export default function TabLayout() {
                 }}
             />
             <Tabs.Screen
+                name="scan"
+                options={{
+                    title: "Scan",
+                    headerShown: false,
+                    tabBarIcon: ({ color, size }) => (
+                        <Ionicons name="scan" color={color} size={size} />
+                    ),
+                }}
+            />
+            <Tabs.Screen
                 name="stok"
                 options={{
                     title: "Stok",
@@ -72,6 +82,16 @@ export default function TabLayout() {
                     headerShown: false,
                     tabBarIcon: ({ color, size }) => (
                         <Ionicons name="cube" color={color} size={size} />
+                    ),
+                }}
+            />
+            <Tabs.Screen
+                name="transaksi"
+                options={{
+                    title: "Transaksi",
+                    headerShown: false,
+                    tabBarIcon: ({ color, size }) => (
+                        <Ionicons name="cart" color={color} size={size} />
                     ),
                 }}
             />

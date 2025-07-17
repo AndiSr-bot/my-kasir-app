@@ -108,4 +108,12 @@ export const globalStyles = StyleSheet.create({
         fontSize: 14,
         marginTop: 4,
     },
+    homeCard: {
+        flexDirection: "row",
+        gap: 12,
+        marginVertical: 8,
+        padding: 12,
+        borderRadius: 8,
+        backgroundColor: "#f2f2f2",
+    },
 });

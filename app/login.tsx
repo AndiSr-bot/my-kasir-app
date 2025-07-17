@@ -92,7 +92,6 @@ export default function LoginScreen() {
                     }
                 }
             }
-            console.log(pegawaiData);
 
             await AsyncStorage.setItem("user", JSON.stringify(pegawaiData));
 
