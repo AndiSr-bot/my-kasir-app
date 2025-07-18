@@ -23,12 +23,12 @@ export default function ScanScreen() {
     const [scanned, setScanned] = useState(false);
     const [perusahaanId, setPerusahaanId] = useState("");
     const [keranjang, setKeranjang] = useState<TKeranjang[]>([]);
-
+    const [bayarModalVisible, setBayarModalVisible] = useState(false);
     const [stokList, setStokList] = useState<TStok[]>([]);
     const [selectedStok, setSelectedStok] = useState<TStok | null>(null);
     const [jumlah, setJumlah] = useState("");
     const [modalVisible, setModalVisible] = useState(false);
-
+    const [namaToko, setNamaToko] = useState("Nama Toko");
     const [editModalVisible, setEditModalVisible] = useState(false);
     const [editIndex, setEditIndex] = useState<number | null>(null);
     const [editJumlah, setEditJumlah] = useState("");
@@ -38,6 +38,9 @@ export default function ScanScreen() {
             const jsonValue = await AsyncStorage.getItem("user");
             if (jsonValue != null) {
                 setPerusahaanId(JSON.parse(jsonValue).perusahaanId);
+                setNamaToko(
+                    JSON.parse(jsonValue).perusahaan.nama || "Nama Toko"
+                );
             }
         } catch (e) {
             console.log("Error loading user data", e);
@@ -165,16 +168,56 @@ export default function ScanScreen() {
 
     return (
         <View style={globalStyles.container}>
-            <CameraView
-                style={{ height: 100, marginBottom: 10, marginTop: 30 }}
-                onBarcodeScanned={handleBarCodeScanned}
-            />
-
+            {!bayarModalVisible ? (
+                <CameraView
+                    style={{ height: 100, marginBottom: 10, marginTop: 30 }}
+                    onBarcodeScanned={handleBarCodeScanned}
+                />
+            ) : (
+                <View style={{ marginTop: 20 }}></View>
+            )}
             {/* Total Keseluruhan */}
-            <Text style={[globalStyles.title, { marginBottom: 10 }]}>
-                Total: Rp{totalKeseluruhan.toLocaleString("id-ID")}
-            </Text>
-
+            <View
+                style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginVertical: 10,
+                }}>
+                <Text style={[globalStyles.title, {}]}>
+                    Total: Rp{totalKeseluruhan.toLocaleString("id-ID")}
+                </Text>
+                <TouchableOpacity
+                    style={[
+                        globalStyles.buttonModalPrimary,
+                        {
+                            marginVertical: 10,
+                            paddingHorizontal: 20,
+                            paddingVertical: 5,
+                            borderRadius: 8,
+                        },
+                    ]}
+                    onPress={() => {
+                        if (keranjang.length === 0) {
+                            Alert.alert(
+                                "Keranjang kosong",
+                                "Tambahkan produk terlebih dahulu."
+                            );
+                            return;
+                        }
+                        setBayarModalVisible(true);
+                    }}>
+                    <Text
+                        style={{
+                            color: "#fff",
+                            fontSize: 16,
+                            fontWeight: "bold",
+                            textAlign: "center",
+                        }}>
+                        Bayar
+                    </Text>
+                </TouchableOpacity>
+            </View>
             <ScrollView style={[globalStyles.container, { padding: 0 }]}>
                 {keranjang.map((item, idx) => (
                     <TouchableOpacity
@@ -235,7 +278,6 @@ export default function ScanScreen() {
                     </TouchableOpacity>
                 ))}
             </ScrollView>
-
             {/* Modal Tambah */}
             <Modal visible={modalVisible} transparent animationType="slide">
                 <View
@@ -319,7 +361,6 @@ export default function ScanScreen() {
                     </View>
                 </View>
             </Modal>
-
             {/* Modal Edit */}
             <Modal visible={editModalVisible} transparent animationType="slide">
                 <View
@@ -376,6 +417,130 @@ export default function ScanScreen() {
                                         fontWeight: "bold",
                                     }}>
                                     Simpan
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
+            {/* Modal Bayar */}
+            <Modal
+                visible={bayarModalVisible}
+                transparent
+                animationType="slide">
+                <View
+                    style={{
+                        flex: 1,
+                        backgroundColor: "rgba(0,0,0,0.5)",
+                        justifyContent: "center",
+                        padding: 20,
+                    }}>
+                    <View
+                        style={{
+                            backgroundColor: "#fff",
+                            borderRadius: 10,
+                            padding: 20,
+                            maxHeight: "80%",
+                        }}>
+                        {/* HEADER STRUK */}
+                        <Text
+                            style={{
+                                fontSize: 18,
+                                fontWeight: "bold",
+                                textAlign: "center",
+                                marginBottom: 4,
+                            }}>
+                            {namaToko}
+                        </Text>
+                        <Text
+                            style={{
+                                fontSize: 12,
+                                textAlign: "center",
+                                marginBottom: 10,
+                            }}>
+                            {new Date().toLocaleString("id-ID", {
+                                dateStyle: "medium",
+                                timeStyle: "short",
+                            })}
+                        </Text>
+                        <Text
+                            style={{
+                                fontSize: 12,
+                                textAlign: "center",
+                                marginBottom: 15,
+                            }}>
+                            ID Transaksi: TX-{Date.now()}
+                        </Text>
+
+                        {/* DETAIL BELANJA */}
+                        <ScrollView style={{ marginBottom: 20 }}>
+                            {keranjang.map((item, idx) => (
+                                <View
+                                    key={idx}
+                                    style={{
+                                        flexDirection: "row",
+                                        justifyContent: "space-between",
+                                        marginBottom: 5,
+                                    }}>
+                                    <Text>
+                                        {item.nama} ({item.jumlah}x) @ Rp{" "}
+                                        {item.harga.toLocaleString("id-ID")}
+                                    </Text>
+                                    <Text>
+                                        Rp{" "}
+                                        {(
+                                            item.jumlah * item.harga
+                                        ).toLocaleString("id-ID")}
+                                    </Text>
+                                </View>
+                            ))}
+                        </ScrollView>
+
+                        {/* TOTAL */}
+                        <Text
+                            style={{
+                                fontSize: 18,
+                                fontWeight: "bold",
+                                marginBottom: 15,
+                                textAlign: "right",
+                            }}>
+                            Total: Rp {totalKeseluruhan.toLocaleString("id-ID")}
+                        </Text>
+
+                        {/* ACTION BUTTONS */}
+                        <View
+                            style={{
+                                flexDirection: "row",
+                                justifyContent: "flex-end",
+                            }}>
+                            <TouchableOpacity
+                                style={globalStyles.buttonModalDanger}
+                                onPress={() => setBayarModalVisible(false)}>
+                                <Text
+                                    style={{
+                                        color: "#fff",
+                                        fontWeight: "bold",
+                                    }}>
+                                    Batal
+                                </Text>
+                            </TouchableOpacity>
+                            <View style={{ width: 10 }} />
+                            <TouchableOpacity
+                                style={globalStyles.buttonModalPrimary}
+                                onPress={() => {
+                                    Alert.alert(
+                                        "Pembayaran Berhasil",
+                                        "Transaksi selesai!"
+                                    );
+                                    setKeranjang([]);
+                                    setBayarModalVisible(false);
+                                }}>
+                                <Text
+                                    style={{
+                                        color: "#fff",
+                                        fontWeight: "bold",
+                                    }}>
+                                    Konfirmasi Bayar
                                 </Text>
                             </TouchableOpacity>
                         </View>
