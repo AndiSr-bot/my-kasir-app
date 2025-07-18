@@ -116,4 +116,19 @@ export const globalStyles = StyleSheet.create({
         borderRadius: 8,
         backgroundColor: "#f2f2f2",
     },
+    buttonModalPrimary: {
+        backgroundColor: "#1e90ff",
+        padding: 8,
+        borderRadius: 6,
+    },
+    buttonModalSuccess: {
+        backgroundColor: "#24953eff",
+        padding: 8,
+        borderRadius: 6,
+    },
+    buttonModalDanger: {
+        backgroundColor: "#d43545ff",
+        padding: 8,
+        borderRadius: 6,
+    },
 });
