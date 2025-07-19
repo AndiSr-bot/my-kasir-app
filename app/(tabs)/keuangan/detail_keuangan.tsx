@@ -6,13 +6,19 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Picker } from "@react-native-picker/picker";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, Text, View } from "react-native";
+import {
+    ActivityIndicator,
+    RefreshControl,
+    ScrollView,
+    Text,
+    View,
+} from "react-native";
 
 export default function DetailKeuanganScreen() {
     const [tanggal, setTanggal] = useState("1");
     const [bulan, setBulan] = useState("Januari");
     const [tahun, setTahun] = useState(new Date().getFullYear().toString());
-
+    const [refreshing, setRefreshing] = useState(false);
     const [loading, setLoading] = useState(false);
     const [totalSales, setTotalSales] = useState(0);
     const [jumlahTransaksi, setJumlahTransaksi] = useState(0);
@@ -80,7 +86,11 @@ export default function DetailKeuanganScreen() {
             setLoading(false);
         }
     };
-
+    const onRefresh = async () => {
+        setRefreshing(true);
+        await fetchData();
+        setRefreshing(false);
+    };
     return (
         <View>
             {/* Picker Tanggal/Bulan/Tahun */}
@@ -137,7 +147,14 @@ export default function DetailKeuanganScreen() {
             {loading ? (
                 <ActivityIndicator size="large" style={{ marginTop: 20 }} />
             ) : (
-                <>
+                <ScrollView
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={refreshing}
+                            onRefresh={onRefresh}
+                        />
+                    }
+                    style={{ minHeight: "100%" }}>
                     {/* Card 1: Total Sales */}
                     <View style={globalStyles.cardFull}>
                         <Text style={globalStyles.cardTitle}>Total Sales</Text>
@@ -165,7 +182,7 @@ export default function DetailKeuanganScreen() {
                             </Text>
                         </View>
                     </View>
-                </>
+                </ScrollView>
             )}
         </View>
     );
