@@ -1,12 +1,21 @@
 import { globalStyles } from "@/constants/styles";
+import { namaBulan, namaHari } from "@/constants/time";
 import { db } from "@/services/firebase";
 import { TKeranjang } from "@/types/keranjang_repositories";
 import { TStok } from "@/types/stok_repositories";
+import { TKeranjangCreate } from "@/types/transaksi_repositories";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Picker } from "@react-native-picker/picker";
 import { CameraView } from "expo-camera";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import {
+    addDoc,
+    collection,
+    getDocs,
+    query,
+    serverTimestamp,
+    where,
+} from "firebase/firestore";
 import { useEffect, useState } from "react";
 import {
     Alert,
@@ -21,6 +30,7 @@ import {
 
 export default function ScanScreen() {
     const [scanned, setScanned] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [perusahaanId, setPerusahaanId] = useState("");
     const [keranjang, setKeranjang] = useState<TKeranjang[]>([]);
     const [bayarModalVisible, setBayarModalVisible] = useState(false);
@@ -32,6 +42,57 @@ export default function ScanScreen() {
     const [editModalVisible, setEditModalVisible] = useState(false);
     const [editIndex, setEditIndex] = useState<number | null>(null);
     const [editJumlah, setEditJumlah] = useState("");
+
+    const generateKodeTransaksi = () => {
+        const now = new Date();
+        const tahun = now.getFullYear();
+        const bulan = String(now.getMonth() + 1).padStart(2, "0");
+        const tanggal = String(now.getDate()).padStart(2, "0");
+        const random = Math.floor(1000 + Math.random() * 9000); // 4 angka acak
+        return `TR-${tahun}${bulan}${tanggal}${random}`;
+    };
+    const handleBayar = async () => {
+        try {
+            setLoading(true);
+            const now = new Date();
+            const hari = namaHari[now.getDay()];
+            const tanggal = String(now.getDate()).padStart(2, "0");
+            const bulan = namaBulan[now.getMonth()];
+            const tahun = now.getFullYear();
+            const kode = generateKodeTransaksi();
+
+            for (const item of keranjang) {
+                const data: TKeranjangCreate = {
+                    perusahaanId,
+                    stokId: item.stokId,
+                    nama: item.nama,
+                    harga: item.harga,
+                    jumlah: item.jumlah,
+                    gambar: item.gambar || null,
+                    hari,
+                    tanggal,
+                    bulan,
+                    tahun: tahun.toString(),
+                    kode,
+                    created_at: serverTimestamp(),
+                    updated_at: serverTimestamp(),
+                };
+
+                await addDoc(
+                    collection(db, "perusahaan", perusahaanId, "transaksi"),
+                    data
+                );
+            }
+
+            Alert.alert("Pembayaran Berhasil", `Transaksi ${kode} tersimpan!`);
+            setKeranjang([]);
+            setBayarModalVisible(false);
+            setLoading(false);
+        } catch (error) {
+            console.log("Error simpan transaksi:", error);
+            Alert.alert("Error", "Gagal menyimpan transaksi.");
+        }
+    };
 
     const getUserData = async () => {
         try {
@@ -168,7 +229,7 @@ export default function ScanScreen() {
 
     return (
         <View style={globalStyles.container}>
-            {!bayarModalVisible ? (
+            {!bayarModalVisible && !editModalVisible && !modalVisible ? (
                 <CameraView
                     style={{ height: 100, marginBottom: 10, marginTop: 30 }}
                     onBarcodeScanned={handleBarCodeScanned}
@@ -469,7 +530,7 @@ export default function ScanScreen() {
                                 textAlign: "center",
                                 marginBottom: 15,
                             }}>
-                            ID Transaksi: TX-{Date.now()}
+                            ID Transaksi: {generateKodeTransaksi()}
                         </Text>
 
                         {/* DETAIL BELANJA */}
@@ -513,36 +574,65 @@ export default function ScanScreen() {
                                 flexDirection: "row",
                                 justifyContent: "flex-end",
                             }}>
-                            <TouchableOpacity
-                                style={globalStyles.buttonModalDanger}
-                                onPress={() => setBayarModalVisible(false)}>
-                                <Text
-                                    style={{
-                                        color: "#fff",
-                                        fontWeight: "bold",
-                                    }}>
-                                    Batal
-                                </Text>
-                            </TouchableOpacity>
-                            <View style={{ width: 10 }} />
-                            <TouchableOpacity
-                                style={globalStyles.buttonModalPrimary}
-                                onPress={() => {
-                                    Alert.alert(
-                                        "Pembayaran Berhasil",
-                                        "Transaksi selesai!"
-                                    );
-                                    setKeranjang([]);
-                                    setBayarModalVisible(false);
-                                }}>
-                                <Text
-                                    style={{
-                                        color: "#fff",
-                                        fontWeight: "bold",
-                                    }}>
-                                    Konfirmasi Bayar
-                                </Text>
-                            </TouchableOpacity>
+                            {loading ? (
+                                <>
+                                    <TouchableOpacity
+                                        disabled={true}
+                                        style={
+                                            globalStyles.buttonModalSecondary
+                                        }>
+                                        <Text
+                                            style={{
+                                                color: "#fff",
+                                                fontWeight: "bold",
+                                            }}>
+                                            Batal
+                                        </Text>
+                                    </TouchableOpacity>
+                                    <View style={{ width: 10 }} />
+                                    <TouchableOpacity
+                                        disabled={true}
+                                        style={
+                                            globalStyles.buttonModalSecondary
+                                        }>
+                                        <Text
+                                            style={{
+                                                color: "#fff",
+                                                fontWeight: "bold",
+                                            }}>
+                                            Loading...
+                                        </Text>
+                                    </TouchableOpacity>
+                                </>
+                            ) : (
+                                <>
+                                    <TouchableOpacity
+                                        style={globalStyles.buttonModalDanger}
+                                        onPress={() =>
+                                            setBayarModalVisible(false)
+                                        }>
+                                        <Text
+                                            style={{
+                                                color: "#fff",
+                                                fontWeight: "bold",
+                                            }}>
+                                            Batal
+                                        </Text>
+                                    </TouchableOpacity>
+                                    <View style={{ width: 10 }} />
+                                    <TouchableOpacity
+                                        style={globalStyles.buttonModalPrimary}
+                                        onPress={handleBayar}>
+                                        <Text
+                                            style={{
+                                                color: "#fff",
+                                                fontWeight: "bold",
+                                            }}>
+                                            Konfirmasi Bayar
+                                        </Text>
+                                    </TouchableOpacity>
+                                </>
+                            )}
                         </View>
                     </View>
                 </View>

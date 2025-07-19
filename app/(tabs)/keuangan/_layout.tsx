@@ -1,11 +1,11 @@
 import { Stack } from "expo-router";
 
-export default function TransaksiLayout() {
+export default function KeuanganLayout() {
     return (
         <Stack>
             <Stack.Screen
                 name="index"
-                options={{ title: "Transaksi", headerShown: false }}
+                options={{ title: "Keuangan", headerShown: false }}
             />
         </Stack>
     );

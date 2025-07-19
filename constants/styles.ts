@@ -131,4 +131,46 @@ export const globalStyles = StyleSheet.create({
         padding: 8,
         borderRadius: 6,
     },
+    buttonModalSecondary: {
+        backgroundColor: "#f2f2f2",
+        padding: 8,
+        borderRadius: 6,
+    },
+    pickerRow: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        marginBottom: 16,
+    },
+    picker: {
+        height: 50,
+        width: 100,
+    },
+    cardFull: {
+        backgroundColor: "#f8f8f8",
+        padding: 20,
+        borderRadius: 12,
+        marginBottom: 12,
+        elevation: 2,
+    },
+    rowCards: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+    },
+    cardHalf: {
+        flex: 0.48,
+        backgroundColor: "#f8f8f8",
+        padding: 20,
+        borderRadius: 12,
+        elevation: 2,
+    },
+    cardTitle: {
+        fontSize: 16,
+        color: "#333333",
+        marginBottom: 4,
+    },
+    cardValue: {
+        fontSize: 20,
+        fontWeight: "bold",
+        color: "#000",
+    },
 });

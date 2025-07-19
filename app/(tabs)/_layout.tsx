@@ -86,12 +86,12 @@ export default function TabLayout() {
                 }}
             />
             <Tabs.Screen
-                name="transaksi"
+                name="keuangan"
                 options={{
-                    title: "Transaksi",
+                    title: "Keuangan",
                     headerShown: false,
                     tabBarIcon: ({ color, size }) => (
-                        <Ionicons name="cart" color={color} size={size} />
+                        <Ionicons name="wallet" color={color} size={size} />
                     ),
                 }}
             />
@@ -105,18 +105,6 @@ export default function TabLayout() {
                     ),
                 }}
             />
-            {/* 
-            <Tabs.Screen
-                name="transaksi"
-                options={{
-                    title: "Transaksi",
-                    headerShown: false,
-                    tabBarIcon: ({ color, size }) => (
-                        <Ionicons name="cart" color={color} size={size} />
-                    ),
-                }}
-            /> 
-            */}
         </Tabs>
     );
 }
