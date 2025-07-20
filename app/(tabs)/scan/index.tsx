@@ -3,7 +3,7 @@ import { namaBulan, namaHari } from "@/constants/time";
 import { db } from "@/services/firebase";
 import { TKeranjang } from "@/types/keranjang_repositories";
 import { TStok } from "@/types/stok_repositories";
-import { TKeranjangCreate } from "@/types/transaksi_repositories";
+import { TTransaksiCreate } from "@/types/transaksi_repositories";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Picker } from "@react-native-picker/picker";
@@ -62,7 +62,7 @@ export default function ScanScreen() {
             const kode = generateKodeTransaksi();
 
             for (const item of keranjang) {
-                const data: TKeranjangCreate = {
+                const data: TTransaksiCreate = {
                     perusahaanId,
                     stokId: item.stokId,
                     nama: item.nama,

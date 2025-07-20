@@ -1,4 +1,4 @@
-export interface TKeranjang {
+export interface TTransaksi {
     id?: string;
     perusahaanId: string;
     stokId: string;
@@ -14,7 +14,7 @@ export interface TKeranjang {
     created_at?: any;
     updated_at?: any;
 }
-export interface TKeranjangCreate {
+export interface TTransaksiCreate {
     perusahaanId: string;
     stokId: string;
     nama: string;
@@ -28,4 +28,12 @@ export interface TKeranjangCreate {
     kode: string;
     created_at: any;
     updated_at: any;
+}
+
+export interface TTransaksiGrouped {
+    namaPerusahaan: string;
+    tanggal: any;
+    kode: string;
+    total: string;
+    transaksi: TTransaksi[];
 }

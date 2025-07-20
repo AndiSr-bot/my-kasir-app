@@ -23,6 +23,7 @@ export default function DetailKeuanganScreen() {
     const [totalSales, setTotalSales] = useState(0);
     const [jumlahTransaksi, setJumlahTransaksi] = useState(0);
     const [jumlahProduk, setJumlahProduk] = useState(0);
+    const [perusahaanId, setPerusahaanId] = useState("");
 
     const tanggalOptions = Array.from({ length: 31 }, (_, i) =>
         (i + 1).toString()
@@ -44,12 +45,21 @@ export default function DetailKeuanganScreen() {
     }, [tanggal, bulan, tahun]);
     useEffect(() => {
         getNow();
+        getUserData();
     }, []);
-
+    const getUserData = async () => {
+        try {
+            const jsonValue = await AsyncStorage.getItem("user");
+            if (jsonValue != null) {
+                setPerusahaanId(JSON.parse(jsonValue).perusahaanId);
+            }
+        } catch (e) {
+            console.log("Error loading user data", e);
+        }
+    };
     const fetchData = async () => {
         setLoading(true);
         try {
-            const perusahaanId = await AsyncStorage.getItem("perusahaanId");
             if (!perusahaanId) return;
 
             const transaksiRef = collection(
