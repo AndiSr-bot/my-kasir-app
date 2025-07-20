@@ -9,6 +9,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import {
+    ActivityIndicator,
     Alert,
     Image,
     Text,
@@ -131,7 +132,8 @@ export default function EditPegawai() {
         ]);
     };
 
-    if (loading) return <Text style={globalStyles.emptyText}>Memuat...</Text>;
+    if (loading)
+        return <ActivityIndicator size="large" style={{ marginTop: 20 }} />;
 
     return (
         <View style={globalStyles.container}>

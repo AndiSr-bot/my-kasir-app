@@ -5,6 +5,7 @@ import { useRouter } from "expo-router";
 import { collection, getDocs } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import {
+    ActivityIndicator,
     FlatList,
     Image,
     RefreshControl,
@@ -89,9 +90,10 @@ export default function PerusahaanListScreen() {
                             Belum ada perusahaan
                         </Text>
                     ) : (
-                        <Text style={globalStyles.emptyText}>
-                            Memuat data...
-                        </Text>
+                        <ActivityIndicator
+                            size="large"
+                            style={{ marginTop: 20 }}
+                        />
                     )
                 }
             />

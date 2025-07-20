@@ -8,7 +8,14 @@ import { Picker } from "@react-native-picker/picker";
 import { useFocusEffect, useRouter } from "expo-router";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { useCallback, useEffect, useState } from "react";
-import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
+import {
+    ActivityIndicator,
+    FlatList,
+    Image,
+    Text,
+    TouchableOpacity,
+    View,
+} from "react-native";
 
 export default function PegawaiTab() {
     const router = useRouter();
@@ -179,9 +186,10 @@ export default function PegawaiTab() {
                                 : "Silahkan pilih perusahaan"}
                         </Text>
                     ) : (
-                        <Text style={globalStyles.emptyText}>
-                            Memuat data...
-                        </Text>
+                        <ActivityIndicator
+                            size="large"
+                            style={{ marginTop: 20 }}
+                        />
                     )
                 }
             />

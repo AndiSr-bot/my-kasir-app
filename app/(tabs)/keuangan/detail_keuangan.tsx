@@ -154,46 +154,68 @@ export default function DetailKeuanganScreen() {
                 </View>
             </View>
 
-            {loading ? (
+            {/* {loading ? (
                 <ActivityIndicator size="large" style={{ marginTop: 20 }} />
-            ) : (
-                <ScrollView
-                    refreshControl={
-                        <RefreshControl
-                            refreshing={refreshing}
-                            onRefresh={onRefresh}
-                        />
-                    }
-                    style={{ minHeight: "100%" }}>
-                    {/* Card 1: Total Sales */}
-                    <View style={globalStyles.cardFull}>
-                        <Text style={globalStyles.cardTitle}>Total Sales</Text>
+            ) : ( */}
+            <ScrollView
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                    />
+                }
+                style={{ minHeight: "100%" }}>
+                {/* Card 1: Total Sales */}
+                <View style={globalStyles.cardFull}>
+                    <Text style={globalStyles.cardTitle}>Total Sales</Text>
+                    <Text style={globalStyles.cardValue}>
+                        Rp{" "}
+                        {loading ? (
+                            <ActivityIndicator
+                                size="small"
+                                color={"#a7a7a7ff"}
+                            />
+                        ) : (
+                            totalSales.toLocaleString("id-ID")
+                        )}
+                    </Text>
+                </View>
+
+                {/* Card 2 & 3: Jumlah Transaksi & Jumlah Produk */}
+                <View style={globalStyles.rowCards}>
+                    <View style={globalStyles.cardHalf}>
+                        <Text style={globalStyles.cardTitle}>
+                            Jumlah Transaksi
+                        </Text>
                         <Text style={globalStyles.cardValue}>
-                            Rp {totalSales.toLocaleString()}
+                            {loading ? (
+                                <ActivityIndicator
+                                    size="small"
+                                    color={"#a7a7a7ff"}
+                                />
+                            ) : (
+                                jumlahTransaksi
+                            )}
                         </Text>
                     </View>
-
-                    {/* Card 2 & 3: Jumlah Transaksi & Jumlah Produk */}
-                    <View style={globalStyles.rowCards}>
-                        <View style={globalStyles.cardHalf}>
-                            <Text style={globalStyles.cardTitle}>
-                                Jumlah Transaksi
-                            </Text>
-                            <Text style={globalStyles.cardValue}>
-                                {jumlahTransaksi}
-                            </Text>
-                        </View>
-                        <View style={globalStyles.cardHalf}>
-                            <Text style={globalStyles.cardTitle}>
-                                Jumlah Produk
-                            </Text>
-                            <Text style={globalStyles.cardValue}>
-                                {jumlahProduk}
-                            </Text>
-                        </View>
+                    <View style={globalStyles.cardHalf}>
+                        <Text style={globalStyles.cardTitle}>
+                            Jumlah Produk
+                        </Text>
+                        <Text style={globalStyles.cardValue}>
+                            {loading ? (
+                                <ActivityIndicator
+                                    size="small"
+                                    color={"#a7a7a7ff"}
+                                />
+                            ) : (
+                                jumlahProduk
+                            )}
+                        </Text>
                     </View>
-                </ScrollView>
-            )}
+                </View>
+            </ScrollView>
+            {/* )} */}
         </View>
     );
 }

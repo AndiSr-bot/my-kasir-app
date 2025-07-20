@@ -6,7 +6,14 @@ import { useRouter } from "expo-router";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { collectionGroup, doc, getDoc, getDocs } from "firebase/firestore";
 import { useState } from "react";
-import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+    ActivityIndicator,
+    Alert,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
+} from "react-native";
 
 export default function LoginScreen() {
     const router = useRouter();
@@ -145,7 +152,11 @@ export default function LoginScreen() {
                 onPress={handleLogin}
                 disabled={loading}>
                 <Text style={globalStyles.buttonText}>
-                    {loading ? "Loading..." : "Login"}
+                    {loading ? (
+                        <ActivityIndicator size="small" color="#fff" />
+                    ) : (
+                        "Login"
+                    )}
                 </Text>
             </TouchableOpacity>
         </View>

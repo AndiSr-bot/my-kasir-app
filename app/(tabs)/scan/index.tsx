@@ -18,6 +18,7 @@ import {
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import {
+    ActivityIndicator,
     Alert,
     Image,
     Modal,
@@ -595,13 +596,7 @@ export default function ScanScreen() {
                                         style={
                                             globalStyles.buttonModalSecondary
                                         }>
-                                        <Text
-                                            style={{
-                                                color: "#fff",
-                                                fontWeight: "bold",
-                                            }}>
-                                            Loading...
-                                        </Text>
+                                        <ActivityIndicator size="small" />
                                     </TouchableOpacity>
                                 </>
                             ) : (

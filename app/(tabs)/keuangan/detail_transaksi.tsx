@@ -260,9 +260,10 @@ export default function DetailTransaksiScreen() {
                                     : "Silahkan pilih perusahaan"}
                             </Text>
                         ) : (
-                            <Text style={globalStyles.emptyText}>
-                                Memuat data...
-                            </Text>
+                            <ActivityIndicator
+                                size="large"
+                                style={{ marginTop: 20 }}
+                            />
                         )
                     }
                 />

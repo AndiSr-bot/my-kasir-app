@@ -9,7 +9,14 @@ import { Picker } from "@react-native-picker/picker";
 import { useFocusEffect, useRouter } from "expo-router";
 import { collection, getDocs } from "firebase/firestore";
 import { useCallback, useEffect, useState } from "react";
-import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
+import {
+    ActivityIndicator,
+    FlatList,
+    Image,
+    Text,
+    TouchableOpacity,
+    View,
+} from "react-native";
 
 export default function StokListScreen() {
     const router = useRouter();
@@ -121,7 +128,7 @@ export default function StokListScreen() {
             />
             <View>
                 <Text style={globalStyles.title}>{item.nama}</Text>
-                <Text>Harga: Rp {item.harga}</Text>
+                <Text>Harga: Rp {item.harga.toLocaleString("id-ID")}</Text>
                 <Text>
                     Stok: {item.stok_sisa} / {item.stok_awal}
                 </Text>
@@ -174,9 +181,10 @@ export default function StokListScreen() {
                                 : "Silahkan pilih perusahaan"}
                         </Text>
                     ) : (
-                        <Text style={globalStyles.emptyText}>
-                            Memuat data...
-                        </Text>
+                        <ActivityIndicator
+                            size="large"
+                            style={{ marginTop: 20 }}
+                        />
                     )
                 }
             />

@@ -13,6 +13,7 @@ import {
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import {
+    ActivityIndicator,
     Alert,
     Image,
     ScrollView,
@@ -144,11 +145,7 @@ export default function EditStokScreen() {
     };
 
     if (loading) {
-        return (
-            <View style={globalStyles.container}>
-                <Text>Loading...</Text>
-            </View>
-        );
+        return <ActivityIndicator size="large" style={{ marginTop: 20 }} />;
     }
 
     return (
