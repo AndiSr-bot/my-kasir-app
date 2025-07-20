@@ -29,6 +29,7 @@ export default function TabLayout() {
                 name="index"
                 options={{
                     title: "Beranda",
+                    headerShown: false,
                     tabBarIcon: ({ color, size }) => (
                         <Ionicons name="home" color={color} size={size} />
                     ),
@@ -90,6 +91,11 @@ export default function TabLayout() {
                 options={{
                     title: "Keuangan",
                     headerShown: false,
+                    href:
+                        userDataLocal?.role === "admin" ||
+                        userDataLocal?.role === "admin_perusahaan"
+                            ? undefined
+                            : null,
                     tabBarIcon: ({ color, size }) => (
                         <Ionicons name="wallet" color={color} size={size} />
                     ),
