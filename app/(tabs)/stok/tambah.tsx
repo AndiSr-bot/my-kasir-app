@@ -1,8 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { globalStyles } from "@/constants/styles";
 import { db } from "@/services/firebase";
+import { TPegawai } from "@/types/pegawai_repositories";
 import { TPerusahaan } from "@/types/perusahaan_repositories";
 import { TStokCreate } from "@/types/stok_repositories";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Picker } from "@react-native-picker/picker";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import * as ImagePicker from "expo-image-picker";
@@ -15,6 +17,7 @@ import {
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import {
+    ActivityIndicator,
     Alert,
     Image,
     ScrollView,
@@ -36,6 +39,8 @@ export default function TambahStokScreen() {
     const [perusahaanId, setPerusahaanId] = useState("");
     const [perusahaanList, setPerusahaanList] = useState<TPerusahaan[]>([]);
     const [scanned, setScanned] = useState(false);
+    const [userDataLocal, setUserDataLocal] = useState<TPegawai | null>(null);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (!permission) {
@@ -44,6 +49,7 @@ export default function TambahStokScreen() {
     }, [permission]);
     useEffect(() => {
         fetchPerusahaan();
+        getUserData();
     }, []);
     const fetchPerusahaan = async () => {
         try {
@@ -83,6 +89,7 @@ export default function TambahStokScreen() {
     };
 
     const handleSave = async () => {
+        setLoading(true);
         if (!nama || !harga || !stokAwal || !barcode) {
             Alert.alert("Error", "Lengkapi semua field dan scan barcode!");
             return;
@@ -110,6 +117,19 @@ export default function TambahStokScreen() {
         } catch (error) {
             console.log("Error simpan produk:", error);
             Alert.alert("Error", "Gagal menyimpan produk");
+        } finally {
+            setLoading(false);
+        }
+    };
+    const getUserData = async () => {
+        try {
+            const jsonValue = await AsyncStorage.getItem("user");
+            if (jsonValue != null) {
+                setPerusahaanId(JSON.parse(jsonValue).perusahaanId);
+                setUserDataLocal(JSON.parse(jsonValue));
+            }
+        } catch (e) {
+            console.log("Error loading user data", e);
         }
     };
 
@@ -122,22 +142,33 @@ export default function TambahStokScreen() {
                     onBarcodeScanned={handleBarCodeScanned}
                 />
             )}
-            <Text style={globalStyles.label}>Perusahaan</Text>
-            <View style={[globalStyles.input, { padding: 0, height: 50 }]}>
-                <Picker
-                    selectedValue={perusahaanId}
-                    onValueChange={setPerusahaanId}
-                    style={{ color: "#000" }}>
-                    <Picker.Item label="-- Pilih Perusahaan --" value="" />
-                    {perusahaanList.map((item) => (
-                        <Picker.Item
-                            key={item.id}
-                            label={item.nama}
-                            value={item.id}
-                        />
-                    ))}
-                </Picker>
-            </View>
+            {userDataLocal?.role === "admin" && (
+                <>
+                    <Text style={globalStyles.label}>Perusahaan</Text>
+                    <View
+                        style={[
+                            globalStyles.input,
+                            { padding: 0, height: 50 },
+                        ]}>
+                        <Picker
+                            selectedValue={perusahaanId}
+                            onValueChange={setPerusahaanId}
+                            style={{ color: "#000" }}>
+                            <Picker.Item
+                                label="-- Pilih Perusahaan --"
+                                value=""
+                            />
+                            {perusahaanList.map((item) => (
+                                <Picker.Item
+                                    key={item.id}
+                                    label={item.nama}
+                                    value={item.id}
+                                />
+                            ))}
+                        </Picker>
+                    </View>
+                </>
+            )}
             <Text style={globalStyles.label}>Nama Produk</Text>
             <TextInput
                 placeholder="Nama Produk"
@@ -198,11 +229,18 @@ export default function TambahStokScreen() {
             {/* Tombol Simpan */}
             <TouchableOpacity
                 style={[
-                    globalStyles.buttonPrimary,
+                    loading
+                        ? globalStyles.buttonSecondary
+                        : globalStyles.buttonPrimary,
                     { marginTop: 20, marginBottom: 30 },
                 ]}
+                disabled={loading}
                 onPress={handleSave}>
-                <Text style={globalStyles.buttonText}>Simpan Produk</Text>
+                {loading ? (
+                    <ActivityIndicator size="small" color="#fff" />
+                ) : (
+                    <Text style={globalStyles.buttonText}>Simpan Produk</Text>
+                )}
             </TouchableOpacity>
         </ScrollView>
     );

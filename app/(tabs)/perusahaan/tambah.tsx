@@ -5,14 +5,22 @@ import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import { addDoc, collection } from "firebase/firestore";
 import { useState } from "react";
-import { Image, Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+    ActivityIndicator,
+    Image,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
+} from "react-native";
 
 export default function TambahPerusahaan() {
+    const router = useRouter();
     const [nama, setNama] = useState("");
     const [alamat, setAlamat] = useState("");
     const [telepon, setTelepon] = useState("");
     const [logo, setLogo] = useState("");
-    const router = useRouter();
+    const [loading, setLoading] = useState(false);
 
     const pickImage = async () => {
         const result = await ImagePicker.launchImageLibraryAsync({
@@ -26,6 +34,7 @@ export default function TambahPerusahaan() {
     };
 
     const handleSubmit = async () => {
+        setLoading(true);
         if (!nama.trim()) return alert("Nama perusahaan wajib diisi.");
 
         try {
@@ -39,6 +48,8 @@ export default function TambahPerusahaan() {
             router.replace("/perusahaan");
         } catch (error) {
             console.log("Error adding document:", error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -79,9 +90,18 @@ export default function TambahPerusahaan() {
             </TouchableOpacity>
 
             <TouchableOpacity
-                style={globalStyles.buttonSuccess}
+                style={
+                    loading
+                        ? globalStyles.buttonSecondary
+                        : globalStyles.buttonSuccess
+                }
+                disabled={loading}
                 onPress={handleSubmit}>
-                <Text style={globalStyles.buttonText}>Simpan</Text>
+                {loading ? (
+                    <ActivityIndicator size="small" color="#fff" />
+                ) : (
+                    <Text style={globalStyles.buttonText}>Simpan</Text>
+                )}
             </TouchableOpacity>
         </View>
     );

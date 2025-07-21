@@ -2,7 +2,7 @@ import { globalStyles } from "@/constants/styles";
 import { namaBulan, namaHari } from "@/constants/time";
 import { db } from "@/services/firebase";
 import { TKeranjang } from "@/types/keranjang_repositories";
-import { TStok } from "@/types/stok_repositories";
+import { TStok, TStokUpdate } from "@/types/stok_repositories";
 import { TTransaksiCreate } from "@/types/transaksi_repositories";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -11,9 +11,12 @@ import { CameraView } from "expo-camera";
 import {
     addDoc,
     collection,
+    doc,
+    getDoc,
     getDocs,
     query,
     serverTimestamp,
+    updateDoc,
     where,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
@@ -83,6 +86,30 @@ export default function ScanScreen() {
                     collection(db, "perusahaan", perusahaanId, "transaksi"),
                     data
                 );
+                const stokRef = doc(
+                    db,
+                    "perusahaan",
+                    perusahaanId,
+                    "stok",
+                    item.stokId
+                );
+                const stokSnap = await getDoc(stokRef);
+
+                if (stokSnap.exists()) {
+                    const stokData: TStokUpdate = {
+                        stok_sisa: stokSnap.data().stok_sisa,
+                        stok_terjual: stokSnap.data().stok_terjual,
+                    };
+                    const stokTerjual =
+                        (stokData.stok_terjual || 0) + item.jumlah;
+                    const stokSisa = (stokData.stok_sisa || 0) - item.jumlah;
+
+                    await updateDoc(stokRef, {
+                        stok_terjual: stokTerjual,
+                        stok_sisa: Math.max(stokSisa, 0),
+                        updated_at: serverTimestamp(),
+                    });
+                }
             }
 
             Alert.alert("Pembayaran Berhasil", `Transaksi ${kode} tersimpan!`);

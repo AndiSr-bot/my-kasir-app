@@ -1,14 +1,22 @@
 import { globalStyles } from "@/constants/styles";
 import { auth, db } from "@/services/firebase";
-import { TPegawaiCreate } from "@/types/pegawai_repositories";
+import { TPegawai, TPegawaiCreate } from "@/types/pegawai_repositories";
 import { TPerusahaan } from "@/types/perusahaan_repositories";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Picker } from "@react-native-picker/picker";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { addDoc, collection, getDocs } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { Image, Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+    ActivityIndicator,
+    Image,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
+} from "react-native";
 
 export default function TambahPegawai() {
     const router = useRouter();
@@ -20,9 +28,12 @@ export default function TambahPegawai() {
     const [perusahaanId, setPerusahaanId] = useState("");
     const [foto, setFoto] = useState("");
     const [perusahaanList, setPerusahaanList] = useState<TPerusahaan[]>([]);
+    const [userDataLocal, setUserDataLocal] = useState<TPegawai | null>(null);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         fetchPerusahaan();
+        getUserData();
     }, []);
 
     const fetchPerusahaan = async () => {
@@ -56,6 +67,7 @@ export default function TambahPegawai() {
     };
 
     const handleSubmit = async () => {
+        setLoading(true);
         if (!nama || !jabatan || !role || !perusahaanId) {
             alert("Semua field harus diisi");
             return;
@@ -65,8 +77,8 @@ export default function TambahPegawai() {
             const userCredential = await createUserWithEmailAndPassword(
                 auth,
                 email,
-                "defaultpassword123"
-            ); // Bisa generate random atau kirim email reset
+                "12345678"
+            );
             const uid = userCredential.user.uid;
             const dataPegawai: TPegawaiCreate = {
                 perusahaanId,
@@ -89,9 +101,24 @@ export default function TambahPegawai() {
             if (error.code === "auth/email-already-in-use") {
                 alert("Email sudah terdaftar!");
             }
+        } finally {
+            setLoading(false);
         }
     };
-
+    const getUserData = async () => {
+        try {
+            const jsonValue = await AsyncStorage.getItem("user");
+            if (jsonValue != null) {
+                setPerusahaanId(JSON.parse(jsonValue).perusahaanId);
+                setUserDataLocal(JSON.parse(jsonValue));
+                if (JSON.parse(jsonValue).role !== "admin") {
+                    setRole("staff");
+                }
+            }
+        } catch (e) {
+            console.log("Error loading user data", e);
+        }
+    };
     return (
         <View style={globalStyles.container}>
             <TouchableOpacity onPress={pilihFoto}>
@@ -123,21 +150,31 @@ export default function TambahPegawai() {
 
             <Text style={globalStyles.label}>Nama Pegawai</Text>
             <TextInput
+                placeholder="Nama Pegawai"
                 style={globalStyles.input}
                 value={nama}
                 onChangeText={setNama}
+                autoCapitalize="words"
+                textContentType="name"
+                returnKeyType="next"
             />
             <Text style={globalStyles.label}>Email</Text>
             <TextInput
+                placeholder="Email"
                 style={globalStyles.input}
-                value={noHp}
+                value={email}
                 onChangeText={setEmail}
+                keyboardType="email-address"
+                autoCapitalize="none"
             />
             <Text style={globalStyles.label}>No HP</Text>
             <TextInput
+                placeholder="No HP"
                 style={globalStyles.input}
                 value={noHp}
                 onChangeText={setNoHp}
+                keyboardType="phone-pad"
+                maxLength={15}
             />
 
             <Text style={globalStyles.label}>Jabatan</Text>
@@ -145,45 +182,70 @@ export default function TambahPegawai() {
                 style={globalStyles.input}
                 value={jabatan}
                 onChangeText={setJabatan}
+                placeholder="Jabatan"
+                autoCapitalize="words"
+                textContentType="name"
+                returnKeyType="next"
             />
-
-            <Text style={globalStyles.label}>Role</Text>
-            <View style={[globalStyles.input, { padding: 0, height: 50 }]}>
-                <Picker
-                    selectedValue={role}
-                    onValueChange={setRole}
-                    style={{ color: "#000" }}>
-                    <Picker.Item label="-- Pilih Role --" value="" />
-                    <Picker.Item label="Admin" value="admin" />
-                    <Picker.Item
-                        label="Admin Perusahaan"
-                        value="admin_perusahaan"
-                    />
-                    <Picker.Item label="Staff" value="staff" />
-                </Picker>
-            </View>
-
-            <Text style={globalStyles.label}>Perusahaan</Text>
-            <View style={[globalStyles.input, { padding: 0, height: 50 }]}>
-                <Picker
-                    selectedValue={perusahaanId}
-                    onValueChange={setPerusahaanId}
-                    style={{ color: "#000" }}>
-                    <Picker.Item label="-- Pilih Perusahaan --" value="" />
-                    {perusahaanList.map((item) => (
-                        <Picker.Item
-                            key={item.id}
-                            label={item.nama}
-                            value={item.id}
-                        />
-                    ))}
-                </Picker>
-            </View>
-
+            {userDataLocal?.role === "admin" && (
+                <>
+                    <Text style={globalStyles.label}>Role</Text>
+                    <View
+                        style={[
+                            globalStyles.input,
+                            { padding: 0, height: 50 },
+                        ]}>
+                        <Picker
+                            selectedValue={role}
+                            onValueChange={setRole}
+                            style={{ color: "#000" }}>
+                            <Picker.Item label="-- Pilih Role --" value="" />
+                            <Picker.Item label="Admin" value="admin" />
+                            <Picker.Item
+                                label="Admin Perusahaan"
+                                value="admin_perusahaan"
+                            />
+                            <Picker.Item label="Staff" value="staff" />
+                        </Picker>
+                    </View>
+                    <Text style={globalStyles.label}>Perusahaan</Text>
+                    <View
+                        style={[
+                            globalStyles.input,
+                            { padding: 0, height: 50 },
+                        ]}>
+                        <Picker
+                            selectedValue={perusahaanId}
+                            onValueChange={setPerusahaanId}
+                            style={{ color: "#000" }}>
+                            <Picker.Item
+                                label="-- Pilih Perusahaan --"
+                                value=""
+                            />
+                            {perusahaanList.map((item) => (
+                                <Picker.Item
+                                    key={item.id}
+                                    label={item.nama}
+                                    value={item.id}
+                                />
+                            ))}
+                        </Picker>
+                    </View>
+                </>
+            )}
             <TouchableOpacity
-                style={globalStyles.buttonSuccess}
+                disabled={loading}
+                style={
+                    loading
+                        ? globalStyles.buttonSecondary
+                        : globalStyles.buttonSuccess
+                }
                 onPress={handleSubmit}>
-                <Text style={globalStyles.buttonText}>Simpan</Text>
+                {loading ? (
+                    <ActivityIndicator size="small" color="#fff" />
+                ) : (
+                    <Text style={globalStyles.buttonText}>Simpan</Text>
+                )}
             </TouchableOpacity>
         </View>
     );

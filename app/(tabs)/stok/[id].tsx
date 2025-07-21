@@ -35,6 +35,7 @@ export default function EditStokScreen() {
     const [stokTerjual, setStokTerjual] = useState(0);
     const [barcode, setBarcode] = useState("");
     const [gambar, setGambar] = useState<string | null>(null);
+    const [submitting, setSubmitting] = useState(false);
 
     useEffect(() => {
         fetchData();
@@ -82,6 +83,7 @@ export default function EditStokScreen() {
     };
 
     const handleUpdate = async () => {
+        setSubmitting(true);
         if (!nama || !harga || !stokAwal) {
             Alert.alert("Error", "Lengkapi semua field!");
             return;
@@ -115,6 +117,8 @@ export default function EditStokScreen() {
         } catch (error) {
             console.log("Error update:", error);
             Alert.alert("Error", "Gagal update produk");
+        } finally {
+            setSubmitting(false);
         }
     };
 
@@ -125,6 +129,7 @@ export default function EditStokScreen() {
                 text: "Hapus",
                 style: "destructive",
                 onPress: async () => {
+                    setSubmitting(true);
                     try {
                         const docRef = doc(
                             db,
@@ -138,6 +143,8 @@ export default function EditStokScreen() {
                         router.back();
                     } catch (error) {
                         console.log("Error delete:", error);
+                    } finally {
+                        setSubmitting(false);
                     }
                 },
             },
@@ -207,18 +214,36 @@ export default function EditStokScreen() {
                 editable={false}
             />
 
-            {/* Tombol Update */}
             <TouchableOpacity
-                style={[globalStyles.buttonSuccess, { marginTop: 20 }]}
+                disabled={submitting}
+                style={
+                    submitting
+                        ? globalStyles.buttonSecondary
+                        : globalStyles.buttonSuccess
+                }
                 onPress={handleUpdate}>
-                <Text style={globalStyles.buttonText}>Simpan Perubahan</Text>
+                {submitting ? (
+                    <ActivityIndicator size="small" color="#fff" />
+                ) : (
+                    <Text style={globalStyles.buttonText}>
+                        Simpan Perubahan
+                    </Text>
+                )}
             </TouchableOpacity>
 
-            {/* Tombol Hapus */}
             <TouchableOpacity
-                style={[globalStyles.buttonDanger]}
+                disabled={submitting}
+                style={
+                    submitting
+                        ? globalStyles.buttonSecondary
+                        : globalStyles.buttonDanger
+                }
                 onPress={handleDelete}>
-                <Text style={globalStyles.buttonText}>Hapus Produk</Text>
+                {submitting ? (
+                    <ActivityIndicator size="small" color="#fff" />
+                ) : (
+                    <Text style={globalStyles.buttonText}>Hapus Stok</Text>
+                )}
             </TouchableOpacity>
         </ScrollView>
     );

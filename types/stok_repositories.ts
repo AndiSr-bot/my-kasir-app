@@ -28,6 +28,7 @@ export interface TStokUpdate {
     harga?: number;
     stok_awal?: number;
     stok_sisa?: number;
+    stok_terjual?: number;
     gambar?: string | null;
     updated_at?: any;
 }

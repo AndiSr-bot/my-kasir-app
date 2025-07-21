@@ -25,6 +25,7 @@ export default function EditPerusahaan() {
     const [telepon, setTelepon] = useState("");
     const [logo, setLogo] = useState("");
     const [loading, setLoading] = useState(true);
+    const [submitting, setSubmitting] = useState(false);
 
     useEffect(() => {
         loadData();
@@ -63,6 +64,7 @@ export default function EditPerusahaan() {
     };
 
     const handleSave = async () => {
+        setSubmitting(true);
         try {
             const docRef = doc(db, "perusahaan", String(id));
             const dataPerusahaan: TPerusahaanUpdate = {
@@ -76,6 +78,8 @@ export default function EditPerusahaan() {
             router.replace("/perusahaan");
         } catch (error) {
             console.log("Update error:", error);
+        } finally {
+            setSubmitting(false);
         }
     };
 
@@ -86,6 +90,7 @@ export default function EditPerusahaan() {
                 text: "Hapus",
                 style: "destructive",
                 onPress: async () => {
+                    setSubmitting(true);
                     try {
                         const docRef = doc(db, "perusahaan", String(id));
                         await deleteDoc(docRef);
@@ -93,6 +98,8 @@ export default function EditPerusahaan() {
                         router.replace("/perusahaan");
                     } catch (error) {
                         console.log("Delete error:", error);
+                    } finally {
+                        setSubmitting(false);
                     }
                 },
             },
@@ -139,15 +146,37 @@ export default function EditPerusahaan() {
             </TouchableOpacity>
 
             <TouchableOpacity
-                style={globalStyles.buttonSuccess}
+                disabled={submitting}
+                style={
+                    submitting
+                        ? globalStyles.buttonSecondary
+                        : globalStyles.buttonSuccess
+                }
                 onPress={handleSave}>
-                <Text style={globalStyles.buttonText}>Simpan Perubahan</Text>
+                {submitting ? (
+                    <ActivityIndicator size="small" color="#fff" />
+                ) : (
+                    <Text style={globalStyles.buttonText}>
+                        Simpan Perubahan
+                    </Text>
+                )}
             </TouchableOpacity>
 
             <TouchableOpacity
-                style={globalStyles.buttonDanger}
+                disabled={submitting}
+                style={
+                    submitting
+                        ? globalStyles.buttonSecondary
+                        : globalStyles.buttonDanger
+                }
                 onPress={handleDelete}>
-                <Text style={globalStyles.buttonText}>Hapus Perusahaan</Text>
+                {submitting ? (
+                    <ActivityIndicator size="small" color="#fff" />
+                ) : (
+                    <Text style={globalStyles.buttonText}>
+                        Hapus Perusahaan
+                    </Text>
+                )}
             </TouchableOpacity>
         </View>
     );

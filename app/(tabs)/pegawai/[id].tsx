@@ -1,7 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { globalStyles } from "@/constants/styles";
 import { db } from "@/services/firebase";
-import { TPegawaiUpdate } from "@/types/pegawai_repositories";
+import { TPegawai, TPegawaiUpdate } from "@/types/pegawai_repositories";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Picker } from "@react-native-picker/picker";
 import * as FileSystem from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
@@ -29,11 +30,26 @@ export default function EditPegawai() {
     const [role, setRole] = useState("");
     const [foto, setFoto] = useState("");
     const [loading, setLoading] = useState(true);
+    const [submitting, setSubmitting] = useState(false);
+    const [userDataLocal, setUserDataLocal] = useState<TPegawai | null>(null);
 
     useEffect(() => {
         loadData();
+        getUserData();
     }, []);
-
+    const getUserData = async () => {
+        try {
+            const jsonValue = await AsyncStorage.getItem("user");
+            if (jsonValue != null) {
+                setUserDataLocal(JSON.parse(jsonValue));
+                if (JSON.parse(jsonValue).role !== "admin") {
+                    setRole("staff");
+                }
+            }
+        } catch (e) {
+            console.log("Error loading user data", e);
+        }
+    };
     const loadData = async () => {
         try {
             const docRef = doc(
@@ -80,6 +96,7 @@ export default function EditPegawai() {
     };
 
     const handleSave = async () => {
+        setSubmitting(true);
         try {
             const docRef = doc(
                 db,
@@ -103,6 +120,8 @@ export default function EditPegawai() {
             router.back();
         } catch (error) {
             console.log("Update error:", error);
+        } finally {
+            setSubmitting(false);
         }
     };
 
@@ -113,6 +132,7 @@ export default function EditPegawai() {
                 text: "Hapus",
                 style: "destructive",
                 onPress: async () => {
+                    setSubmitting(true);
                     try {
                         const docRef = doc(
                             db,
@@ -126,6 +146,8 @@ export default function EditPegawai() {
                         router.back();
                     } catch (error) {
                         console.log("Delete error:", error);
+                    } finally {
+                        setSubmitting(false);
                     }
                 },
             },
@@ -190,33 +212,60 @@ export default function EditPegawai() {
                 value={jabatan}
                 onChangeText={setJabatan}
             />
-
-            <Text style={globalStyles.label}>Role</Text>
-            <View style={[globalStyles.input, { padding: 0, height: 50 }]}>
-                <Picker
-                    selectedValue={role}
-                    onValueChange={setRole}
-                    style={{ color: "#000" }}>
-                    <Picker.Item label="-- Pilih Role --" value="" />
-                    <Picker.Item label="Admin" value="admin" />
-                    <Picker.Item
-                        label="Admin Perusahaan"
-                        value="admin_perusahaan"
-                    />
-                    <Picker.Item label="Staff" value="staff" />
-                </Picker>
-            </View>
+            {userDataLocal?.role === "admin" && (
+                <>
+                    <Text style={globalStyles.label}>Role</Text>
+                    <View
+                        style={[
+                            globalStyles.input,
+                            { padding: 0, height: 50 },
+                        ]}>
+                        <Picker
+                            selectedValue={role}
+                            onValueChange={setRole}
+                            style={{ color: "#000" }}>
+                            <Picker.Item label="-- Pilih Role --" value="" />
+                            <Picker.Item label="Admin" value="admin" />
+                            <Picker.Item
+                                label="Admin Perusahaan"
+                                value="admin_perusahaan"
+                            />
+                            <Picker.Item label="Staff" value="staff" />
+                        </Picker>
+                    </View>
+                </>
+            )}
 
             <TouchableOpacity
-                style={globalStyles.buttonSuccess}
+                disabled={submitting}
+                style={
+                    submitting
+                        ? globalStyles.buttonSecondary
+                        : globalStyles.buttonSuccess
+                }
                 onPress={handleSave}>
-                <Text style={globalStyles.buttonText}>Simpan Perubahan</Text>
+                {submitting ? (
+                    <ActivityIndicator size="small" color="#fff" />
+                ) : (
+                    <Text style={globalStyles.buttonText}>
+                        Simpan Perubahan
+                    </Text>
+                )}
             </TouchableOpacity>
 
             <TouchableOpacity
-                style={globalStyles.buttonDanger}
+                disabled={submitting}
+                style={
+                    submitting
+                        ? globalStyles.buttonSecondary
+                        : globalStyles.buttonDanger
+                }
                 onPress={handleDelete}>
-                <Text style={globalStyles.buttonText}>Hapus Pegawai</Text>
+                {submitting ? (
+                    <ActivityIndicator size="small" color="#fff" />
+                ) : (
+                    <Text style={globalStyles.buttonText}>Hapus Pegawai</Text>
+                )}
             </TouchableOpacity>
         </View>
     );
