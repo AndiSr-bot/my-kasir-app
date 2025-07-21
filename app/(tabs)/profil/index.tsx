@@ -53,29 +53,31 @@ export default function ProfileScreen() {
     return (
         <View
             style={[globalStyles.containerCard, { justifyContent: "center" }]}>
-            <Image
-                source={
-                    user.foto
-                        ? { uri: user.foto }
-                        : require("@/assets/default-avatar.png")
-                }
-                style={{
-                    width: 100,
-                    height: 100,
-                    borderRadius: 50,
-                    alignSelf: "center",
-                    marginBottom: 20,
-                }}
-            />
-            <Text style={globalStyles.text}>Nama : {user.nama}</Text>
-            <Text style={globalStyles.text}>Jabatan : {user.jabatan}</Text>
-            <Text style={globalStyles.text}>Email : {user.email}</Text>
-            <Text style={globalStyles.text}>No HP : {user.no_hp}</Text>
-            <Text style={globalStyles.text}>Role : {user.role}</Text>
-            <Text style={globalStyles.text}>
-                perusahaan : {user.perusahaan?.nama}
-            </Text>
-
+            <View
+                style={[globalStyles.profileCard, { flexDirection: "column" }]}>
+                <Image
+                    source={
+                        user.foto
+                            ? { uri: user.foto }
+                            : require("@/assets/default-avatar.png")
+                    }
+                    style={{
+                        width: 100,
+                        height: 100,
+                        borderRadius: 50,
+                        alignSelf: "center",
+                        marginBottom: 20,
+                    }}
+                />
+                <Text style={globalStyles.text}>Nama : {user.nama}</Text>
+                <Text style={globalStyles.text}>Jabatan : {user.jabatan}</Text>
+                <Text style={globalStyles.text}>Email : {user.email}</Text>
+                <Text style={globalStyles.text}>No HP : {user.no_hp}</Text>
+                <Text style={globalStyles.text}>Role : {user.role}</Text>
+                <Text style={globalStyles.text}>
+                    perusahaan : {user.perusahaan?.nama}
+                </Text>
+            </View>
             <TouchableOpacity
                 style={{
                     position: "absolute",

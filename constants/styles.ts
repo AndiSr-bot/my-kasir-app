@@ -2,7 +2,6 @@ import { StyleSheet } from "react-native";
 
 export const globalStyles = StyleSheet.create({
     container: {
-        // flex: 1,
         padding: 16,
         paddingBottom: 0,
         backgroundColor: "#e3ecfcff",
@@ -10,6 +9,21 @@ export const globalStyles = StyleSheet.create({
     containerCard: {
         flex: 1,
         backgroundColor: "#e3ecfcff",
+    },
+    profileCard: {
+        marginVertical: 8,
+        marginHorizontal: 16,
+        padding: 20,
+        borderRadius: 10,
+        backgroundColor: "#fff",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
     },
     card: {
         flexDirection: "row",
@@ -31,6 +45,7 @@ export const globalStyles = StyleSheet.create({
     title: {
         fontWeight: "bold",
         fontSize: 16,
+        color: "#2675ffff",
     },
     image: {
         width: 64,

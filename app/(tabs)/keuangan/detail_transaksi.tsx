@@ -173,10 +173,8 @@ export default function DetailTransaksiScreen() {
                 <Text style={globalStyles.title}>
                     ID Transaksi: {item.kode}
                 </Text>
-                <Text style={[{ fontSize: globalStyles.title.fontSize }]}>
-                    {item.tanggal}
-                </Text>
-                <Text style={[{ fontWeight: globalStyles.title.fontWeight }]}>
+                <Text style={[{ fontSize: 14 }]}>{item.tanggal}</Text>
+                <Text style={{ fontSize: 14, fontWeight: "bold" }}>
                     Total: Rp {item.total}
                 </Text>
                 {/* icon nota */}
