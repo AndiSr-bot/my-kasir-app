@@ -23,10 +23,10 @@ export default function HomeScreen() {
         }
     };
     return (
-        <View style={[globalStyles.container, { paddingTop: 40 }]}>
+        <View style={[globalStyles.containerCard, { paddingTop: 40 }]}>
             {/* <Text style={globalStyles.text}>Selamat Datang</Text> */}
             <TouchableOpacity
-                style={globalStyles.homeCard}
+                style={[globalStyles.homeCard, { marginHorizontal: 16 }]}
                 onPress={() => router.push("/scan")}>
                 <Ionicons
                     name="scan"
@@ -41,7 +41,7 @@ export default function HomeScreen() {
                 userDataLocal?.role === "admin_perusahaan") && (
                 <View style={globalStyles.homeCardHalfContainer}>
                     <TouchableOpacity
-                        style={globalStyles.homeCardHalf}
+                        style={[globalStyles.homeCardHalf, { marginLeft: 16 }]}
                         onPress={() => router.push("/pegawai")}>
                         <Ionicons
                             name="people"
@@ -53,7 +53,7 @@ export default function HomeScreen() {
                         </Text>
                     </TouchableOpacity>
                     <TouchableOpacity
-                        style={globalStyles.homeCardHalf}
+                        style={[globalStyles.homeCardHalf, { marginRight: 16 }]}
                         onPress={() => router.push("/stok")}>
                         <Ionicons
                             name="cube"
@@ -71,7 +71,10 @@ export default function HomeScreen() {
                 <View style={globalStyles.homeCardHalfContainer}>
                     {userDataLocal?.role === "admin" && (
                         <TouchableOpacity
-                            style={globalStyles.homeCardHalf}
+                            style={[
+                                globalStyles.homeCardHalf,
+                                { marginLeft: 16 },
+                            ]}
                             onPress={() => router.push("/perusahaan")}>
                             <Ionicons
                                 name="business"
@@ -88,7 +91,12 @@ export default function HomeScreen() {
                         </TouchableOpacity>
                     )}
                     <TouchableOpacity
-                        style={globalStyles.homeCardHalf}
+                        style={[
+                            globalStyles.homeCardHalf,
+                            userDataLocal?.role === "admin"
+                                ? { marginRight: 16 }
+                                : { marginHorizontal: 16 },
+                        ]}
                         onPress={() => router.push("/keuangan")}>
                         <Ionicons
                             name="wallet"

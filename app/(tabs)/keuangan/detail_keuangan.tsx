@@ -104,7 +104,11 @@ export default function DetailKeuanganScreen() {
     return (
         <View>
             {/* Picker Tanggal/Bulan/Tahun */}
-            <View style={globalStyles.pickerRow}>
+            <View
+                style={[
+                    globalStyles.pickerRow,
+                    { padding: 15, paddingBottom: 0 },
+                ]}>
                 <View
                     style={{
                         borderWidth: 1,
@@ -182,6 +186,7 @@ export default function DetailKeuanganScreen() {
                 </View>
 
                 {/* Card 2 & 3: Jumlah Transaksi & Jumlah Produk */}
+
                 <View style={globalStyles.rowCards}>
                     <View style={globalStyles.cardHalf}>
                         <Text style={globalStyles.cardTitle}>

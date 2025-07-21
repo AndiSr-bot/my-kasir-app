@@ -41,7 +41,7 @@ export default function TambahStokScreen() {
     const [scanned, setScanned] = useState(false);
     const [userDataLocal, setUserDataLocal] = useState<TPegawai | null>(null);
     const [loading, setLoading] = useState(false);
-
+    const [refreshCamera, setRefreshCamera] = useState(true);
     useEffect(() => {
         if (!permission) {
             requestPermission();
@@ -132,15 +132,51 @@ export default function TambahStokScreen() {
             console.log("Error loading user data", e);
         }
     };
+    useEffect(() => {
+        setTimeout(() => {
+            setRefreshCamera(false);
+        }, 500);
+    }, []);
 
     return (
         <ScrollView style={globalStyles.container}>
             {/* Kamera untuk scan barcode */}
-            {!scanned && (
-                <CameraView
-                    style={{ height: 100, marginBottom: 10 }}
-                    onBarcodeScanned={handleBarCodeScanned}
-                />
+            {!scanned && !refreshCamera ? (
+                <TouchableOpacity
+                    style={{ height: 100, marginBottom: 20, marginTop: -20 }}
+                    onPress={() => {
+                        setRefreshCamera(true);
+                        setTimeout(() => {
+                            setRefreshCamera(false);
+                        }, 500);
+                    }}>
+                    <CameraView
+                        style={{
+                            height: 100,
+                            // marginBottom: 10,
+                            marginTop: 20,
+                        }}
+                        onBarcodeScanned={handleBarCodeScanned}
+                    />
+                    <Text
+                        style={{
+                            color: "red",
+                            fontSize: 9,
+                            textAlign: "right",
+                        }}>
+                        * sentuh kamera jika tidak muncul
+                    </Text>
+                </TouchableOpacity>
+            ) : (
+                <View
+                    style={{
+                        // marginTop: 20,
+                        // marginBottom: -10,
+                        height: 100,
+                        backgroundColor: "#d8d8d8ff",
+                    }}>
+                    <ActivityIndicator size="large" style={{ marginTop: 30 }} />
+                </View>
             )}
             {userDataLocal?.role === "admin" && (
                 <>

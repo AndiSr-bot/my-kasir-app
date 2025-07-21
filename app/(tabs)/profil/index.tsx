@@ -1,5 +1,6 @@
 import { globalStyles } from "@/constants/styles";
 import { TPegawai } from "@/types/pegawai_repositories";
+import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -50,7 +51,8 @@ export default function ProfileScreen() {
         );
     }
     return (
-        <View style={[globalStyles.container, { justifyContent: "center" }]}>
+        <View
+            style={[globalStyles.containerCard, { justifyContent: "center" }]}>
             <Image
                 source={
                     user.foto
@@ -75,9 +77,18 @@ export default function ProfileScreen() {
             </Text>
 
             <TouchableOpacity
-                style={globalStyles.buttonDanger}
+                style={{
+                    position: "absolute",
+                    top: 50,
+                    right: 20,
+                    alignSelf: "center",
+                }}
                 onPress={handleLogout}>
-                <Text style={globalStyles.buttonText}>Logout</Text>
+                <Ionicons
+                    name="log-out"
+                    size={30}
+                    color={globalStyles.buttonDanger.backgroundColor}
+                />
             </TouchableOpacity>
         </View>
     );

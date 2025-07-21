@@ -19,47 +19,54 @@ export default function KeuanganScreen() {
     ];
 
     return (
-        <View style={[globalStyles.container, { marginTop: 30, padding: 0 }]}>
-            {/* Tab Header */}
+        <>
             <View
-                style={{
-                    flexDirection: "row",
-                    backgroundColor: "#e6efff",
-                    borderRadius: 8,
-                    overflow: "hidden",
-                }}>
-                {tabs.map((tab, index) => (
-                    <TouchableOpacity
-                        key={index}
-                        style={{
-                            flex: 1,
-                            paddingVertical: 10,
-                            backgroundColor:
-                                activeTab === index ? "#fff" : "#e6efff",
-                            borderTopLeftRadius: 10,
-                            borderTopRightRadius: 10,
-                            borderBottomWidth: activeTab !== index ? 1 : 0,
-                            borderLeftWidth: activeTab === index ? 1 : 0,
-                            borderRightWidth: activeTab === index ? 1 : 0,
-                            borderTopWidth: activeTab === index ? 1 : 0,
-                            borderColor: "#f2f2f2",
-                        }}
-                        onPress={() => setActiveTab(index)}>
-                        <Text
+                style={[
+                    globalStyles.container,
+                    { paddingTop: 30, padding: 0 },
+                ]}>
+                {/* Tab Header */}
+                <View
+                    style={{
+                        flexDirection: "row",
+                        backgroundColor: "#d5e3ffff",
+                        borderRadius: 8,
+                        overflow: "hidden",
+                    }}>
+                    {tabs.map((tab, index) => (
+                        <TouchableOpacity
+                            key={index}
                             style={{
-                                textAlign: "center",
-                                fontWeight:
-                                    activeTab === index ? "bold" : "normal",
-                                color: activeTab === index ? "#000" : "#444",
-                            }}>
-                            {tab.name}
-                        </Text>
-                    </TouchableOpacity>
-                ))}
+                                flex: 1,
+                                paddingVertical: 10,
+                                backgroundColor:
+                                    activeTab === index ? "#fff" : "#d5e3ffff",
+                                borderTopLeftRadius: 10,
+                                borderTopRightRadius: 10,
+                                borderBottomWidth: activeTab !== index ? 2 : 0,
+                                borderLeftWidth: activeTab === index ? 1 : 0,
+                                borderRightWidth: activeTab === index ? 1 : 0,
+                                borderTopWidth: activeTab === index ? 1 : 0,
+                                borderColor: "#f2f2f2",
+                            }}
+                            onPress={() => setActiveTab(index)}>
+                            <Text
+                                style={{
+                                    textAlign: "center",
+                                    fontWeight:
+                                        activeTab === index ? "bold" : "normal",
+                                    color:
+                                        activeTab === index ? "#000" : "#444",
+                                }}>
+                                {tab.name}
+                            </Text>
+                        </TouchableOpacity>
+                    ))}
+                </View>
             </View>
 
-            {/* Tab Content */}
-            <View style={{ padding: 15, marginTop: 10 }}>
+            <View style={globalStyles.containerCard}>
+                {/* <View style={{ padding: 15, marginTop: 10 }}> */}
                 {/* <Text style={{ fontWeight: "bold" }}>
                     {tabs[activeTab].name}
                 </Text>
@@ -74,7 +81,8 @@ export default function KeuanganScreen() {
                 {tabs[activeTab].kode === "transaksi" && (
                     <DetailTransaksiScreen />
                 )}
+                {/* </View> */}
             </View>
-        </View>
+        </>
     );
 }

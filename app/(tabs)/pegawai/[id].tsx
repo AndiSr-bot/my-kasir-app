@@ -241,7 +241,7 @@ export default function EditPegawai() {
                 style={
                     submitting
                         ? globalStyles.buttonSecondary
-                        : globalStyles.buttonSuccess
+                        : globalStyles.buttonPrimary
                 }
                 onPress={handleSave}>
                 {submitting ? (

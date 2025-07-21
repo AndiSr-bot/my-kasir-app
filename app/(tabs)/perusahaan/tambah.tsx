@@ -45,7 +45,7 @@ export default function TambahPerusahaan() {
                 logo,
             };
             await addDoc(collection(db, "perusahaan"), dataPerusahaan);
-            router.replace("/perusahaan");
+            router.back();
         } catch (error) {
             console.log("Error adding document:", error);
         } finally {
@@ -93,7 +93,7 @@ export default function TambahPerusahaan() {
                 style={
                     loading
                         ? globalStyles.buttonSecondary
-                        : globalStyles.buttonSuccess
+                        : globalStyles.buttonPrimary
                 }
                 disabled={loading}
                 onPress={handleSubmit}>

@@ -219,7 +219,7 @@ export default function EditStokScreen() {
                 style={
                     submitting
                         ? globalStyles.buttonSecondary
-                        : globalStyles.buttonSuccess
+                        : globalStyles.buttonPrimary
                 }
                 onPress={handleUpdate}>
                 {submitting ? (

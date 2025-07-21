@@ -2,17 +2,31 @@ import { StyleSheet } from "react-native";
 
 export const globalStyles = StyleSheet.create({
     container: {
-        flex: 1,
+        // flex: 1,
         padding: 16,
-        backgroundColor: "#fff",
+        paddingBottom: 0,
+        backgroundColor: "#e3ecfcff",
+    },
+    containerCard: {
+        flex: 1,
+        backgroundColor: "#e3ecfcff",
     },
     card: {
         flexDirection: "row",
         gap: 12,
         marginVertical: 8,
         padding: 12,
+        margin: 16,
         borderRadius: 8,
-        backgroundColor: "#f2f2f2",
+        backgroundColor: "#fff",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
     },
     title: {
         fontWeight: "bold",
@@ -23,21 +37,21 @@ export const globalStyles = StyleSheet.create({
         height: 64,
         borderRadius: 8,
     },
+    buttonText: {
+        color: "white",
+        textAlign: "center",
+    },
     buttonPrimary: {
         backgroundColor: "#1e90ff",
         padding: 12,
         borderRadius: 8,
-        marginBottom: 12,
-    },
-    buttonText: {
-        color: "white",
-        textAlign: "center",
+        marginTop: 12,
     },
     buttonSuccess: {
         backgroundColor: "#24953eff",
         padding: 12,
         borderRadius: 8,
-        marginTop: 24,
+        marginTop: 12,
     },
     buttonDanger: {
         backgroundColor: "#d43545ff",
@@ -109,16 +123,21 @@ export const globalStyles = StyleSheet.create({
         marginTop: 4,
     },
     homeCard: {
-        // flexDirection: "row",
-        // gap: 12,
         marginBottom: 8,
         padding: 12,
         borderRadius: 8,
-        backgroundColor: "#f2f2f2",
+        backgroundColor: "#fff",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
     },
     homeCardHalfContainer: {
         flexDirection: "row",
-        // backgroundColor: "red",
         gap: 8,
     },
     homeCardHalf: {
@@ -127,7 +146,15 @@ export const globalStyles = StyleSheet.create({
         marginBottom: 8,
         padding: 12,
         borderRadius: 8,
-        backgroundColor: "#f2f2f2",
+        backgroundColor: "#fff",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
     },
     buttonModalPrimary: {
         backgroundColor: "#1e90ff",
@@ -159,19 +186,21 @@ export const globalStyles = StyleSheet.create({
         width: 100,
     },
     cardFull: {
-        backgroundColor: "#f8f8f8",
+        backgroundColor: "#fff",
         padding: 20,
         borderRadius: 12,
         marginBottom: 12,
+        marginHorizontal: 15,
         elevation: 2,
     },
     rowCards: {
         flexDirection: "row",
         justifyContent: "space-between",
+        marginHorizontal: 15,
     },
     cardHalf: {
         flex: 0.48,
-        backgroundColor: "#f8f8f8",
+        backgroundColor: "#fff",
         padding: 20,
         borderRadius: 12,
         elevation: 2,

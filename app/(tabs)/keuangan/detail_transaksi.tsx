@@ -162,6 +162,7 @@ export default function DetailTransaksiScreen() {
                     flexDirection: "row",
                     alignItems: "center",
                     justifyContent: "space-between",
+                    marginHorizontal: 15,
                 },
             ]}
             onPress={() => {
@@ -193,7 +194,11 @@ export default function DetailTransaksiScreen() {
     return (
         <View>
             {/* Picker Tanggal/Bulan/Tahun */}
-            <View style={globalStyles.pickerRow}>
+            <View
+                style={[
+                    globalStyles.pickerRow,
+                    { padding: 15, paddingBottom: 0 },
+                ]}>
                 <View
                     style={{
                         borderWidth: 1,
@@ -281,7 +286,7 @@ export default function DetailTransaksiScreen() {
                             backgroundColor: "#fff",
                             borderRadius: 10,
                             padding: 20,
-                            maxHeight: "80%",
+                            // maxHeight: "80%",
                         }}>
                         {/* HEADER STRUK */}
                         <Text
@@ -354,7 +359,10 @@ export default function DetailTransaksiScreen() {
                                 justifyContent: "flex-end",
                             }}>
                             <TouchableOpacity
-                                style={globalStyles.buttonModalDanger}
+                                style={[
+                                    globalStyles.buttonModalDanger,
+                                    { marginEnd: -10 },
+                                ]}
                                 onPress={() => setModalVisible(false)}>
                                 <Text
                                     style={{

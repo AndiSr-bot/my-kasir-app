@@ -7,7 +7,14 @@ import { Picker } from "@react-native-picker/picker";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { addDoc, collection, getDocs } from "firebase/firestore";
+import {
+    addDoc,
+    collection,
+    collectionGroup,
+    getDocs,
+    query,
+    where,
+} from "firebase/firestore";
 import { useEffect, useState } from "react";
 import {
     ActivityIndicator,
@@ -62,14 +69,16 @@ export default function TambahPegawai() {
         });
 
         if (!result.canceled) {
-            setFoto(result.assets[0].uri); // Simpan path gambar lokal
+            setFoto(result.assets[0].uri);
         }
     };
 
     const handleSubmit = async () => {
         setLoading(true);
-        if (!nama || !jabatan || !role || !perusahaanId) {
+
+        if (!nama || !jabatan || !role || !perusahaanId || !email) {
             alert("Semua field harus diisi");
+            setLoading(false);
             return;
         }
 
@@ -79,7 +88,9 @@ export default function TambahPegawai() {
                 email,
                 "12345678"
             );
+
             const uid = userCredential.user.uid;
+
             const dataPegawai: TPegawaiCreate = {
                 perusahaanId,
                 nama,
@@ -90,21 +101,63 @@ export default function TambahPegawai() {
                 foto: foto || null,
                 auth_uid: uid,
             };
+
             await addDoc(
                 collection(db, "perusahaan", perusahaanId, "pegawai"),
                 dataPegawai
             );
+
             alert("Pegawai berhasil ditambahkan");
             router.back();
         } catch (error: any) {
-            console.log("Error adding pegawai:", error);
             if (error.code === "auth/email-already-in-use") {
-                alert("Email sudah terdaftar!");
+                console.log("Email sudah terdaftar di Auth. Cek Firestore...");
+                try {
+                    const pegawaiRef = collectionGroup(db, "pegawai");
+                    const q = query(pegawaiRef, where("email", "==", email));
+                    const snapshot = await getDocs(q);
+
+                    if (!snapshot.empty) {
+                        alert("Email sudah terdaftar sebagai pegawai!");
+                    } else {
+                        const dataPegawai: TPegawaiCreate = {
+                            perusahaanId,
+                            nama,
+                            jabatan,
+                            role: role as "admin" | "staff",
+                            no_hp: noHp,
+                            email,
+                            foto: foto || null,
+                            auth_uid: "unknown",
+                        };
+
+                        await addDoc(
+                            collection(
+                                db,
+                                "perusahaan",
+                                perusahaanId,
+                                "pegawai"
+                            ),
+                            dataPegawai
+                        );
+                        alert("Pegawai berhasil ditambahkan");
+                        router.back();
+                    }
+                } catch (firestoreError) {
+                    console.log("Error cek Firestore:", firestoreError);
+                    alert(
+                        "Terjadi kesalahan saat memeriksa email di Firestore."
+                    );
+                }
+            } else {
+                console.log("Error adding pegawai:", error);
+                alert("Terjadi kesalahan: " + error.message);
             }
         } finally {
             setLoading(false);
         }
     };
+
     const getUserData = async () => {
         try {
             const jsonValue = await AsyncStorage.getItem("user");
@@ -238,7 +291,7 @@ export default function TambahPegawai() {
                 style={
                     loading
                         ? globalStyles.buttonSecondary
-                        : globalStyles.buttonSuccess
+                        : globalStyles.buttonPrimary
                 }
                 onPress={handleSubmit}>
                 {loading ? (

@@ -112,7 +112,11 @@ export default function LoginScreen() {
     };
 
     return (
-        <View style={[globalStyles.container, { justifyContent: "center" }]}>
+        <View
+            style={[
+                globalStyles.containerCard,
+                { justifyContent: "center", padding: 16 },
+            ]}>
             <Text
                 style={{
                     fontSize: 24,
@@ -142,12 +146,12 @@ export default function LoginScreen() {
 
             <TouchableOpacity
                 style={[
-                    globalStyles.buttonSuccess,
+                    globalStyles.buttonPrimary,
                     {
                         marginTop: 20,
                         backgroundColor: loading
                             ? globalStyles.buttonSecondary.backgroundColor
-                            : globalStyles.buttonSuccess.backgroundColor,
+                            : globalStyles.buttonPrimary.backgroundColor,
                     },
                 ]}
                 onPress={handleLogin}

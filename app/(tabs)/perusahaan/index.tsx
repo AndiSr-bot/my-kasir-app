@@ -67,36 +67,44 @@ export default function PerusahaanListScreen() {
     );
 
     return (
-        <View style={globalStyles.container}>
-            <TouchableOpacity
-                style={globalStyles.buttonPrimary}
-                onPress={() => router.push("/perusahaan/tambah")}>
-                <Text style={globalStyles.buttonText}>+ Tambah Perusahaan</Text>
-            </TouchableOpacity>
-
-            <FlatList
-                data={data}
-                keyExtractor={(item) => item.id || ""}
-                renderItem={renderItem}
-                refreshControl={
-                    <RefreshControl
-                        refreshing={loading}
-                        onRefresh={fetchData}
-                    />
-                }
-                ListEmptyComponent={
-                    !loading ? (
-                        <Text style={globalStyles.emptyText}>
-                            Belum ada perusahaan
-                        </Text>
-                    ) : (
-                        <ActivityIndicator
-                            size="large"
-                            style={{ marginTop: 20 }}
+        <>
+            <View style={globalStyles.container}>
+                <TouchableOpacity
+                    style={[
+                        globalStyles.buttonPrimary,
+                        { marginBottom: 8, marginTop: 0 },
+                    ]}
+                    onPress={() => router.push("/perusahaan/tambah")}>
+                    <Text style={globalStyles.buttonText}>
+                        + Tambah Perusahaan
+                    </Text>
+                </TouchableOpacity>
+            </View>
+            <View style={globalStyles.containerCard}>
+                <FlatList
+                    data={data}
+                    keyExtractor={(item) => item.id || ""}
+                    renderItem={renderItem}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={loading}
+                            onRefresh={fetchData}
                         />
-                    )
-                }
-            />
-        </View>
+                    }
+                    ListEmptyComponent={
+                        !loading ? (
+                            <Text style={globalStyles.emptyText}>
+                                Belum ada perusahaan
+                            </Text>
+                        ) : (
+                            <ActivityIndicator
+                                size="large"
+                                style={{ marginTop: 20 }}
+                            />
+                        )
+                    }
+                />
+            </View>
+        </>
     );
 }

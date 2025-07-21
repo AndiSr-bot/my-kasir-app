@@ -4,11 +4,10 @@ import { db } from "@/services/firebase";
 import { TPerusahaanUpdate } from "@/types/perusahaan_repositories";
 import * as ImagePicker from "expo-image-picker";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import {
     ActivityIndicator,
-    Alert,
     Image,
     Text,
     TextInput,
@@ -43,7 +42,7 @@ export default function EditPerusahaan() {
                 setLogo(data.logo);
             } else {
                 alert("Data tidak ditemukan");
-                router.replace("/perusahaan");
+                router.back();
             }
         } catch (error) {
             console.log("Error:", error);
@@ -75,7 +74,7 @@ export default function EditPerusahaan() {
             };
             await updateDoc(docRef, { ...dataPerusahaan });
             alert("Perusahaan berhasil diperbarui");
-            router.replace("/perusahaan");
+            router.back();
         } catch (error) {
             console.log("Update error:", error);
         } finally {
@@ -83,28 +82,28 @@ export default function EditPerusahaan() {
         }
     };
 
-    const handleDelete = () => {
-        Alert.alert("Hapus Perusahaan", "Yakin ingin menghapus?", [
-            { text: "Batal", style: "cancel" },
-            {
-                text: "Hapus",
-                style: "destructive",
-                onPress: async () => {
-                    setSubmitting(true);
-                    try {
-                        const docRef = doc(db, "perusahaan", String(id));
-                        await deleteDoc(docRef);
-                        alert("Perusahaan berhasil dihapus");
-                        router.replace("/perusahaan");
-                    } catch (error) {
-                        console.log("Delete error:", error);
-                    } finally {
-                        setSubmitting(false);
-                    }
-                },
-            },
-        ]);
-    };
+    // const handleDelete = () => {
+    //     Alert.alert("Hapus Perusahaan", "Yakin ingin menghapus?", [
+    //         { text: "Batal", style: "cancel" },
+    //         {
+    //             text: "Hapus",
+    //             style: "destructive",
+    //             onPress: async () => {
+    //                 setSubmitting(true);
+    //                 try {
+    //                     const docRef = doc(db, "perusahaan", String(id));
+    //                     await deleteDoc(docRef);
+    //                     alert("Perusahaan berhasil dihapus");
+    //                     router.replace("/perusahaan");
+    //                 } catch (error) {
+    //                     console.log("Delete error:", error);
+    //                 } finally {
+    //                     setSubmitting(false);
+    //                 }
+    //             },
+    //         },
+    //     ]);
+    // };
 
     if (loading)
         return <ActivityIndicator size="large" style={{ marginTop: 20 }} />;
@@ -150,7 +149,7 @@ export default function EditPerusahaan() {
                 style={
                     submitting
                         ? globalStyles.buttonSecondary
-                        : globalStyles.buttonSuccess
+                        : globalStyles.buttonPrimary
                 }
                 onPress={handleSave}>
                 {submitting ? (
@@ -162,7 +161,7 @@ export default function EditPerusahaan() {
                 )}
             </TouchableOpacity>
 
-            <TouchableOpacity
+            {/* <TouchableOpacity
                 disabled={submitting}
                 style={
                     submitting
@@ -177,7 +176,7 @@ export default function EditPerusahaan() {
                         Hapus Perusahaan
                     </Text>
                 )}
-            </TouchableOpacity>
+            </TouchableOpacity> */}
         </View>
     );
 }

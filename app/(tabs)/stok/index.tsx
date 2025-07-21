@@ -137,57 +137,66 @@ export default function StokListScreen() {
     );
 
     return (
-        <View style={globalStyles.container}>
-            {userDataLocal?.role === "admin" && (
-                <View
-                    style={[
-                        globalStyles.input,
-                        { padding: 0, height: 50, marginBottom: 12 },
-                    ]}>
-                    <Picker
-                        selectedValue={perusahaanId}
-                        onValueChange={setPerusahaanId}
-                        style={{ color: "#000" }}>
-                        <Picker.Item label="-- Pilih Perusahaan --" value="" />
-                        {perusahaanList.map((item) => (
+        <>
+            <View style={globalStyles.container}>
+                {userDataLocal?.role === "admin" && (
+                    <View
+                        style={[
+                            globalStyles.input,
+                            { padding: 0, height: 50, marginBottom: 12 },
+                        ]}>
+                        <Picker
+                            selectedValue={perusahaanId}
+                            onValueChange={setPerusahaanId}
+                            style={{ color: "#000" }}>
                             <Picker.Item
-                                key={item.id}
-                                label={item.nama}
-                                value={item.id}
+                                label="-- Pilih Perusahaan --"
+                                value=""
                             />
-                        ))}
-                    </Picker>
-                </View>
-            )}
-            <TouchableOpacity
-                style={globalStyles.buttonPrimary}
-                onPress={() =>
-                    router.push(`/stok/tambah?perusahaanId=${perusahaanId}`)
-                }>
-                <Text style={globalStyles.buttonText}>+ Tambah Produk</Text>
-            </TouchableOpacity>
-
-            <FlatList
-                data={data}
-                keyExtractor={(item) => item.id || ""}
-                renderItem={renderItem}
-                refreshing={loading}
-                onRefresh={fetchData}
-                ListEmptyComponent={
-                    !loading ? (
-                        <Text style={globalStyles.emptyText}>
-                            {perusahaanId
-                                ? "Belum ada produk"
-                                : "Silahkan pilih perusahaan"}
-                        </Text>
-                    ) : (
-                        <ActivityIndicator
-                            size="large"
-                            style={{ marginTop: 20 }}
-                        />
-                    )
-                }
-            />
-        </View>
+                            {perusahaanList.map((item) => (
+                                <Picker.Item
+                                    key={item.id}
+                                    label={item.nama}
+                                    value={item.id}
+                                />
+                            ))}
+                        </Picker>
+                    </View>
+                )}
+                <TouchableOpacity
+                    style={[
+                        globalStyles.buttonPrimary,
+                        { marginBottom: 8, marginTop: 0 },
+                    ]}
+                    onPress={() =>
+                        router.push(`/stok/tambah?perusahaanId=${perusahaanId}`)
+                    }>
+                    <Text style={globalStyles.buttonText}>+ Tambah Produk</Text>
+                </TouchableOpacity>
+            </View>
+            <View style={globalStyles.containerCard}>
+                <FlatList
+                    data={data}
+                    keyExtractor={(item) => item.id || ""}
+                    renderItem={renderItem}
+                    refreshing={loading}
+                    onRefresh={fetchData}
+                    ListEmptyComponent={
+                        !loading ? (
+                            <Text style={globalStyles.emptyText}>
+                                {perusahaanId
+                                    ? "Belum ada produk"
+                                    : "Silahkan pilih perusahaan"}
+                            </Text>
+                        ) : (
+                            <ActivityIndicator
+                                size="large"
+                                style={{ marginTop: 20 }}
+                            />
+                        )
+                    }
+                />
+            </View>
+        </>
     );
 }
