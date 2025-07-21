@@ -23,13 +23,13 @@ export default function KeuanganScreen() {
             <View
                 style={[
                     globalStyles.container,
-                    { paddingTop: 30, padding: 0 },
+                    { paddingTop: 5, padding: 0, backgroundColor: "#ffffff" },
                 ]}>
                 {/* Tab Header */}
                 <View
                     style={{
                         flexDirection: "row",
-                        backgroundColor: "#d5e3ffff",
+                        backgroundColor: "#ffffff",
                         borderRadius: 8,
                         overflow: "hidden",
                     }}>
@@ -40,14 +40,16 @@ export default function KeuanganScreen() {
                                 flex: 1,
                                 paddingVertical: 10,
                                 backgroundColor:
-                                    activeTab === index ? "#fff" : "#d5e3ffff",
-                                borderTopLeftRadius: 10,
-                                borderTopRightRadius: 10,
-                                borderBottomWidth: activeTab !== index ? 2 : 0,
+                                    activeTab !== index ? "#fff" : "#e3ecfcff",
+                                borderTopLeftRadius:
+                                    activeTab === index ? 10 : 0,
+                                borderTopRightRadius:
+                                    activeTab === index ? 10 : 0,
+                                borderBottomWidth: activeTab !== index ? 1 : 0,
                                 borderLeftWidth: activeTab === index ? 1 : 0,
                                 borderRightWidth: activeTab === index ? 1 : 0,
                                 borderTopWidth: activeTab === index ? 1 : 0,
-                                borderColor: "#f2f2f2",
+                                borderColor: "#dce9ffff",
                             }}
                             onPress={() => setActiveTab(index)}>
                             <Text

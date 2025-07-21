@@ -30,10 +30,14 @@ export default function HomeScreen() {
                 onPress={() => router.push("/scan")}>
                 <Ionicons
                     name="scan"
-                    size={30}
-                    style={{ textAlign: "center" }}
+                    size={40}
+                    style={{ textAlign: "center", color: "#ffffff" }}
                 />
-                <Text style={[globalStyles.text, { marginBottom: 0 }]}>
+                <Text
+                    style={[
+                        globalStyles.text,
+                        { marginBottom: 0, color: "#ffffff" },
+                    ]}>
                     Scan
                 </Text>
             </TouchableOpacity>
@@ -45,10 +49,14 @@ export default function HomeScreen() {
                         onPress={() => router.push("/pegawai")}>
                         <Ionicons
                             name="people"
-                            size={30}
-                            style={{ textAlign: "center" }}
+                            size={40}
+                            style={{ textAlign: "center", color: "#ffffff" }}
                         />
-                        <Text style={[globalStyles.text, { marginBottom: 0 }]}>
+                        <Text
+                            style={[
+                                globalStyles.text,
+                                { marginBottom: 0, color: "#ffffff" },
+                            ]}>
                             Pegawai
                         </Text>
                     </TouchableOpacity>
@@ -57,10 +65,14 @@ export default function HomeScreen() {
                         onPress={() => router.push("/stok")}>
                         <Ionicons
                             name="cube"
-                            size={30}
-                            style={{ textAlign: "center" }}
+                            size={40}
+                            style={{ textAlign: "center", color: "#ffffff" }}
                         />
-                        <Text style={[globalStyles.text, { marginBottom: 0 }]}>
+                        <Text
+                            style={[
+                                globalStyles.text,
+                                { marginBottom: 0, color: "#ffffff" },
+                            ]}>
                             Stok
                         </Text>
                     </TouchableOpacity>
@@ -78,13 +90,16 @@ export default function HomeScreen() {
                             onPress={() => router.push("/perusahaan")}>
                             <Ionicons
                                 name="business"
-                                size={30}
-                                style={{ textAlign: "center" }}
+                                size={40}
+                                style={{
+                                    textAlign: "center",
+                                    color: "#ffffff",
+                                }}
                             />
                             <Text
                                 style={[
                                     globalStyles.text,
-                                    { marginBottom: 0 },
+                                    { marginBottom: 0, color: "#ffffff" },
                                 ]}>
                                 Perusahaan
                             </Text>
@@ -100,10 +115,14 @@ export default function HomeScreen() {
                         onPress={() => router.push("/keuangan")}>
                         <Ionicons
                             name="wallet"
-                            size={30}
-                            style={{ textAlign: "center" }}
+                            size={40}
+                            style={{ textAlign: "center", color: "#ffffff" }}
                         />
-                        <Text style={[globalStyles.text, { marginBottom: 0 }]}>
+                        <Text
+                            style={[
+                                globalStyles.text,
+                                { marginBottom: 0, color: "#ffffff" },
+                            ]}>
                             Keuangan
                         </Text>
                     </TouchableOpacity>

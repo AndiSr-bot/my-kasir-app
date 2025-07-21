@@ -204,6 +204,7 @@ export default function DetailTransaksiScreen() {
                         borderWidth: 1,
                         borderColor: "#ccc",
                         borderRadius: 8,
+                        backgroundColor: "#fff",
                     }}>
                     <Picker
                         selectedValue={tanggal}
@@ -220,6 +221,7 @@ export default function DetailTransaksiScreen() {
                         borderWidth: 1,
                         borderColor: "#ccc",
                         borderRadius: 8,
+                        backgroundColor: "#fff",
                     }}>
                     <Picker
                         selectedValue={bulan}
@@ -236,6 +238,7 @@ export default function DetailTransaksiScreen() {
                         borderWidth: 1,
                         borderColor: "#ccc",
                         borderRadius: 8,
+                        backgroundColor: "#fff",
                     }}>
                     <Picker
                         selectedValue={tahun}

@@ -123,10 +123,10 @@ export const globalStyles = StyleSheet.create({
         marginTop: 4,
     },
     homeCard: {
-        marginBottom: 8,
-        padding: 12,
+        marginBottom: 12,
+        padding: 30,
         borderRadius: 8,
-        backgroundColor: "#fff",
+        backgroundColor: "#2675ffff",
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
@@ -138,15 +138,15 @@ export const globalStyles = StyleSheet.create({
     },
     homeCardHalfContainer: {
         flexDirection: "row",
-        gap: 8,
+        gap: 12,
     },
     homeCardHalf: {
         flex: 1,
         width: "50%",
-        marginBottom: 8,
-        padding: 12,
+        marginBottom: 12,
+        padding: 20,
         borderRadius: 8,
-        backgroundColor: "#fff",
+        backgroundColor: "#2675ffff",
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
