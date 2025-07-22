@@ -1,6 +1,7 @@
 import {
     getPrimaryColor,
     getSecondary2ndColor,
+    getSecondaryColor,
     getWhiteColor,
 } from "@/constants/Colors";
 import { globalStyles } from "@/constants/styles";
@@ -340,7 +341,7 @@ export default function ScanScreen() {
                             globalStyles.buttonModalPrimary,
                             {
                                 marginVertical: 10,
-                                paddingHorizontal: 20,
+                                paddingHorizontal: 15,
                                 paddingVertical: 5,
                                 borderRadius: 6,
                             },
@@ -362,7 +363,7 @@ export default function ScanScreen() {
                                 fontWeight: "bold",
                                 textAlign: "center",
                             }}>
-                            Bayar
+                            Bayar ({keranjang.length})
                         </Text>
                     </TouchableOpacity>
                 </View>
@@ -444,37 +445,107 @@ export default function ScanScreen() {
                                 borderRadius: 10,
                                 padding: 20,
                             }}>
-                            <Text style={globalStyles.title}>Pilih Produk</Text>
-                            <Picker
-                                selectedValue={selectedStok?.id}
-                                enabled={stokList.length > 1}
-                                onValueChange={(itemValue) => {
-                                    const stok = stokList.find(
-                                        (s) => s.id === itemValue
-                                    );
-                                    if (stok) setSelectedStok(stok);
-                                }}>
-                                {stokList.map((stok) => (
-                                    <Picker.Item
-                                        key={stok.id}
-                                        label={stok.nama + " @Rp." + stok.harga}
-                                        value={stok.id}
-                                    />
-                                ))}
-                            </Picker>
+                            <Text
+                                style={[
+                                    globalStyles.title,
+                                    { marginBottom: 10 },
+                                ]}>
+                                Pilih Produk
+                            </Text>
+                            <View
+                                style={[
+                                    globalStyles.input,
+                                    { padding: 0, height: 50 },
+                                ]}>
+                                <Picker
+                                    selectedValue={selectedStok?.id}
+                                    enabled={stokList.length > 1}
+                                    onValueChange={(itemValue) => {
+                                        const stok = stokList.find(
+                                            (s) => s.id === itemValue
+                                        );
+                                        if (stok) setSelectedStok(stok);
+                                    }}>
+                                    {stokList.map((stok) => (
+                                        <Picker.Item
+                                            key={stok.id}
+                                            label={
+                                                stok.nama +
+                                                " @Rp." +
+                                                stok.harga.toLocaleString(
+                                                    "id-ID"
+                                                )
+                                            }
+                                            value={stok.id}
+                                        />
+                                    ))}
+                                </Picker>
+                            </View>
 
+                            {/* detail stok terpilih */}
+                            <View
+                                style={{
+                                    flexDirection: "row",
+                                    alignItems: "center",
+                                    marginTop: 10,
+                                    backgroundColor: getSecondaryColor(),
+                                    padding: 10,
+                                    borderRadius: 8,
+                                }}>
+                                <Image
+                                    source={
+                                        selectedStok?.gambar
+                                            ? { uri: selectedStok.gambar }
+                                            : require("@/assets/default-image.png")
+                                    }
+                                    style={{
+                                        width: 50,
+                                        height: 50,
+                                        borderRadius: 8,
+                                        marginRight: 10,
+                                        backgroundColor: getWhiteColor(),
+                                    }}
+                                />
+                                <View>
+                                    <Text style={globalStyles.title}>
+                                        {selectedStok?.nama}
+                                    </Text>
+                                    <Text>
+                                        Harga: Rp
+                                        {selectedStok?.harga.toLocaleString(
+                                            "id-ID"
+                                        )}
+                                    </Text>
+                                    <Text>
+                                        Stok: {selectedStok?.stok_sisa} /{" "}
+                                        {selectedStok?.stok_awal}
+                                    </Text>
+                                </View>
+                            </View>
                             <TextInput
                                 placeholder="Jumlah"
                                 value={jumlah}
                                 keyboardType="numeric"
-                                onChangeText={setJumlah}
-                                style={{
-                                    borderWidth: 1,
-                                    borderColor: getSecondary2ndColor(),
-                                    borderRadius: 6,
-                                    padding: 10,
-                                    marginVertical: 10,
+                                onChangeText={(e) => {
+                                    if (
+                                        selectedStok &&
+                                        parseInt(e) > selectedStok.stok_sisa
+                                    ) {
+                                        Alert.alert(
+                                            "Error",
+                                            "Jumlah melebihi stok tersedia"
+                                        );
+                                        setJumlah("");
+                                    } else {
+                                        setJumlah(e);
+                                    }
                                 }}
+                                style={[
+                                    globalStyles.input,
+                                    {
+                                        marginVertical: 10,
+                                    },
+                                ]}
                             />
 
                             <View

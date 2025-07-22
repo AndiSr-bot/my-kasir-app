@@ -34,6 +34,6 @@ export interface TTransaksiGrouped {
     namaPerusahaan: string;
     tanggal: any;
     kode: string;
-    total: string;
+    total: number;
     transaksi: TTransaksi[];
 }

@@ -96,6 +96,8 @@ export default function DetailTransaksiScreen() {
                     (item) => item.kode === data.kode
                 );
                 if (index !== -1) {
+                    listTransaksiTemp[index].total +=
+                        parseInt(data.harga) * parseInt(data.jumlah);
                     listTransaksiTemp[index].transaksi.push({
                         id: doc.id,
                         harga: data.harga,
@@ -115,9 +117,7 @@ export default function DetailTransaksiScreen() {
                 } else {
                     listTransaksiTemp.push({
                         namaPerusahaan: userDataLocal?.perusahaan?.nama || "",
-                        total: (data.harga * data.jumlah).toLocaleString(
-                            "id-ID"
-                        ),
+                        total: parseInt(data.harga) * parseInt(data.jumlah),
                         kode: data.kode,
                         //datetime firebase to epoch
                         //tanggal: new Date(data.created_at.toDate()).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' }),
@@ -180,12 +180,12 @@ export default function DetailTransaksiScreen() {
                 </Text>
                 <Text style={[{ fontSize: 14 }]}>{item.tanggal}</Text>
                 <Text style={{ fontSize: 14, fontWeight: "bold" }}>
-                    Total: Rp {item.total}
+                    Total: Rp {item.total.toLocaleString("id-ID")}
                 </Text>
                 {/* icon nota */}
             </View>
             <View style={{ marginEnd: 10 }}>
-                <Ionicons name="receipt" size={20} />
+                <Ionicons name="receipt" color={getPrimaryColor()} size={20} />
             </View>
         </TouchableOpacity>
     );
@@ -360,7 +360,10 @@ export default function DetailTransaksiScreen() {
                                 marginBottom: 15,
                                 textAlign: "right",
                             }}>
-                            Total: Rp {transaksiGroupedSelected?.total}
+                            Total: Rp{" "}
+                            {transaksiGroupedSelected?.total.toLocaleString(
+                                "id-ID"
+                            )}
                         </Text>
 
                         {/* ACTION BUTTONS */}
