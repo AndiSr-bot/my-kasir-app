@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
     getPrimaryColor,
-    getSecondaryColor,
+    getSecondary2ndColor,
     getWhiteColor,
 } from "@/constants/Colors";
 import { globalStyles } from "@/constants/styles";
@@ -205,7 +205,7 @@ export default function DetailTransaksiScreen() {
                 <View
                     style={{
                         borderWidth: 1,
-                        borderColor: getSecondaryColor(),
+                        borderColor: getSecondary2ndColor(),
                         borderRadius: 8,
                         backgroundColor: getWhiteColor(),
                     }}>
@@ -222,7 +222,7 @@ export default function DetailTransaksiScreen() {
                 <View
                     style={{
                         borderWidth: 1,
-                        borderColor: getSecondaryColor(),
+                        borderColor: getSecondary2ndColor(),
                         borderRadius: 8,
                         backgroundColor: getWhiteColor(),
                     }}>
@@ -239,7 +239,7 @@ export default function DetailTransaksiScreen() {
                 <View
                     style={{
                         borderWidth: 1,
-                        borderColor: getSecondaryColor(),
+                        borderColor: getSecondary2ndColor(),
                         borderRadius: 8,
                         backgroundColor: getWhiteColor(),
                     }}>

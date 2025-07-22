@@ -1,6 +1,6 @@
 import {
     getPrimaryColor,
-    getSecondaryColor,
+    getSecondary2ndColor,
     getWhiteColor,
 } from "@/constants/Colors";
 import { globalStyles } from "@/constants/styles";
@@ -145,7 +145,6 @@ export default function ScanScreen() {
     const handleBarCodeScanned = async ({ data }: { data: string }) => {
         if (!scanned && perusahaanId) {
             setSelectedStok(null);
-            setModalVisible(true);
             setScanned(true);
             setStokList([]);
             setJumlah("");
@@ -172,13 +171,21 @@ export default function ScanScreen() {
             });
 
             if (stokResult.length > 0) {
+                setModalVisible(true);
                 setStokList(stokResult);
                 setSelectedStok(stokResult[0]);
                 setJumlah("");
             } else {
-                setScanned(false);
-                setModalVisible(false);
-                Alert.alert("Produk tidak ditemukan", `Barcode: ${data}`);
+                setRefreshCamera(true);
+                Alert.alert("Produk tidak ditemukan", `Barcode: ${data}`, [
+                    {
+                        text: "OK",
+                        onPress: () => {
+                            setScanned(false);
+                            setRefreshCamera(false);
+                        },
+                    },
+                ]);
             }
         }
     };
@@ -225,13 +232,19 @@ export default function ScanScreen() {
     };
 
     const handleHapusItem = (index: number) => {
+        setRefreshCamera(true);
         Alert.alert("Konfirmasi", "Yakin ingin menghapus item?", [
-            { text: "Batal", style: "cancel" },
+            {
+                text: "Batal",
+                style: "cancel",
+                onPress: () => setRefreshCamera(false),
+            },
             {
                 text: "Hapus",
                 style: "destructive",
                 onPress: async () => {
                     setKeranjang((prev) => prev.filter((_, i) => i !== index));
+                    setRefreshCamera(false);
                 },
             },
         ]);
@@ -302,7 +315,7 @@ export default function ScanScreen() {
                             marginTop: 20,
                             marginBottom: -10,
                             height: 100,
-                            backgroundColor: getSecondaryColor(),
+                            backgroundColor: getSecondary2ndColor(),
                         }}>
                         <ActivityIndicator
                             size="large"
@@ -457,7 +470,7 @@ export default function ScanScreen() {
                                 onChangeText={setJumlah}
                                 style={{
                                     borderWidth: 1,
-                                    borderColor: getSecondaryColor(),
+                                    borderColor: getSecondary2ndColor(),
                                     borderRadius: 6,
                                     padding: 10,
                                     marginVertical: 10,
@@ -525,7 +538,7 @@ export default function ScanScreen() {
                                 onChangeText={setEditJumlah}
                                 style={{
                                     borderWidth: 1,
-                                    borderColor: getSecondaryColor(),
+                                    borderColor: getSecondary2ndColor(),
                                     borderRadius: 6,
                                     padding: 10,
                                     marginVertical: 10,

@@ -59,8 +59,25 @@ export default function ProfileScreen() {
         );
     }
     return (
-        <View
-            style={[globalStyles.containerCard, { justifyContent: "center" }]}>
+        <View style={[globalStyles.containerCard, { paddingTop: 20 }]}>
+            {/* Bagian Header (Logout di kanan atas) */}
+            <View
+                style={{
+                    flexDirection: "row",
+                    justifyContent: "flex-end",
+                    margin: 20,
+                    marginBottom: 120,
+                }}>
+                <TouchableOpacity onPress={handleLogout}>
+                    <Ionicons
+                        name="log-out"
+                        size={30}
+                        color={globalStyles.buttonDanger.backgroundColor}
+                    />
+                </TouchableOpacity>
+            </View>
+
+            {/* Card Profil */}
             <View
                 style={[globalStyles.profileCard, { flexDirection: "column" }]}>
                 <Image
@@ -86,20 +103,6 @@ export default function ProfileScreen() {
                     perusahaan : {user.perusahaan?.nama}
                 </Text>
             </View>
-            <TouchableOpacity
-                style={{
-                    position: "absolute",
-                    top: 50,
-                    right: 20,
-                    alignSelf: "center",
-                }}
-                onPress={handleLogout}>
-                <Ionicons
-                    name="log-out"
-                    size={30}
-                    color={globalStyles.buttonDanger.backgroundColor}
-                />
-            </TouchableOpacity>
         </View>
     );
 }

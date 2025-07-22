@@ -1,5 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { getSecondaryColor, getWhiteColor } from "@/constants/Colors";
+import {
+    getSecondary2ndColor,
+    getSecondaryColor,
+    getWhiteColor,
+} from "@/constants/Colors";
 import { globalStyles } from "@/constants/styles";
 import { namaBulan } from "@/constants/time";
 import { db } from "@/services/firebase";
@@ -113,7 +117,7 @@ export default function DetailKeuanganScreen() {
                 <View
                     style={{
                         borderWidth: 1,
-                        borderColor: getSecondaryColor(),
+                        borderColor: getSecondary2ndColor(),
                         borderRadius: 8,
                         backgroundColor: getWhiteColor(),
                     }}>
@@ -130,7 +134,7 @@ export default function DetailKeuanganScreen() {
                 <View
                     style={{
                         borderWidth: 1,
-                        borderColor: getSecondaryColor(),
+                        borderColor: getSecondary2ndColor(),
                         borderRadius: 8,
                         backgroundColor: getWhiteColor(),
                     }}>
@@ -147,7 +151,7 @@ export default function DetailKeuanganScreen() {
                 <View
                     style={{
                         borderWidth: 1,
-                        borderColor: getSecondaryColor(),
+                        borderColor: getSecondary2ndColor(),
                         borderRadius: 8,
                         backgroundColor: getWhiteColor(),
                     }}>
