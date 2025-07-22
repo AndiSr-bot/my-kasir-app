@@ -1,10 +1,18 @@
+import { getPrimaryColor } from "@/constants/Colors";
 import { globalStyles } from "@/constants/styles";
 import { TPegawai } from "@/types/pegawai_repositories";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { Alert, Image, Text, TouchableOpacity, View } from "react-native";
+import {
+    ActivityIndicator,
+    Alert,
+    Image,
+    Text,
+    TouchableOpacity,
+    View,
+} from "react-native";
 
 export default function ProfileScreen() {
     const router = useRouter();
@@ -46,7 +54,7 @@ export default function ProfileScreen() {
     if (!user) {
         return (
             <View style={globalStyles.container}>
-                <Text style={globalStyles.emptyText}>Memuat profil...</Text>
+                <ActivityIndicator size="large" color={getPrimaryColor()} />
             </View>
         );
     }

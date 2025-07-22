@@ -1,11 +1,11 @@
-import { getWhiteColor } from "@/constants/Colors";
+import { getPrimaryColor, getWhiteColor } from "@/constants/Colors";
 import { globalStyles } from "@/constants/styles";
 import { TPegawai } from "@/types/pegawai_repositories";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Alert, Text, TouchableOpacity, View } from "react-native";
 
 export default function HomeScreen() {
     const router = useRouter();
@@ -23,9 +23,65 @@ export default function HomeScreen() {
             console.log("Error loading user data", e);
         }
     };
+    const handleLogout = async () => {
+        Alert.alert("Konfirmasi", "Yakin ingin logout?", [
+            { text: "Batal", style: "cancel" },
+            {
+                text: "Logout",
+                style: "destructive",
+                onPress: async () => {
+                    try {
+                        await AsyncStorage.removeItem("user");
+                        router.replace("/login");
+                    } catch (e) {
+                        console.log("Error logout", e);
+                    }
+                },
+            },
+        ]);
+    };
     return (
-        <View style={[globalStyles.containerCard, { paddingTop: 40 }]}>
-            {/* <Text style={globalStyles.text}>Selamat Datang</Text> */}
+        <View style={globalStyles.containerCard}>
+            <View
+                style={{
+                    backgroundColor: getPrimaryColor(),
+                    paddingTop: 40,
+                    paddingBottom: 15,
+                    paddingHorizontal: 16,
+                    marginBottom: 12,
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                }}>
+                <View>
+                    <Text
+                        style={{
+                            color: getWhiteColor(),
+                            fontSize: 14,
+                            marginTop: 4,
+                        }}>
+                        Selamat Datang,
+                    </Text>
+                    <Text
+                        style={{
+                            color: getWhiteColor(),
+                            fontSize: 24,
+                            fontWeight: "bold",
+                        }}>
+                        {userDataLocal?.perusahaan?.nama || "Toko Anda"}
+                    </Text>
+                </View>
+                <View style={{ justifyContent: "flex-end" }}>
+                    <TouchableOpacity onPress={handleLogout}>
+                        <Ionicons
+                            name="log-out"
+                            size={25}
+                            style={{
+                                color: getWhiteColor(),
+                            }}
+                        />
+                    </TouchableOpacity>
+                </View>
+            </View>
             <TouchableOpacity
                 style={[globalStyles.homeCard, { marginHorizontal: 16 }]}
                 onPress={() => router.push("/scan")}>
