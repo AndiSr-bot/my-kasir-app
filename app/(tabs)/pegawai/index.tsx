@@ -7,7 +7,7 @@ import { TPerusahaan } from "@/types/perusahaan_repositories";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Picker } from "@react-native-picker/picker";
 import { useFocusEffect, useRouter } from "expo-router";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import { useCallback, useEffect, useState } from "react";
 import {
     ActivityIndicator,
@@ -53,7 +53,8 @@ export default function PegawaiTab() {
                         : ["staff", "admin_perusahaan", "admin"];
                 const q = query(
                     collection(db, "perusahaan", perusahaanId, "pegawai"),
-                    where("role", "in", options)
+                    where("role", "in", options),
+                    orderBy("nama", "asc")
                 );
                 const querySnapshot = await getDocs(q);
                 const pegawaiList: TPegawai[] = [];
@@ -95,7 +96,9 @@ export default function PegawaiTab() {
 
     const fetchPerusahaan = async () => {
         try {
-            const snapshot = await getDocs(collection(db, "perusahaan"));
+            const snapshot = await getDocs(
+                query(collection(db, "perusahaan"), orderBy("nama", "asc"))
+            );
             const list: TPerusahaan[] = [];
             snapshot.forEach((doc) => {
                 list.push({

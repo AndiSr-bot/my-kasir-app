@@ -13,6 +13,7 @@ import {
     collection,
     collectionGroup,
     getDocs,
+    orderBy,
     query,
     where,
 } from "firebase/firestore";
@@ -46,7 +47,9 @@ export default function TambahPegawai() {
 
     const fetchPerusahaan = async () => {
         try {
-            const snapshot = await getDocs(collection(db, "perusahaan"));
+            const snapshot = await getDocs(
+                query(collection(db, "perusahaan"), orderBy("nama", "asc"))
+            );
             const list: TPerusahaan[] = [];
             snapshot.forEach((doc) => {
                 list.push({

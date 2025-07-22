@@ -12,7 +12,7 @@ import { TTransaksiGrouped } from "@/types/transaksi_repositories";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Picker } from "@react-native-picker/picker";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import {
     ActivityIndicator,
@@ -84,7 +84,8 @@ export default function DetailTransaksiScreen() {
                 transaksiRef,
                 where("tanggal", "==", tanggal),
                 where("bulan", "==", bulan),
-                where("tahun", "==", tahun)
+                where("tahun", "==", tahun),
+                orderBy("created_at", "desc")
             );
 
             const snapshot = await getDocs(q);

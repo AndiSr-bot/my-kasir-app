@@ -20,6 +20,7 @@ import {
     doc,
     getDoc,
     getDocs,
+    orderBy,
     query,
     serverTimestamp,
     updateDoc,
@@ -151,7 +152,8 @@ export default function ScanScreen() {
             setJumlah("");
             const q = query(
                 collection(db, "perusahaan", perusahaanId, "stok"),
-                where("no_barcode", "==", data)
+                where("no_barcode", "==", data),
+                orderBy("nama", "asc")
             );
             const querySnapshot = await getDocs(q);
             const stokResult: TStok[] = [];

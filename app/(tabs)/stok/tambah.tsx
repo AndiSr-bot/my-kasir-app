@@ -14,6 +14,8 @@ import {
     addDoc,
     collection,
     getDocs,
+    orderBy,
+    query,
     serverTimestamp,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
@@ -54,7 +56,9 @@ export default function TambahStokScreen() {
     }, []);
     const fetchPerusahaan = async () => {
         try {
-            const snapshot = await getDocs(collection(db, "perusahaan"));
+            const snapshot = await getDocs(
+                query(collection(db, "perusahaan"), orderBy("nama", "asc"))
+            );
             const list: TPerusahaan[] = [];
             snapshot.forEach((doc) => {
                 list.push({

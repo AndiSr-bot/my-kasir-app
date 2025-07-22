@@ -3,7 +3,7 @@ import { globalStyles } from "@/constants/styles";
 import { db } from "@/services/firebase";
 import { TPerusahaan } from "@/types/perusahaan_repositories";
 import { useFocusEffect, useRouter } from "expo-router";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import { useCallback, useEffect, useState } from "react";
 import {
     ActivityIndicator,
@@ -24,7 +24,9 @@ export default function PerusahaanListScreen() {
         setData([]);
         try {
             setLoading(true);
-            const querySnapshot = await getDocs(collection(db, "perusahaan"));
+            const querySnapshot = await getDocs(
+                query(collection(db, "perusahaan"), orderBy("nama", "asc"))
+            );
             const perusahaanList: TPerusahaan[] = [];
             querySnapshot.forEach((doc) => {
                 perusahaanList.push({

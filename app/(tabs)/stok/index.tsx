@@ -8,7 +8,7 @@ import { TStok } from "@/types/stok_repositories";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Picker } from "@react-native-picker/picker";
 import { useFocusEffect, useRouter } from "expo-router";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import { useCallback, useEffect, useState } from "react";
 import {
     ActivityIndicator,
@@ -35,7 +35,10 @@ export default function StokListScreen() {
             } else {
                 setLoading(true);
                 const querySnapshot = await getDocs(
-                    collection(db, "perusahaan", perusahaanId, "stok")
+                    query(
+                        collection(db, "perusahaan", perusahaanId, "stok"),
+                        orderBy("nama", "asc")
+                    )
                 );
                 const stokList: TStok[] = [];
                 querySnapshot.forEach((doc) => {
@@ -88,7 +91,9 @@ export default function StokListScreen() {
 
     const fetchPerusahaan = async () => {
         try {
-            const snapshot = await getDocs(collection(db, "perusahaan"));
+            const snapshot = await getDocs(
+                query(collection(db, "perusahaan"), orderBy("nama", "asc"))
+            );
             const list: TPerusahaan[] = [];
             snapshot.forEach((doc) => {
                 list.push({
