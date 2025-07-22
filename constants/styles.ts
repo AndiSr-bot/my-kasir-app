@@ -1,22 +1,31 @@
 import { StyleSheet } from "react-native";
+import {
+    getDangerColor,
+    getPrimary2ndColor,
+    getPrimaryColor,
+    getSecondary2ndColor,
+    getSecondaryColor,
+    getSuccessColor,
+    getWhiteColor,
+} from "./Colors";
 
 export const globalStyles = StyleSheet.create({
     container: {
         padding: 16,
         paddingBottom: 0,
-        backgroundColor: "#e3ecfcff",
+        backgroundColor: getPrimary2ndColor(),
     },
     containerCard: {
         flex: 1,
-        backgroundColor: "#e3ecfcff",
+        backgroundColor: getPrimary2ndColor(),
     },
     profileCard: {
         marginVertical: 8,
         marginHorizontal: 16,
         padding: 20,
         borderRadius: 10,
-        backgroundColor: "#fff",
-        shadowColor: "#000",
+        backgroundColor: getWhiteColor(),
+        shadowColor: getPrimaryColor(),
         shadowOffset: {
             width: 0,
             height: 2,
@@ -32,8 +41,8 @@ export const globalStyles = StyleSheet.create({
         padding: 12,
         margin: 16,
         borderRadius: 8,
-        backgroundColor: "#fff",
-        shadowColor: "#000",
+        backgroundColor: getWhiteColor(),
+        shadowColor: getPrimaryColor(),
         shadowOffset: {
             width: 0,
             height: 2,
@@ -45,7 +54,7 @@ export const globalStyles = StyleSheet.create({
     title: {
         fontWeight: "bold",
         fontSize: 16,
-        color: "#2675ffff",
+        color: getPrimaryColor(),
     },
     image: {
         width: 64,
@@ -57,25 +66,25 @@ export const globalStyles = StyleSheet.create({
         textAlign: "center",
     },
     buttonPrimary: {
-        backgroundColor: "#1e90ff",
+        backgroundColor: getPrimaryColor(),
         padding: 12,
         borderRadius: 8,
         marginTop: 12,
     },
     buttonSuccess: {
-        backgroundColor: "#24953eff",
+        backgroundColor: getSuccessColor(),
         padding: 12,
         borderRadius: 8,
         marginTop: 12,
     },
     buttonDanger: {
-        backgroundColor: "#d43545ff",
+        backgroundColor: getDangerColor(),
         padding: 12,
         borderRadius: 8,
         marginTop: 12,
     },
     buttonSecondary: {
-        backgroundColor: "#f2f2f2",
+        backgroundColor: getSecondaryColor(),
         padding: 12,
         borderRadius: 8,
         marginTop: 12,
@@ -97,10 +106,10 @@ export const globalStyles = StyleSheet.create({
     },
     input: {
         borderWidth: 1,
-        borderColor: "#ccc",
+        borderColor: getSecondary2ndColor(),
         borderRadius: 8,
         padding: 8,
-        backgroundColor: "#fff",
+        backgroundColor: getWhiteColor(),
     },
     imagePreview: {
         width: 100,
@@ -117,10 +126,10 @@ export const globalStyles = StyleSheet.create({
     stokItem: {
         alignItems: "center",
         flex: 1,
-        backgroundColor: "#f2f2f2",
+        backgroundColor: getWhiteColor(),
         borderRadius: 8,
         padding: 10,
-        shadowColor: "#000",
+        shadowColor: getPrimaryColor(),
         shadowOffset: {
             width: 0,
             height: 2,
@@ -141,8 +150,8 @@ export const globalStyles = StyleSheet.create({
         marginBottom: 12,
         padding: 30,
         borderRadius: 8,
-        backgroundColor: "#2675ffff",
-        shadowColor: "#000",
+        backgroundColor: getPrimaryColor(),
+        shadowColor: getPrimaryColor(),
         shadowOffset: {
             width: 0,
             height: 2,
@@ -161,8 +170,8 @@ export const globalStyles = StyleSheet.create({
         marginBottom: 12,
         padding: 20,
         borderRadius: 8,
-        backgroundColor: "#2675ffff",
-        shadowColor: "#000",
+        backgroundColor: getPrimaryColor(),
+        shadowColor: getPrimaryColor(),
         shadowOffset: {
             width: 0,
             height: 2,
@@ -172,22 +181,22 @@ export const globalStyles = StyleSheet.create({
         elevation: 5,
     },
     buttonModalPrimary: {
-        backgroundColor: "#1e90ff",
+        backgroundColor: getPrimaryColor(),
         padding: 8,
         borderRadius: 6,
     },
     buttonModalSuccess: {
-        backgroundColor: "#24953eff",
+        backgroundColor: getSuccessColor(),
         padding: 8,
         borderRadius: 6,
     },
     buttonModalDanger: {
-        backgroundColor: "#d43545ff",
+        backgroundColor: getDangerColor(),
         padding: 8,
         borderRadius: 6,
     },
     buttonModalSecondary: {
-        backgroundColor: "#f2f2f2",
+        backgroundColor: getSecondaryColor(),
         padding: 8,
         borderRadius: 6,
     },
@@ -201,12 +210,19 @@ export const globalStyles = StyleSheet.create({
         width: 100,
     },
     cardFull: {
-        backgroundColor: "#fff",
+        backgroundColor: getWhiteColor(),
         padding: 20,
         borderRadius: 12,
         marginBottom: 12,
         marginHorizontal: 15,
         elevation: 2,
+        shadowColor: getPrimaryColor(),
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
     },
     rowCards: {
         flexDirection: "row",
@@ -215,19 +231,24 @@ export const globalStyles = StyleSheet.create({
     },
     cardHalf: {
         flex: 0.48,
-        backgroundColor: "#fff",
+        backgroundColor: getWhiteColor(),
         padding: 20,
         borderRadius: 12,
         elevation: 2,
+        shadowColor: getPrimaryColor(),
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
     },
     cardTitle: {
         fontSize: 16,
-        color: "#333333",
         marginBottom: 4,
     },
     cardValue: {
         fontSize: 20,
         fontWeight: "bold",
-        color: "#000",
     },
 });

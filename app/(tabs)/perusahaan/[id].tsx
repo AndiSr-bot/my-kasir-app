@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { getPrimaryColor } from "@/constants/Colors";
 import { globalStyles } from "@/constants/styles";
 import { db } from "@/services/firebase";
 import { TPerusahaanUpdate } from "@/types/perusahaan_repositories";
@@ -106,7 +107,13 @@ export default function EditPerusahaan() {
     // };
 
     if (loading)
-        return <ActivityIndicator size="large" style={{ marginTop: 20 }} />;
+        return (
+            <ActivityIndicator
+                size="large"
+                color={getPrimaryColor()}
+                style={{ marginTop: 20 }}
+            />
+        );
 
     return (
         <View style={globalStyles.container}>
@@ -153,7 +160,7 @@ export default function EditPerusahaan() {
                 }
                 onPress={handleSave}>
                 {submitting ? (
-                    <ActivityIndicator size="small" color="#fff" />
+                    <ActivityIndicator size="small" color={getPrimaryColor()} />
                 ) : (
                     <Text style={globalStyles.buttonText}>
                         Simpan Perubahan
@@ -170,7 +177,7 @@ export default function EditPerusahaan() {
                 }
                 onPress={handleDelete}>
                 {submitting ? (
-                    <ActivityIndicator size="small" color="#fff" />
+                    <ActivityIndicator size="small" color={getWhiteColor()} />
                 ) : (
                     <Text style={globalStyles.buttonText}>
                         Hapus Perusahaan

@@ -1,3 +1,4 @@
+import { getPrimaryColor, getWhiteColor } from "@/constants/Colors";
 import { Stack } from "expo-router";
 import { View } from "react-native";
 
@@ -8,11 +9,11 @@ export default function PerusahaanLayout() {
                 name="index"
                 options={{
                     title: "Perusahaan",
-                    headerTintColor: "#ffffff",
+                    headerTintColor: getWhiteColor(),
                     headerBackground: () => (
                         <View
                             style={{
-                                backgroundColor: "#2675ffff",
+                                backgroundColor: getPrimaryColor(),
                                 height: 90,
                             }}></View>
                     ),
@@ -22,11 +23,11 @@ export default function PerusahaanLayout() {
                 name="tambah"
                 options={{
                     title: "Tambah Perusahaan",
-                    headerTintColor: "#ffffff",
+                    headerTintColor: getWhiteColor(),
                     headerBackground: () => (
                         <View
                             style={{
-                                backgroundColor: "#2675ffff",
+                                backgroundColor: getPrimaryColor(),
                                 height: 90,
                             }}></View>
                     ),

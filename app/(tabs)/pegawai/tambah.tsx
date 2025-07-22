@@ -1,3 +1,4 @@
+import { getPrimaryColor, getSecondaryColor } from "@/constants/Colors";
 import { globalStyles } from "@/constants/styles";
 import { auth, db } from "@/services/firebase";
 import { TPegawai, TPegawaiCreate } from "@/types/pegawai_repositories";
@@ -191,7 +192,7 @@ export default function TambahPegawai() {
                             width: 80,
                             height: 80,
                             borderRadius: 40,
-                            backgroundColor: "#ccc",
+                            backgroundColor: getSecondaryColor(),
                             justifyContent: "center",
                             alignItems: "center",
                             marginBottom: 10,
@@ -248,10 +249,7 @@ export default function TambahPegawai() {
                             globalStyles.input,
                             { padding: 0, height: 50 },
                         ]}>
-                        <Picker
-                            selectedValue={role}
-                            onValueChange={setRole}
-                            style={{ color: "#000" }}>
+                        <Picker selectedValue={role} onValueChange={setRole}>
                             <Picker.Item label="-- Pilih Role --" value="" />
                             <Picker.Item label="Admin" value="admin" />
                             <Picker.Item
@@ -269,8 +267,7 @@ export default function TambahPegawai() {
                         ]}>
                         <Picker
                             selectedValue={perusahaanId}
-                            onValueChange={setPerusahaanId}
-                            style={{ color: "#000" }}>
+                            onValueChange={setPerusahaanId}>
                             <Picker.Item
                                 label="-- Pilih Perusahaan --"
                                 value=""
@@ -295,7 +292,7 @@ export default function TambahPegawai() {
                 }
                 onPress={handleSubmit}>
                 {loading ? (
-                    <ActivityIndicator size="small" color="#fff" />
+                    <ActivityIndicator size="small" color={getPrimaryColor()} />
                 ) : (
                     <Text style={globalStyles.buttonText}>Simpan</Text>
                 )}

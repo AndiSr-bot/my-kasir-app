@@ -1,10 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { getPrimaryColor, getSecondaryColor } from "@/constants/Colors";
 import { globalStyles } from "@/constants/styles";
 import { db } from "@/services/firebase";
 import { TPegawai, TPegawaiUpdate } from "@/types/pegawai_repositories";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Picker } from "@react-native-picker/picker";
-import * as FileSystem from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
@@ -80,18 +80,26 @@ export default function EditPegawai() {
     };
 
     const pilihFoto = async () => {
+        // const result = await ImagePicker.launchImageLibraryAsync({
+        //     mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        //     quality: 0.8,
+        // });
+
+        // if (!result.canceled) {
+        //     const sourceUri = result.assets[0].uri;
+        //     const fileName = sourceUri.split("/").pop();
+        //     const newPath = FileSystem.documentDirectory || "" + fileName;
+
+        //     await FileSystem.copyAsync({ from: sourceUri, to: newPath });
+        //     setFoto(newPath);
+        // }
         const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
             quality: 0.8,
         });
-
         if (!result.canceled) {
-            const sourceUri = result.assets[0].uri;
-            const fileName = sourceUri.split("/").pop();
-            const newPath = FileSystem.documentDirectory || "" + fileName;
-
-            await FileSystem.copyAsync({ from: sourceUri, to: newPath });
-            setFoto(newPath);
+            setFoto(result.assets[0].uri);
         }
     };
 
@@ -155,7 +163,13 @@ export default function EditPegawai() {
     };
 
     if (loading)
-        return <ActivityIndicator size="large" style={{ marginTop: 20 }} />;
+        return (
+            <ActivityIndicator
+                size="large"
+                color={getPrimaryColor()}
+                style={{ marginTop: 20 }}
+            />
+        );
 
     return (
         <View style={globalStyles.container}>
@@ -176,7 +190,7 @@ export default function EditPegawai() {
                             width: 80,
                             height: 80,
                             borderRadius: 40,
-                            backgroundColor: "#ccc",
+                            backgroundColor: getSecondaryColor(),
                             justifyContent: "center",
                             alignItems: "center",
                             marginBottom: 10,
@@ -194,7 +208,10 @@ export default function EditPegawai() {
             />
             <Text style={globalStyles.label}>Email</Text>
             <TextInput
-                style={[globalStyles.input, { backgroundColor: "#f0f0f0" }]}
+                style={[
+                    globalStyles.input,
+                    { backgroundColor: getSecondaryColor() },
+                ]}
                 value={email}
                 onChangeText={setEmail}
                 editable={false}
@@ -220,10 +237,7 @@ export default function EditPegawai() {
                             globalStyles.input,
                             { padding: 0, height: 50 },
                         ]}>
-                        <Picker
-                            selectedValue={role}
-                            onValueChange={setRole}
-                            style={{ color: "#000" }}>
+                        <Picker selectedValue={role} onValueChange={setRole}>
                             <Picker.Item label="-- Pilih Role --" value="" />
                             <Picker.Item label="Admin" value="admin" />
                             <Picker.Item
@@ -245,7 +259,7 @@ export default function EditPegawai() {
                 }
                 onPress={handleSave}>
                 {submitting ? (
-                    <ActivityIndicator size="small" color="#fff" />
+                    <ActivityIndicator size="small" color={getPrimaryColor()} />
                 ) : (
                     <Text style={globalStyles.buttonText}>
                         Simpan Perubahan
@@ -262,7 +276,7 @@ export default function EditPegawai() {
                 }
                 onPress={handleDelete}>
                 {submitting ? (
-                    <ActivityIndicator size="small" color="#fff" />
+                    <ActivityIndicator size="small" color={getPrimaryColor()} />
                 ) : (
                     <Text style={globalStyles.buttonText}>Hapus Pegawai</Text>
                 )}

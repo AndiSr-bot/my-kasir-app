@@ -1,3 +1,4 @@
+import { getPrimaryColor } from "@/constants/Colors";
 import { globalStyles } from "@/constants/styles";
 import { db } from "@/services/firebase";
 import { TPerusahaanCreate } from "@/types/perusahaan_repositories";
@@ -98,7 +99,7 @@ export default function TambahPerusahaan() {
                 disabled={loading}
                 onPress={handleSubmit}>
                 {loading ? (
-                    <ActivityIndicator size="small" color="#fff" />
+                    <ActivityIndicator size="small" color={getPrimaryColor()} />
                 ) : (
                     <Text style={globalStyles.buttonText}>Simpan</Text>
                 )}

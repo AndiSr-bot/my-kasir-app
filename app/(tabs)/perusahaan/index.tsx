@@ -1,9 +1,10 @@
+import { getPrimaryColor } from "@/constants/Colors";
 import { globalStyles } from "@/constants/styles";
 import { db } from "@/services/firebase";
 import { TPerusahaan } from "@/types/perusahaan_repositories";
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import { collection, getDocs } from "firebase/firestore";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
     ActivityIndicator,
     FlatList,
@@ -45,6 +46,11 @@ export default function PerusahaanListScreen() {
     useEffect(() => {
         fetchData();
     }, []);
+    useFocusEffect(
+        useCallback(() => {
+            fetchData();
+        }, [])
+    );
 
     const renderItem = ({ item }: { item: TPerusahaan }) => (
         <TouchableOpacity
@@ -99,6 +105,7 @@ export default function PerusahaanListScreen() {
                         ) : (
                             <ActivityIndicator
                                 size="large"
+                                color={getPrimaryColor()}
                                 style={{ marginTop: 20 }}
                             />
                         )

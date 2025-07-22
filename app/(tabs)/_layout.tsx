@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { getPrimaryColor, getWhiteColor } from "@/constants/Colors";
 import { TPegawai } from "@/types/pegawai_repositories";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -84,14 +85,14 @@ export default function TabLayout() {
                             style={{
                                 width: focused ? 70 : 60,
                                 height: focused ? 70 : 60,
-                                backgroundColor: "#2675ffff",
+                                backgroundColor: getPrimaryColor(),
                                 borderRadius: 40,
                                 justifyContent: "center",
                                 alignItems: "center",
                             }}>
                             <Ionicons
                                 name="scan"
-                                color={"#fff"}
+                                color={getWhiteColor()}
                                 size={focused ? 40 : 30}
                             />
                         </View>

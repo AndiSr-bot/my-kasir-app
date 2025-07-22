@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { getSecondaryColor, getWhiteColor } from "@/constants/Colors";
 import { globalStyles } from "@/constants/styles";
 import { namaBulan } from "@/constants/time";
 import { db } from "@/services/firebase";
@@ -112,9 +113,9 @@ export default function DetailKeuanganScreen() {
                 <View
                     style={{
                         borderWidth: 1,
-                        borderColor: "#ccc",
+                        borderColor: getSecondaryColor(),
                         borderRadius: 8,
-                        backgroundColor: "#fff",
+                        backgroundColor: getWhiteColor(),
                     }}>
                     <Picker
                         selectedValue={tanggal}
@@ -129,9 +130,9 @@ export default function DetailKeuanganScreen() {
                 <View
                     style={{
                         borderWidth: 1,
-                        borderColor: "#ccc",
+                        borderColor: getSecondaryColor(),
                         borderRadius: 8,
-                        backgroundColor: "#fff",
+                        backgroundColor: getWhiteColor(),
                     }}>
                     <Picker
                         selectedValue={bulan}
@@ -146,9 +147,9 @@ export default function DetailKeuanganScreen() {
                 <View
                     style={{
                         borderWidth: 1,
-                        borderColor: "#ccc",
+                        borderColor: getSecondaryColor(),
                         borderRadius: 8,
-                        backgroundColor: "#fff",
+                        backgroundColor: getWhiteColor(),
                     }}>
                     <Picker
                         selectedValue={tahun}
@@ -161,9 +162,6 @@ export default function DetailKeuanganScreen() {
                 </View>
             </View>
 
-            {/* {loading ? (
-                <ActivityIndicator size="large" style={{ marginTop: 20 }} />
-            ) : ( */}
             <ScrollView
                 refreshControl={
                     <RefreshControl
@@ -180,7 +178,7 @@ export default function DetailKeuanganScreen() {
                         {loading ? (
                             <ActivityIndicator
                                 size="small"
-                                color={"#a7a7a7ff"}
+                                color={getSecondaryColor()}
                             />
                         ) : (
                             totalSales.toLocaleString("id-ID")
@@ -199,7 +197,7 @@ export default function DetailKeuanganScreen() {
                             {loading ? (
                                 <ActivityIndicator
                                     size="small"
-                                    color={"#a7a7a7ff"}
+                                    color={getSecondaryColor()}
                                 />
                             ) : (
                                 jumlahTransaksi
@@ -214,7 +212,7 @@ export default function DetailKeuanganScreen() {
                             {loading ? (
                                 <ActivityIndicator
                                     size="small"
-                                    color={"#a7a7a7ff"}
+                                    color={getSecondaryColor()}
                                 />
                             ) : (
                                 jumlahProduk

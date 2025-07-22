@@ -1,3 +1,4 @@
+import { getWhiteColor } from "@/constants/Colors";
 import { globalStyles } from "@/constants/styles";
 import { TPegawai } from "@/types/pegawai_repositories";
 import { Ionicons } from "@expo/vector-icons";
@@ -31,12 +32,12 @@ export default function HomeScreen() {
                 <Ionicons
                     name="scan"
                     size={40}
-                    style={{ textAlign: "center", color: "#ffffff" }}
+                    style={{ textAlign: "center", color: getWhiteColor() }}
                 />
                 <Text
                     style={[
                         globalStyles.text,
-                        { marginBottom: 0, color: "#ffffff" },
+                        { marginBottom: 0, color: getWhiteColor() },
                     ]}>
                     Scan
                 </Text>
@@ -50,12 +51,15 @@ export default function HomeScreen() {
                         <Ionicons
                             name="people"
                             size={40}
-                            style={{ textAlign: "center", color: "#ffffff" }}
+                            style={{
+                                textAlign: "center",
+                                color: getWhiteColor(),
+                            }}
                         />
                         <Text
                             style={[
                                 globalStyles.text,
-                                { marginBottom: 0, color: "#ffffff" },
+                                { marginBottom: 0, color: getWhiteColor() },
                             ]}>
                             Pegawai
                         </Text>
@@ -66,12 +70,15 @@ export default function HomeScreen() {
                         <Ionicons
                             name="cube"
                             size={40}
-                            style={{ textAlign: "center", color: "#ffffff" }}
+                            style={{
+                                textAlign: "center",
+                                color: getWhiteColor(),
+                            }}
                         />
                         <Text
                             style={[
                                 globalStyles.text,
-                                { marginBottom: 0, color: "#ffffff" },
+                                { marginBottom: 0, color: getWhiteColor() },
                             ]}>
                             Stok
                         </Text>
@@ -93,13 +100,13 @@ export default function HomeScreen() {
                                 size={40}
                                 style={{
                                     textAlign: "center",
-                                    color: "#ffffff",
+                                    color: getWhiteColor(),
                                 }}
                             />
                             <Text
                                 style={[
                                     globalStyles.text,
-                                    { marginBottom: 0, color: "#ffffff" },
+                                    { marginBottom: 0, color: getWhiteColor() },
                                 ]}>
                                 Perusahaan
                             </Text>
@@ -116,12 +123,15 @@ export default function HomeScreen() {
                         <Ionicons
                             name="wallet"
                             size={40}
-                            style={{ textAlign: "center", color: "#ffffff" }}
+                            style={{
+                                textAlign: "center",
+                                color: getWhiteColor(),
+                            }}
                         />
                         <Text
                             style={[
                                 globalStyles.text,
-                                { marginBottom: 0, color: "#ffffff" },
+                                { marginBottom: 0, color: getWhiteColor() },
                             ]}>
                             Keuangan
                         </Text>

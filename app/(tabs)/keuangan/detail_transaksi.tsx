@@ -1,4 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import {
+    getPrimaryColor,
+    getSecondaryColor,
+    getWhiteColor,
+} from "@/constants/Colors";
 import { globalStyles } from "@/constants/styles";
 import { namaBulan } from "@/constants/time";
 import { db } from "@/services/firebase";
@@ -200,9 +205,9 @@ export default function DetailTransaksiScreen() {
                 <View
                     style={{
                         borderWidth: 1,
-                        borderColor: "#ccc",
+                        borderColor: getSecondaryColor(),
                         borderRadius: 8,
-                        backgroundColor: "#fff",
+                        backgroundColor: getWhiteColor(),
                     }}>
                     <Picker
                         selectedValue={tanggal}
@@ -217,9 +222,9 @@ export default function DetailTransaksiScreen() {
                 <View
                     style={{
                         borderWidth: 1,
-                        borderColor: "#ccc",
+                        borderColor: getSecondaryColor(),
                         borderRadius: 8,
-                        backgroundColor: "#fff",
+                        backgroundColor: getWhiteColor(),
                     }}>
                     <Picker
                         selectedValue={bulan}
@@ -234,9 +239,9 @@ export default function DetailTransaksiScreen() {
                 <View
                     style={{
                         borderWidth: 1,
-                        borderColor: "#ccc",
+                        borderColor: getSecondaryColor(),
                         borderRadius: 8,
-                        backgroundColor: "#fff",
+                        backgroundColor: getWhiteColor(),
                     }}>
                     <Picker
                         selectedValue={tahun}
@@ -250,7 +255,11 @@ export default function DetailTransaksiScreen() {
             </View>
 
             {loading ? (
-                <ActivityIndicator size="large" style={{ marginTop: 20 }} />
+                <ActivityIndicator
+                    size="large"
+                    color={getPrimaryColor()}
+                    style={{ marginTop: 20 }}
+                />
             ) : (
                 <FlatList
                     data={transaksiGrouped}
@@ -268,6 +277,7 @@ export default function DetailTransaksiScreen() {
                         ) : (
                             <ActivityIndicator
                                 size="large"
+                                color={getPrimaryColor()}
                                 style={{ marginTop: 20 }}
                             />
                         )
@@ -284,7 +294,7 @@ export default function DetailTransaksiScreen() {
                     }}>
                     <View
                         style={{
-                            backgroundColor: "#fff",
+                            backgroundColor: getWhiteColor(),
                             borderRadius: 10,
                             padding: 20,
                             // maxHeight: "80%",
@@ -367,7 +377,7 @@ export default function DetailTransaksiScreen() {
                                 onPress={() => setModalVisible(false)}>
                                 <Text
                                     style={{
-                                        color: "#fff",
+                                        color: getWhiteColor(),
                                         fontWeight: "bold",
                                     }}>
                                     Tutup

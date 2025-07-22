@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { getPrimaryColor } from "@/constants/Colors";
 import { globalStyles } from "@/constants/styles";
 import { db } from "@/services/firebase";
 import { TPegawai } from "@/types/pegawai_repositories";
@@ -49,7 +50,7 @@ export default function PegawaiTab() {
                 const options =
                     userDataLocal?.role === "admin_perusahaan"
                         ? ["staff"]
-                        : ["staff", "admin_perusahaan"];
+                        : ["staff", "admin_perusahaan", "admin"];
                 const q = query(
                     collection(db, "perusahaan", perusahaanId, "pegawai"),
                     where("role", "in", options)
@@ -154,8 +155,7 @@ export default function PegawaiTab() {
                         ]}>
                         <Picker
                             selectedValue={perusahaanId}
-                            onValueChange={setPerusahaanId}
-                            style={{ color: "#000" }}>
+                            onValueChange={setPerusahaanId}>
                             <Picker.Item
                                 label="-- Pilih Perusahaan --"
                                 value=""
@@ -198,6 +198,7 @@ export default function PegawaiTab() {
                         ) : (
                             <ActivityIndicator
                                 size="large"
+                                color={getPrimaryColor()}
                                 style={{ marginTop: 20 }}
                             />
                         )

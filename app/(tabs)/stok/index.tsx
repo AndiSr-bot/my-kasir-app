@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { getPrimaryColor } from "@/constants/Colors";
 import { globalStyles } from "@/constants/styles";
 import { db } from "@/services/firebase";
 import { TPegawai } from "@/types/pegawai_repositories";
@@ -147,8 +148,7 @@ export default function StokListScreen() {
                         ]}>
                         <Picker
                             selectedValue={perusahaanId}
-                            onValueChange={setPerusahaanId}
-                            style={{ color: "#000" }}>
+                            onValueChange={setPerusahaanId}>
                             <Picker.Item
                                 label="-- Pilih Perusahaan --"
                                 value=""
@@ -191,6 +191,7 @@ export default function StokListScreen() {
                         ) : (
                             <ActivityIndicator
                                 size="large"
+                                color={getPrimaryColor()}
                                 style={{ marginTop: 20 }}
                             />
                         )

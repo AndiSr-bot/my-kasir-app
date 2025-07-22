@@ -1,3 +1,9 @@
+import {
+    getPrimary2ndColor,
+    getPrimaryColor,
+    getSecondaryColor,
+    getWhiteColor,
+} from "@/constants/Colors";
 import { globalStyles } from "@/constants/styles";
 import { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
@@ -10,7 +16,7 @@ export default function KeuanganScreen() {
     const tabs = [
         {
             kode: "keuangan",
-            name: "Keuangan",
+            name: "Statistik",
         },
         {
             kode: "transaksi",
@@ -23,13 +29,17 @@ export default function KeuanganScreen() {
             <View
                 style={[
                     globalStyles.container,
-                    { paddingTop: 5, padding: 0, backgroundColor: "#ffffff" },
+                    {
+                        paddingTop: 5,
+                        padding: 0,
+                        backgroundColor: getWhiteColor(),
+                    },
                 ]}>
                 {/* Tab Header */}
                 <View
                     style={{
                         flexDirection: "row",
-                        backgroundColor: "#ffffff",
+                        backgroundColor: getWhiteColor(),
                         borderRadius: 8,
                         overflow: "hidden",
                     }}>
@@ -40,7 +50,9 @@ export default function KeuanganScreen() {
                                 flex: 1,
                                 paddingVertical: 10,
                                 backgroundColor:
-                                    activeTab !== index ? "#fff" : "#e3ecfcff",
+                                    activeTab !== index
+                                        ? getWhiteColor()
+                                        : getPrimary2ndColor(),
                                 borderTopLeftRadius:
                                     activeTab === index ? 10 : 0,
                                 borderTopRightRadius:
@@ -49,7 +61,7 @@ export default function KeuanganScreen() {
                                 borderLeftWidth: activeTab === index ? 1 : 0,
                                 borderRightWidth: activeTab === index ? 1 : 0,
                                 borderTopWidth: activeTab === index ? 1 : 0,
-                                borderColor: "#dce9ffff",
+                                borderColor: getSecondaryColor(),
                             }}
                             onPress={() => setActiveTab(index)}>
                             <Text
@@ -57,8 +69,8 @@ export default function KeuanganScreen() {
                                     textAlign: "center",
                                     fontWeight:
                                         activeTab === index ? "bold" : "normal",
-                                    color:
-                                        activeTab === index ? "#000" : "#444",
+                                    color: getPrimaryColor(),
+                                    fontSize: 16,
                                 }}>
                                 {tab.name}
                             </Text>

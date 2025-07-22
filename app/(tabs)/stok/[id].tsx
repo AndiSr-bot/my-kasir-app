@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { getPrimaryColor, getSecondaryColor } from "@/constants/Colors";
 import { globalStyles } from "@/constants/styles";
 import { db } from "@/services/firebase";
 import { TStokUpdate } from "@/types/stok_repositories";
@@ -152,7 +153,13 @@ export default function EditStokScreen() {
     };
 
     if (loading) {
-        return <ActivityIndicator size="large" style={{ marginTop: 20 }} />;
+        return (
+            <ActivityIndicator
+                size="large"
+                color={getPrimaryColor()}
+                style={{ marginTop: 20 }}
+            />
+        );
     }
 
     return (
@@ -209,7 +216,10 @@ export default function EditStokScreen() {
             <Text style={globalStyles.label}>No Barcode</Text>
             <TextInput
                 placeholder="No Barcode"
-                style={[globalStyles.input, { backgroundColor: "#f0f0f0" }]}
+                style={[
+                    globalStyles.input,
+                    { backgroundColor: getSecondaryColor() },
+                ]}
                 value={barcode}
                 editable={false}
             />
@@ -223,7 +233,7 @@ export default function EditStokScreen() {
                 }
                 onPress={handleUpdate}>
                 {submitting ? (
-                    <ActivityIndicator size="small" color="#fff" />
+                    <ActivityIndicator size="small" color={getPrimaryColor()} />
                 ) : (
                     <Text style={globalStyles.buttonText}>
                         Simpan Perubahan
@@ -240,7 +250,7 @@ export default function EditStokScreen() {
                 }
                 onPress={handleDelete}>
                 {submitting ? (
-                    <ActivityIndicator size="small" color="#fff" />
+                    <ActivityIndicator size="small" color={getPrimaryColor()} />
                 ) : (
                     <Text style={globalStyles.buttonText}>Hapus Stok</Text>
                 )}

@@ -1,3 +1,8 @@
+import {
+    getPrimaryColor,
+    getSecondaryColor,
+    getWhiteColor,
+} from "@/constants/Colors";
 import { globalStyles } from "@/constants/styles";
 import { namaBulan, namaHari } from "@/constants/time";
 import { db } from "@/services/firebase";
@@ -297,10 +302,11 @@ export default function ScanScreen() {
                             marginTop: 20,
                             marginBottom: -10,
                             height: 100,
-                            backgroundColor: "#d8d8d8ff",
+                            backgroundColor: getSecondaryColor(),
                         }}>
                         <ActivityIndicator
                             size="large"
+                            color={getPrimaryColor()}
                             style={{ marginTop: 30 }}
                         />
                     </View>
@@ -338,7 +344,7 @@ export default function ScanScreen() {
                         }}>
                         <Text
                             style={{
-                                color: "#fff",
+                                color: getWhiteColor(),
                                 fontSize: 16,
                                 fontWeight: "bold",
                                 textAlign: "center",
@@ -382,7 +388,7 @@ export default function ScanScreen() {
                                         height: 50,
                                         borderRadius: 8,
                                         marginRight: 10,
-                                        backgroundColor: "#fff",
+                                        backgroundColor: getWhiteColor(),
                                     }}
                                 />
                                 <View>
@@ -421,7 +427,7 @@ export default function ScanScreen() {
                         }}>
                         <View
                             style={{
-                                backgroundColor: "#fff",
+                                backgroundColor: getWhiteColor(),
                                 borderRadius: 10,
                                 padding: 20,
                             }}>
@@ -451,7 +457,7 @@ export default function ScanScreen() {
                                 onChangeText={setJumlah}
                                 style={{
                                     borderWidth: 1,
-                                    borderColor: "#ccc",
+                                    borderColor: getSecondaryColor(),
                                     borderRadius: 6,
                                     padding: 10,
                                     marginVertical: 10,
@@ -471,7 +477,7 @@ export default function ScanScreen() {
                                     }}>
                                     <Text
                                         style={{
-                                            color: "#fff",
+                                            color: getWhiteColor(),
                                             fontWeight: "bold",
                                         }}>
                                         Batal
@@ -483,7 +489,7 @@ export default function ScanScreen() {
                                     onPress={handleTambahKeranjang}>
                                     <Text
                                         style={{
-                                            color: "#fff",
+                                            color: getWhiteColor(),
                                             fontWeight: "bold",
                                         }}>
                                         Masukkan
@@ -507,7 +513,7 @@ export default function ScanScreen() {
                         }}>
                         <View
                             style={{
-                                backgroundColor: "#fff",
+                                backgroundColor: getWhiteColor(),
                                 borderRadius: 10,
                                 padding: 20,
                             }}>
@@ -519,7 +525,7 @@ export default function ScanScreen() {
                                 onChangeText={setEditJumlah}
                                 style={{
                                     borderWidth: 1,
-                                    borderColor: "#ccc",
+                                    borderColor: getSecondaryColor(),
                                     borderRadius: 6,
                                     padding: 10,
                                     marginVertical: 10,
@@ -536,7 +542,7 @@ export default function ScanScreen() {
                                     onPress={() => setEditModalVisible(false)}>
                                     <Text
                                         style={{
-                                            color: "#fff",
+                                            color: getWhiteColor(),
                                             fontWeight: "bold",
                                         }}>
                                         Batal
@@ -548,7 +554,7 @@ export default function ScanScreen() {
                                     onPress={handleEditJumlah}>
                                     <Text
                                         style={{
-                                            color: "#fff",
+                                            color: getWhiteColor(),
                                             fontWeight: "bold",
                                         }}>
                                         Simpan
@@ -572,7 +578,7 @@ export default function ScanScreen() {
                         }}>
                         <View
                             style={{
-                                backgroundColor: "#fff",
+                                backgroundColor: getWhiteColor(),
                                 borderRadius: 10,
                                 padding: 20,
                                 maxHeight: "80%",
@@ -658,7 +664,7 @@ export default function ScanScreen() {
                                             }>
                                             <Text
                                                 style={{
-                                                    color: "#fff",
+                                                    color: getWhiteColor(),
                                                     fontWeight: "bold",
                                                 }}>
                                                 Batal
@@ -670,7 +676,10 @@ export default function ScanScreen() {
                                             style={
                                                 globalStyles.buttonModalSecondary
                                             }>
-                                            <ActivityIndicator size="small" />
+                                            <ActivityIndicator
+                                                size="small"
+                                                color={getPrimaryColor()}
+                                            />
                                         </TouchableOpacity>
                                     </>
                                 ) : (
@@ -684,7 +693,7 @@ export default function ScanScreen() {
                                             }>
                                             <Text
                                                 style={{
-                                                    color: "#fff",
+                                                    color: getWhiteColor(),
                                                     fontWeight: "bold",
                                                 }}>
                                                 Batal
@@ -698,7 +707,7 @@ export default function ScanScreen() {
                                             onPress={handleBayar}>
                                             <Text
                                                 style={{
-                                                    color: "#fff",
+                                                    color: getWhiteColor(),
                                                     fontWeight: "bold",
                                                 }}>
                                                 Konfirmasi Bayar

@@ -1,3 +1,4 @@
+import { getPrimaryColor } from "@/constants/Colors";
 import { globalStyles } from "@/constants/styles";
 import { auth, db } from "@/services/firebase";
 import { TPegawai } from "@/types/pegawai_repositories";
@@ -158,7 +159,10 @@ export default function LoginScreen() {
                 disabled={loading}>
                 <Text style={globalStyles.buttonText}>
                     {loading ? (
-                        <ActivityIndicator size="small" color="#fff" />
+                        <ActivityIndicator
+                            size="small"
+                            color={getPrimaryColor()}
+                        />
                     ) : (
                         "Login"
                     )}

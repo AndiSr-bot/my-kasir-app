@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { getPrimaryColor, getSecondaryColor } from "@/constants/Colors";
 import { globalStyles } from "@/constants/styles";
 import { db } from "@/services/firebase";
 import { TPegawai } from "@/types/pegawai_repositories";
@@ -173,9 +174,13 @@ export default function TambahStokScreen() {
                         // marginTop: 20,
                         // marginBottom: -10,
                         height: 100,
-                        backgroundColor: "#d8d8d8ff",
+                        backgroundColor: getSecondaryColor(),
                     }}>
-                    <ActivityIndicator size="large" style={{ marginTop: 30 }} />
+                    <ActivityIndicator
+                        size="large"
+                        color={getPrimaryColor()}
+                        style={{ marginTop: 30 }}
+                    />
                 </View>
             )}
             {userDataLocal?.role === "admin" && (
@@ -188,8 +193,7 @@ export default function TambahStokScreen() {
                         ]}>
                         <Picker
                             selectedValue={perusahaanId}
-                            onValueChange={setPerusahaanId}
-                            style={{ color: "#000" }}>
+                            onValueChange={setPerusahaanId}>
                             <Picker.Item
                                 label="-- Pilih Perusahaan --"
                                 value=""
@@ -231,7 +235,10 @@ export default function TambahStokScreen() {
             <Text style={globalStyles.label}>No Barcode</Text>
             <TextInput
                 placeholder="No Barcode"
-                style={[globalStyles.input, { backgroundColor: "#f0f0f0" }]}
+                style={[
+                    globalStyles.input,
+                    { backgroundColor: getSecondaryColor() },
+                ]}
                 value={barcode}
                 editable={false}
             />
@@ -273,7 +280,7 @@ export default function TambahStokScreen() {
                 disabled={loading}
                 onPress={handleSave}>
                 {loading ? (
-                    <ActivityIndicator size="small" color="#fff" />
+                    <ActivityIndicator size="small" color={getPrimaryColor()} />
                 ) : (
                     <Text style={globalStyles.buttonText}>Simpan Produk</Text>
                 )}

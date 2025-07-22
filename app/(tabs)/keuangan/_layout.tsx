@@ -1,3 +1,4 @@
+import { getPrimaryColor, getWhiteColor } from "@/constants/Colors";
 import { TPegawai } from "@/types/pegawai_repositories";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -28,50 +29,7 @@ export default function KeuanganLayout() {
                 options={{
                     title: userDataLocal?.role === "admin" ? "Keuangan" : "",
                     // headerShown: false,
-                    headerTintColor: "#ffffff",
-                    // headerBackground: () =>
-                    //     userDataLocal?.role === "admin_perusahaan" ? (
-                    //         <View
-                    //             style={{
-                    //                 backgroundColor: "#2675ffff",
-                    //                 height: 90,
-                    //                 flexDirection: "row",
-                    //                 justifyContent: "flex-start",
-                    //                 alignItems: "flex-end",
-                    //                 paddingBottom: 16,
-                    //                 paddingLeft: 17,
-                    //             }}>
-                    //             <TouchableOpacity
-                    //                 onPress={() => router.replace("/(tabs)")}
-                    //                 style={{ backgroundColor: "red" }}>
-                    //                 <Ionicons
-                    //                     name="arrow-back"
-                    //                     size={23}
-                    //                     style={{
-                    //                         textAlign: "left",
-                    //                         color: "#ffffff",
-                    //                     }}
-                    //                 />
-                    //             </TouchableOpacity>
-                    //             <Text
-                    //                 style={{
-                    //                     textAlign: "left",
-                    //                     color: "#ffffff",
-                    //                     fontSize: 20,
-                    //                     fontWeight: "500",
-                    //                     paddingBottom: 1,
-                    //                     paddingLeft: 32,
-                    //                 }}>
-                    //                 Keuangan
-                    //             </Text>
-                    //         </View>
-                    //     ) : (
-                    //         <View
-                    //             style={{
-                    //                 backgroundColor: "#2675ffff",
-                    //                 height: 90,
-                    //             }}></View>
-                    //     ),
+                    headerTintColor: getWhiteColor(),
                     headerLeft: () =>
                         userDataLocal?.role === "admin_perusahaan" && (
                             <>
@@ -82,7 +40,7 @@ export default function KeuanganLayout() {
                                         size={23}
                                         style={{
                                             textAlign: "left",
-                                            color: "#ffffff",
+                                            color: getWhiteColor(),
                                             paddingLeft: 1,
                                         }}
                                     />
@@ -90,7 +48,7 @@ export default function KeuanganLayout() {
                                 <Text
                                     style={{
                                         textAlign: "left",
-                                        color: "#ffffff",
+                                        color: getWhiteColor(),
                                         fontSize: 20,
                                         fontWeight: "500",
                                         paddingBottom: 1,
@@ -103,7 +61,7 @@ export default function KeuanganLayout() {
                     headerBackground: () => (
                         <View
                             style={{
-                                backgroundColor: "#2675ffff",
+                                backgroundColor: getPrimaryColor(),
                                 height: 90,
                             }}></View>
                     ),
