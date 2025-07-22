@@ -4,6 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Tabs, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
+import { View } from "react-native";
 
 export default function TabLayout() {
     const [userDataLocal, setUserDataLocal] = useState<TPegawai | null>(null);
@@ -30,8 +31,12 @@ export default function TabLayout() {
                 options={{
                     title: "Beranda",
                     headerShown: false,
-                    tabBarIcon: ({ color, size }) => (
-                        <Ionicons name="home" color={color} size={size} />
+                    tabBarIcon: ({ color, focused }) => (
+                        <Ionicons
+                            name="home"
+                            color={color}
+                            size={focused ? 30 : 19}
+                        />
                     ),
                 }}
             />
@@ -41,8 +46,12 @@ export default function TabLayout() {
                     title: "Perusahaan",
                     href: userDataLocal?.role === "admin" ? undefined : null,
                     headerShown: false,
-                    tabBarIcon: ({ color, size }) => (
-                        <Ionicons name="business" color={color} size={size} />
+                    tabBarIcon: ({ color, focused }) => (
+                        <Ionicons
+                            name="business"
+                            color={color}
+                            size={focused ? 30 : 19}
+                        />
                     ),
                 }}
             />
@@ -56,18 +65,36 @@ export default function TabLayout() {
                             ? undefined
                             : null,
                     headerShown: false,
-                    tabBarIcon: ({ color, size }) => (
-                        <Ionicons name="people" color={color} size={size} />
+                    tabBarIcon: ({ color, focused }) => (
+                        <Ionicons
+                            name="people"
+                            color={color}
+                            size={focused ? 30 : 19}
+                        />
                     ),
                 }}
             />
             <Tabs.Screen
                 name="scan"
                 options={{
-                    title: "Scan",
+                    title: "",
                     headerShown: false,
-                    tabBarIcon: ({ color, size }) => (
-                        <Ionicons name="scan" color={color} size={size} />
+                    tabBarIcon: ({ color, focused }) => (
+                        <View
+                            style={{
+                                width: focused ? 70 : 60,
+                                height: focused ? 70 : 60,
+                                backgroundColor: "#2675ffff",
+                                borderRadius: 40,
+                                justifyContent: "center",
+                                alignItems: "center",
+                            }}>
+                            <Ionicons
+                                name="scan"
+                                color={"#fff"}
+                                size={focused ? 40 : 30}
+                            />
+                        </View>
                     ),
                 }}
             />
@@ -81,8 +108,12 @@ export default function TabLayout() {
                             ? undefined
                             : null,
                     headerShown: false,
-                    tabBarIcon: ({ color, size }) => (
-                        <Ionicons name="cube" color={color} size={size} />
+                    tabBarIcon: ({ color, focused }) => (
+                        <Ionicons
+                            name="cube"
+                            color={color}
+                            size={focused ? 30 : 19}
+                        />
                     ),
                 }}
             />
@@ -91,13 +122,13 @@ export default function TabLayout() {
                 options={{
                     title: "Keuangan",
                     headerShown: false,
-                    href:
-                        userDataLocal?.role === "admin" ||
-                        userDataLocal?.role === "admin_perusahaan"
-                            ? undefined
-                            : null,
-                    tabBarIcon: ({ color, size }) => (
-                        <Ionicons name="wallet" color={color} size={size} />
+                    href: userDataLocal?.role === "admin" ? undefined : null,
+                    tabBarIcon: ({ color, focused }) => (
+                        <Ionicons
+                            name="wallet"
+                            color={color}
+                            size={focused ? 30 : 19}
+                        />
                     ),
                 }}
             />
@@ -106,8 +137,12 @@ export default function TabLayout() {
                 options={{
                     title: "Profil",
                     headerShown: false,
-                    tabBarIcon: ({ color, size }) => (
-                        <Ionicons name="person" color={color} size={size} />
+                    tabBarIcon: ({ color, focused }) => (
+                        <Ionicons
+                            name="person"
+                            color={color}
+                            size={focused ? 30 : 19}
+                        />
                     ),
                 }}
             />
