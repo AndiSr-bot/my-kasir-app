@@ -105,15 +105,24 @@ export default function TambahStokScreen() {
                 )
             );
             if (getStokByBarcode.docs.length > 0) {
-                setNama(getStokByBarcode.docs[0].data().nama);
-                setHarga(getStokByBarcode.docs[0].data().harga.toString());
-                setGambar(getStokByBarcode.docs[0].data().gambar || null);
                 Alert.alert(
                     "Barcode Terdeteksi",
                     `Data dengan kode ${data} sudah tersedia`,
                     [
                         {
                             text: "Restock",
+                            onPress: () => {
+                                setNama(getStokByBarcode.docs[0].data().nama);
+                                setHarga(
+                                    getStokByBarcode.docs[0]
+                                        .data()
+                                        .harga.toString()
+                                );
+                                setGambar(
+                                    getStokByBarcode.docs[0].data().gambar ||
+                                        null
+                                );
+                            },
                         },
                         {
                             text: "Scan Ulang",
