@@ -1,5 +1,6 @@
 import { getPrimaryColor } from "@/constants/Colors";
 import { globalStyles } from "@/constants/styles";
+import { version } from "@/package.json";
 import { TPegawai } from "@/types/pegawai_repositories";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -13,7 +14,6 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
-
 export default function ProfileScreen() {
     const router = useRouter();
     const [user, setUser] = useState<TPegawai | null>(null);
@@ -101,6 +101,12 @@ export default function ProfileScreen() {
                 <Text style={globalStyles.text}>Role : {user.role}</Text>
                 <Text style={globalStyles.text}>
                     perusahaan : {user.perusahaan?.nama}
+                </Text>
+            </View>
+            {/* versi */}
+            <View style={{ justifyContent: "center", alignItems: "center" }}>
+                <Text style={{ color: "#AAAAAA" }}>
+                    Versi Aplikasi : {version}
                 </Text>
             </View>
         </View>
