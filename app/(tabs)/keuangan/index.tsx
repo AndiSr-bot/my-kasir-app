@@ -7,7 +7,8 @@ import {
 import { globalStyles } from "@/constants/styles";
 import { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
-import DetailKeuanganScreen from "./detail_keuangan";
+import DetailPembukuanScreen from "./detail_pembukuan";
+import DetailKeuanganScreen from "./detail_statistik";
 import DetailTransaksiScreen from "./detail_transaksi";
 
 export default function KeuanganScreen() {
@@ -15,8 +16,12 @@ export default function KeuanganScreen() {
 
     const tabs = [
         {
-            kode: "keuangan",
+            kode: "statistik",
             name: "Statistik",
+        },
+        {
+            kode: "pembukuan",
+            name: "Pembukuan",
         },
         {
             kode: "transaksi",
@@ -89,8 +94,11 @@ export default function KeuanganScreen() {
                     Voluptates, deserunt minima? Ut facere minus, ipsa dolore
                     animi quis alias eos, porro corporis quod esse quidem.
                 </Text> */}
-                {tabs[activeTab].kode === "keuangan" && (
+                {tabs[activeTab].kode === "statistik" && (
                     <DetailKeuanganScreen />
+                )}
+                {tabs[activeTab].kode === "pembukuan" && (
+                    <DetailPembukuanScreen />
                 )}
                 {tabs[activeTab].kode === "transaksi" && (
                     <DetailTransaksiScreen />

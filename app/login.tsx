@@ -5,7 +5,14 @@ import { TPegawai } from "@/types/pegawai_repositories";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { collectionGroup, doc, getDoc, getDocs } from "firebase/firestore";
+import {
+    collectionGroup,
+    doc,
+    getDoc,
+    getDocs,
+    query,
+    where,
+} from "firebase/firestore";
 import { useState } from "react";
 import {
     ActivityIndicator,
@@ -44,63 +51,41 @@ export default function LoginScreen() {
                 password.toLocaleLowerCase()
             );
 
-            // Cari pegawai di semua perusahaan
-            const querySnapshot = await getDocs(collectionGroup(db, "pegawai"));
-            let pegawaiData: TPegawai = {
-                id: "",
-                perusahaanId: "",
-                nama: "",
-                jabatan: "",
-                role: "staff",
-                no_hp: "",
-                email: "",
-                foto: "",
-                auth_uid: "",
+            const querySnapshot = await getDocs(
+                query(
+                    collectionGroup(db, "pegawai"),
+                    where("email", "==", email)
+                )
+            );
+            if (querySnapshot.empty) {
+                Alert.alert("Error", "Data pegawai tidak ditemukan");
+                return;
+            }
+            const getPerusahaan = await getDoc(
+                doc(db, "perusahaan", querySnapshot.docs[0].data().perusahaanId)
+            );
+            if (!getPerusahaan.exists()) {
+                Alert.alert("Error", "Data pegawai tidak ditemukan");
+                return;
+            }
+            const pegawaiData: TPegawai = {
+                id: querySnapshot.docs[0].id,
+                perusahaanId: querySnapshot.docs[0].data().perusahaanId,
+                nama: querySnapshot.docs[0].data().nama,
+                jabatan: querySnapshot.docs[0].data().jabatan,
+                role: querySnapshot.docs[0].data().role,
+                no_hp: querySnapshot.docs[0].data().no_hp,
+                email: querySnapshot.docs[0].data().email,
+                foto: querySnapshot.docs[0].data().foto,
+                auth_uid: querySnapshot.docs[0].data().auth_uid,
                 perusahaan: {
-                    id: "",
-                    nama: "",
-                    alamat: "",
-                    telepon: "",
-                    logo: "",
+                    id: getPerusahaan.data().id,
+                    nama: getPerusahaan.data().nama,
+                    alamat: getPerusahaan.data().alamat,
+                    telepon: getPerusahaan.data().telepon,
+                    logo: getPerusahaan.data().logo,
                 },
             };
-
-            querySnapshot.forEach((doc) => {
-                if (doc.data().email === email) {
-                    pegawaiData = {
-                        id: doc.id,
-                        perusahaanId: doc.data().perusahaanId,
-                        nama: doc.data().nama,
-                        jabatan: doc.data().jabatan,
-                        role: doc.data().role,
-                        no_hp: doc.data().no_hp,
-                        email: doc.data().email,
-                        foto: doc.data().foto,
-                        auth_uid: doc.data().auth_uid,
-                    };
-                }
-            });
-
-            if (!pegawaiData) {
-                Alert.alert("Error", "Pegawai tidak ditemukan di database");
-                return;
-            } else {
-                if (pegawaiData.perusahaanId) {
-                    const getPerusahaan = await getDoc(
-                        doc(db, "perusahaan", pegawaiData.perusahaanId)
-                    );
-                    if (getPerusahaan.exists()) {
-                        pegawaiData.perusahaan = {
-                            alamat: getPerusahaan.data().alamat,
-                            nama: getPerusahaan.data().nama,
-                            telepon: getPerusahaan.data().telepon,
-                            id: getPerusahaan.data().id,
-                            logo: getPerusahaan.data().logo,
-                        };
-                    }
-                }
-            }
-
             await AsyncStorage.setItem("user", JSON.stringify(pegawaiData));
 
             router.replace("/(tabs)");
