@@ -36,7 +36,7 @@ export default function PegawaiLayout() {
             <Stack.Screen
                 name="[id]"
                 options={{
-                    title: "Edit Stok",
+                    title: "Detail Stok",
                     headerTintColor: getWhiteColor(),
                     headerBackground: () => (
                         <View

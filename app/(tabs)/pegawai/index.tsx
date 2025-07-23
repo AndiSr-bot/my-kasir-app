@@ -76,6 +76,7 @@ export default function PegawaiTab() {
                     });
                 });
                 setData(pegawaiList);
+                setDataSearched(pegawaiList);
             }
         } catch (error) {
             console.log("Error fetching data:", error);

@@ -62,6 +62,7 @@ export default function StokListScreen() {
                     });
                 });
                 setData(stokList);
+                setDataSearched(stokList);
             }
         } catch (error) {
             console.log("Error fetching data:", error);
