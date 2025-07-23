@@ -158,7 +158,14 @@ export default function TambahStokScreen() {
 
     const handleSave = async () => {
         setLoading(true);
-        if (!nama || !harga || !stokAwal || !barcode) {
+        if (
+            !perusahaanId ||
+            !nama ||
+            !harga ||
+            !stokAwal ||
+            !barcode ||
+            !hargaBeli
+        ) {
             Alert.alert("Error", "Lengkapi semua field dan scan barcode!");
             return;
         }

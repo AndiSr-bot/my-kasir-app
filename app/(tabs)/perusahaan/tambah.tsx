@@ -36,14 +36,15 @@ export default function TambahPerusahaan() {
 
     const handleSubmit = async () => {
         setLoading(true);
-        if (!nama.trim()) return alert("Nama perusahaan wajib diisi.");
+        if (!nama.trim() || !alamat || !telepon)
+            return alert("Semua field harus diisi.");
 
         try {
             const dataPerusahaan: TPerusahaanCreate = {
                 nama,
                 alamat,
                 telepon,
-                logo,
+                logo: logo || null,
             };
             await addDoc(collection(db, "perusahaan"), dataPerusahaan);
             router.back();

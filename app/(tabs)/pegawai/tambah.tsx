@@ -80,7 +80,7 @@ export default function TambahPegawai() {
     const handleSubmit = async () => {
         setLoading(true);
 
-        if (!nama || !jabatan || !role || !perusahaanId || !email) {
+        if (!perusahaanId || !nama || !jabatan || !role || !noHp || !email) {
             alert("Semua field harus diisi");
             setLoading(false);
             return;
