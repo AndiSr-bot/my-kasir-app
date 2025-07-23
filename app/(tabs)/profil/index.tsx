@@ -94,14 +94,70 @@ export default function ProfileScreen() {
                         marginBottom: 20,
                     }}
                 />
-                <Text style={globalStyles.text}>Nama : {user.nama}</Text>
-                <Text style={globalStyles.text}>Jabatan : {user.jabatan}</Text>
-                <Text style={globalStyles.text}>Email : {user.email}</Text>
-                <Text style={globalStyles.text}>No HP : {user.no_hp}</Text>
-                <Text style={globalStyles.text}>Role : {user.role}</Text>
-                <Text style={globalStyles.text}>
-                    perusahaan : {user.perusahaan?.nama}
-                </Text>
+                <View
+                    style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                    }}>
+                    <Text style={[globalStyles.text, { fontWeight: "bold" }]}>
+                        Nama
+                    </Text>
+                    <Text style={globalStyles.title}>{user.nama}</Text>
+                </View>
+                <View
+                    style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                    }}>
+                    <Text style={[globalStyles.text, { fontWeight: "bold" }]}>
+                        Jabatan
+                    </Text>
+                    <Text style={globalStyles.title}>{user.jabatan}</Text>
+                </View>
+                <View
+                    style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                    }}>
+                    <Text style={[globalStyles.text, { fontWeight: "bold" }]}>
+                        Email
+                    </Text>
+                    <Text style={globalStyles.title}>{user.email}</Text>
+                </View>
+                <View
+                    style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                    }}>
+                    <Text style={[globalStyles.text, { fontWeight: "bold" }]}>
+                        No HP
+                    </Text>
+                    <Text style={globalStyles.title}>{user.no_hp}</Text>
+                </View>
+                <View
+                    style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                    }}>
+                    <Text style={[globalStyles.text, { fontWeight: "bold" }]}>
+                        Role
+                    </Text>
+                    <Text style={globalStyles.title}>
+                        {user.role.replace("_", " ")}
+                    </Text>
+                </View>
+                <View
+                    style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                    }}>
+                    <Text style={[globalStyles.text, { fontWeight: "bold" }]}>
+                        Perusahaan
+                    </Text>
+                    <Text style={globalStyles.title}>
+                        {user.perusahaan?.nama}
+                    </Text>
+                </View>
             </View>
             {/* versi */}
             <View style={{ justifyContent: "center", alignItems: "center" }}>
