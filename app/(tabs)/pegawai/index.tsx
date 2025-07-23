@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import SearchComponent from "@/components/searchComponent";
 import { getPrimaryColor } from "@/constants/Colors";
 import { globalStyles } from "@/constants/styles";
 import { db } from "@/services/firebase";
@@ -21,6 +22,8 @@ import {
 export default function PegawaiTab() {
     const router = useRouter();
     const [data, setData] = useState<TPegawai[]>([]);
+    const [dataSearched, setDataSearched] = useState<TPegawai[]>([]);
+    const [searchQuery, setSearchQuery] = useState("");
     const [loading, setLoading] = useState(false);
     const [perusahaanId, setPerusahaanId] = useState("");
     const [userDataLocal, setUserDataLocal] = useState<TPegawai | null>(null);
@@ -38,6 +41,7 @@ export default function PegawaiTab() {
     };
     const fetchData = async () => {
         setData([]);
+        setSearchQuery("");
         try {
             if (
                 !perusahaanId ||
@@ -79,20 +83,16 @@ export default function PegawaiTab() {
             setLoading(false);
         }
     };
-
-    useEffect(() => {
-        fetchData();
-    }, [perusahaanId]);
-    useFocusEffect(
-        useCallback(() => {
-            setPerusahaanId("");
-            fetchData();
-            getUserData();
-        }, [])
-    );
-    useEffect(() => {
-        fetchPerusahaan();
-    }, []);
+    const handleSearch = () => {
+        if (searchQuery === "") {
+            setDataSearched(data);
+        } else {
+            const filteredData = data.filter((item) =>
+                item.nama.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+            setDataSearched(filteredData);
+        }
+    };
 
     const fetchPerusahaan = async () => {
         try {
@@ -113,6 +113,23 @@ export default function PegawaiTab() {
             console.log("Error fetching perusahaan:", error);
         }
     };
+
+    useEffect(() => {
+        handleSearch();
+    }, [searchQuery]);
+    useEffect(() => {
+        fetchData();
+    }, [perusahaanId]);
+    useFocusEffect(
+        useCallback(() => {
+            setPerusahaanId("");
+            fetchData();
+            getUserData();
+        }, [])
+    );
+    useEffect(() => {
+        fetchPerusahaan();
+    }, []);
 
     const renderItem = ({ item }: { item: TPegawai }) => (
         <TouchableOpacity
@@ -173,7 +190,7 @@ export default function PegawaiTab() {
                         </Picker>
                     </View>
                 )}
-                <TouchableOpacity
+                {/* <TouchableOpacity
                     style={[
                         globalStyles.buttonPrimary,
                         { marginBottom: 8, marginTop: 0 },
@@ -182,11 +199,17 @@ export default function PegawaiTab() {
                     <Text style={globalStyles.buttonText}>
                         + Tambah Pegawai
                     </Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
+                <SearchComponent
+                    onPress={() => router.push("/pegawai/tambah")}
+                    placeholder="Cari pegawai..."
+                    searchQuery={searchQuery}
+                    setSearchQuery={setSearchQuery}
+                />
             </View>
             <View style={globalStyles.containerCard}>
                 <FlatList
-                    data={data}
+                    data={dataSearched}
                     keyExtractor={(item) => item.id || ""}
                     renderItem={renderItem}
                     refreshing={loading}

@@ -251,4 +251,19 @@ export const globalStyles = StyleSheet.create({
         fontSize: 20,
         fontWeight: "bold",
     },
+    actionContainer: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        // backgroundColor: "red",
+    },
+    searchContainer: {
+        width: "85%",
+    },
+    searchInput: {
+        borderWidth: 1,
+        borderColor: getSecondary2ndColor(),
+        borderRadius: 8,
+        padding: 13,
+        backgroundColor: getWhiteColor(),
+    },
 });

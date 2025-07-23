@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+import SearchComponent from "@/components/searchComponent";
 import { getPrimaryColor } from "@/constants/Colors";
 import { globalStyles } from "@/constants/styles";
 import { db } from "@/services/firebase";
@@ -17,10 +19,13 @@ import {
 
 export default function PerusahaanListScreen() {
     const [data, setData] = useState<TPerusahaan[]>([]);
+    const [dataSearched, setDataSearched] = useState<TPerusahaan[]>([]);
+    const [searchQuery, setSearchQuery] = useState("");
     const [loading, setLoading] = useState(false);
     const router = useRouter();
 
     const fetchData = async () => {
+        setSearchQuery("");
         setData([]);
         try {
             setLoading(true);
@@ -38,6 +43,7 @@ export default function PerusahaanListScreen() {
                 });
             });
             setData(perusahaanList);
+            setDataSearched(perusahaanList);
         } catch (error) {
             console.log("Error fetching data:", error);
         } finally {
@@ -45,6 +51,20 @@ export default function PerusahaanListScreen() {
         }
     };
 
+    const handleSearch = () => {
+        if (searchQuery === "") {
+            setDataSearched(data);
+        } else {
+            const filteredData = data.filter((item) =>
+                item.nama.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+            setDataSearched(filteredData);
+        }
+    };
+
+    useEffect(() => {
+        handleSearch();
+    }, [searchQuery]);
     useEffect(() => {
         fetchData();
     }, []);
@@ -77,20 +97,16 @@ export default function PerusahaanListScreen() {
     return (
         <>
             <View style={globalStyles.container}>
-                <TouchableOpacity
-                    style={[
-                        globalStyles.buttonPrimary,
-                        { marginBottom: 8, marginTop: 0 },
-                    ]}
-                    onPress={() => router.push("/perusahaan/tambah")}>
-                    <Text style={globalStyles.buttonText}>
-                        + Tambah Perusahaan
-                    </Text>
-                </TouchableOpacity>
+                <SearchComponent
+                    onPress={() => router.push("/perusahaan/tambah")}
+                    placeholder="Cari perusahaan..."
+                    searchQuery={searchQuery}
+                    setSearchQuery={setSearchQuery}
+                />
             </View>
             <View style={globalStyles.containerCard}>
                 <FlatList
-                    data={data}
+                    data={dataSearched}
                     keyExtractor={(item) => item.id || ""}
                     renderItem={renderItem}
                     refreshControl={

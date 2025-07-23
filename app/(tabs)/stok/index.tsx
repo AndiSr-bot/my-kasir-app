@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import SearchComponent from "@/components/searchComponent";
 import { getPrimaryColor } from "@/constants/Colors";
 import { globalStyles } from "@/constants/styles";
 import { db } from "@/services/firebase";
@@ -22,12 +23,15 @@ import {
 export default function StokListScreen() {
     const router = useRouter();
     const [data, setData] = useState<TStok[]>([]);
+    const [dataSearched, setDataSearched] = useState<TStok[]>([]);
+    const [searchQuery, setSearchQuery] = useState("");
     const [loading, setLoading] = useState(false);
     const [perusahaanId, setPerusahaanId] = useState("");
     const [perusahaanList, setPerusahaanList] = useState<TPerusahaan[]>([]);
     const [userDataLocal, setUserDataLocal] = useState<TPegawai | null>(null);
 
     const fetchData = async () => {
+        setSearchQuery("");
         setData([]);
         try {
             if (!perusahaanId) {
@@ -76,19 +80,16 @@ export default function StokListScreen() {
             console.log("Error loading user data", e);
         }
     };
-    useEffect(() => {
-        fetchData();
-    }, [perusahaanId]);
-    useFocusEffect(
-        useCallback(() => {
-            setPerusahaanId("");
-            fetchData();
-            getUserData();
-        }, [])
-    );
-    useEffect(() => {
-        fetchPerusahaan();
-    }, []);
+    const handleSearch = () => {
+        if (searchQuery === "") {
+            setDataSearched(data);
+        } else {
+            const filteredData = data.filter((item) =>
+                item.nama.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+            setDataSearched(filteredData);
+        }
+    };
 
     const fetchPerusahaan = async () => {
         try {
@@ -110,6 +111,23 @@ export default function StokListScreen() {
             console.log("Error fetching perusahaan:", error);
         }
     };
+
+    useEffect(() => {
+        handleSearch();
+    }, [searchQuery]);
+    useEffect(() => {
+        fetchData();
+    }, [perusahaanId]);
+    useFocusEffect(
+        useCallback(() => {
+            setPerusahaanId("");
+            fetchData();
+            getUserData();
+        }, [])
+    );
+    useEffect(() => {
+        fetchPerusahaan();
+    }, []);
 
     const renderItem = ({ item }: { item: TStok }) => (
         <TouchableOpacity
@@ -145,7 +163,7 @@ export default function StokListScreen() {
 
     return (
         <>
-            <View style={globalStyles.container}>
+            <View style={[globalStyles.container, { paddingBottom: 6 }]}>
                 {userDataLocal?.role === "admin" && (
                     <View
                         style={[
@@ -169,7 +187,7 @@ export default function StokListScreen() {
                         </Picker>
                     </View>
                 )}
-                <TouchableOpacity
+                {/* <TouchableOpacity
                     style={[
                         globalStyles.buttonPrimary,
                         { marginBottom: 8, marginTop: 0 },
@@ -178,11 +196,19 @@ export default function StokListScreen() {
                         router.push(`/stok/tambah?perusahaanId=${perusahaanId}`)
                     }>
                     <Text style={globalStyles.buttonText}>+ Tambah Produk</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
+                <SearchComponent
+                    onPress={() =>
+                        router.push(`/stok/tambah?perusahaanId=${perusahaanId}`)
+                    }
+                    placeholder="Cari stok..."
+                    searchQuery={searchQuery}
+                    setSearchQuery={setSearchQuery}
+                />
             </View>
             <View style={globalStyles.containerCard}>
                 <FlatList
-                    data={data}
+                    data={dataSearched}
                     keyExtractor={(item) => item.id || ""}
                     renderItem={renderItem}
                     refreshing={loading}
