@@ -14,6 +14,13 @@ export interface TTransaksi {
     created_at?: any;
     updated_at?: any;
 }
+export interface TPembukuan {
+    id: string;
+    tanggal: string;
+    jenis: string;
+    nominal: number;
+    keterangan: string;
+}
 export interface TTransaksiCreate {
     perusahaanId: string;
     stokId: string;
