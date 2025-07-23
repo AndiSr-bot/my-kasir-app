@@ -4,7 +4,7 @@ import { globalStyles } from "@/constants/styles";
 import { db } from "@/services/firebase";
 import { TPegawai } from "@/types/pegawai_repositories";
 import { TPerusahaan } from "@/types/perusahaan_repositories";
-import { TStokCreate } from "@/types/stok_repositories";
+import { TStokCreate, TStokUpdate } from "@/types/stok_repositories";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Picker } from "@react-native-picker/picker";
 import { CameraView, useCameraPermissions } from "expo-camera";
@@ -13,10 +13,13 @@ import { useRouter } from "expo-router";
 import {
     addDoc,
     collection,
+    doc,
     getDocs,
     orderBy,
     query,
     serverTimestamp,
+    updateDoc,
+    where,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import {
@@ -36,6 +39,7 @@ export default function TambahStokScreen() {
 
     const [nama, setNama] = useState("");
     const [harga, setHarga] = useState("");
+    const [hargaBeli, setHargaBeli] = useState("");
     const [stokAwal, setStokAwal] = useState("");
     const [barcode, setBarcode] = useState("");
     const [gambar, setGambar] = useState<string | null>(null);
@@ -85,11 +89,61 @@ export default function TambahStokScreen() {
         }
     };
 
-    const handleBarCodeScanned = ({ data }: { data: string }) => {
+    const handleBarCodeScanned = async ({ data }: { data: string }) => {
         if (!scanned) {
             setBarcode(data);
             setScanned(true);
-            Alert.alert("Barcode Terdeteksi", `Kode: ${data}`);
+            const getStokByBarcode = await getDocs(
+                query(
+                    collection(
+                        db,
+                        "perusahaan",
+                        perusahaanId as string,
+                        "stok"
+                    ),
+                    where("no_barcode", "==", data)
+                )
+            );
+            if (getStokByBarcode.docs.length > 0) {
+                setNama(getStokByBarcode.docs[0].data().nama);
+                setHarga(getStokByBarcode.docs[0].data().harga.toString());
+                setGambar(getStokByBarcode.docs[0].data().gambar || null);
+                Alert.alert(
+                    "Barcode Terdeteksi",
+                    `Data dengan kode ${data} sudah tersedia`,
+                    [
+                        {
+                            text: "Restock",
+                        },
+                        {
+                            text: "Scan Ulang",
+                            onPress: () => {
+                                setScanned(false);
+                                setRefreshCamera(false);
+                                setNama("");
+                                setHarga("");
+                                setGambar("");
+                            },
+                        },
+                    ]
+                );
+            } else {
+                Alert.alert("Barcode Terdeteksi", `Kode: ${data}`, [
+                    {
+                        text: "OK",
+                    },
+                    {
+                        text: "Scan Ulang",
+                        onPress: () => {
+                            setScanned(false);
+                            setRefreshCamera(false);
+                            setNama("");
+                            setHarga("");
+                            setGambar("");
+                        },
+                    },
+                ]);
+            }
         }
     };
 
@@ -100,23 +154,87 @@ export default function TambahStokScreen() {
             return;
         }
 
+        const now = new Date();
+        const tahun = now.getFullYear();
+        const bulan = String(now.getMonth() + 1).padStart(2, "0");
+        const tanggal = String(now.getDate()).padStart(2, "0");
         try {
-            const dataStok: TStokCreate = {
-                perusahaanId,
-                nama,
-                harga: parseFloat(harga),
-                stok_awal: parseInt(stokAwal),
-                stok_terjual: 0,
-                stok_sisa: parseInt(stokAwal),
-                no_barcode: barcode,
-                gambar: gambar || null,
-                created_at: serverTimestamp(),
-                updated_at: serverTimestamp(),
-            };
-            await addDoc(
-                collection(db, "perusahaan", perusahaanId as string, "stok"),
-                dataStok
+            const getStokByBarcode = await getDocs(
+                query(
+                    collection(
+                        db,
+                        "perusahaan",
+                        perusahaanId as string,
+                        "stok"
+                    ),
+                    where("no_barcode", "==", barcode)
+                )
             );
+            if (getStokByBarcode.docs.length > 0) {
+                const dataStok: TStokUpdate = {
+                    nama,
+                    harga: parseFloat(harga),
+                    stok_awal:
+                        parseInt(getStokByBarcode.docs[0].data().stok_awal) +
+                        parseInt(stokAwal),
+                    stok_sisa:
+                        parseInt(getStokByBarcode.docs[0].data().stok_sisa) +
+                        parseInt(stokAwal),
+                    gambar: gambar || null,
+                    updated_at: serverTimestamp(),
+                    restocked_at: serverTimestamp(),
+                    restocks: [
+                        ...getStokByBarcode.docs[0].data().restocks,
+                        {
+                            harga_beli: parseFloat(hargaBeli),
+                            jumlah: parseInt(stokAwal),
+                            tanggal: `${tanggal}/${bulan}/${tahun}`,
+                        },
+                    ],
+                };
+                await updateDoc(
+                    doc(
+                        db,
+                        "perusahaan",
+                        perusahaanId as string,
+                        "stok",
+                        getStokByBarcode.docs[0].id
+                    ),
+                    {
+                        ...dataStok,
+                    }
+                );
+            } else {
+                const dataStok: TStokCreate = {
+                    perusahaanId,
+                    nama,
+                    harga: parseFloat(harga),
+                    stok_awal: parseInt(stokAwal),
+                    stok_terjual: 0,
+                    stok_sisa: parseInt(stokAwal),
+                    no_barcode: barcode,
+                    gambar: gambar || null,
+                    restocks: [
+                        {
+                            harga_beli: parseFloat(hargaBeli),
+                            jumlah: parseInt(stokAwal),
+                            tanggal: `${tanggal}/${bulan}/${tahun}`,
+                        },
+                    ],
+                    created_at: serverTimestamp(),
+                    updated_at: serverTimestamp(),
+                    restocked_at: serverTimestamp(),
+                };
+                await addDoc(
+                    collection(
+                        db,
+                        "perusahaan",
+                        perusahaanId as string,
+                        "stok"
+                    ),
+                    dataStok
+                );
+            }
             Alert.alert("Sukses", "Produk berhasil ditambahkan");
             router.back();
         } catch (error) {
@@ -220,9 +338,17 @@ export default function TambahStokScreen() {
                 value={nama}
                 onChangeText={setNama}
             />
-            <Text style={globalStyles.label}>Harga</Text>
+            <Text style={globalStyles.label}>Harga Beli</Text>
             <TextInput
-                placeholder="Harga"
+                placeholder="Harga Beli"
+                style={globalStyles.input}
+                keyboardType="numeric"
+                value={hargaBeli}
+                onChangeText={setHargaBeli}
+            />
+            <Text style={globalStyles.label}>Harga Jual</Text>
+            <TextInput
+                placeholder="Harga Jual"
                 style={globalStyles.input}
                 keyboardType="numeric"
                 value={harga}

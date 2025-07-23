@@ -54,6 +54,7 @@ export default function StokListScreen() {
                         created_at: doc.data().created_at,
                         gambar: doc.data().gambar,
                         updated_at: doc.data().updated_at,
+                        restocked_at: doc.data().restocked_at,
                     });
                 });
                 setData(stokList);
