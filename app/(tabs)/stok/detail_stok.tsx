@@ -25,7 +25,7 @@ export default function DetailStokTab({
     kodeActiveTab,
 }: Props) {
     const router = useRouter();
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [nama, setNama] = useState("");
     const [harga, setHarga] = useState("");
     const [stokAwal, setStokAwal] = useState("");

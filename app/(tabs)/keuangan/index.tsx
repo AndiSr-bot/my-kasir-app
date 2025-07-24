@@ -5,7 +5,9 @@ import {
     getWhiteColor,
 } from "@/constants/Colors";
 import { globalStyles } from "@/constants/styles";
-import { useState } from "react";
+import { TPegawai } from "@/types/pegawai_repositories";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useEffect, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import DetailPembukuanScreen from "./detail_pembukuan";
 import DetailKeuanganScreen from "./detail_statistik";
@@ -13,7 +15,20 @@ import DetailTransaksiScreen from "./detail_transaksi";
 
 export default function KeuanganScreen() {
     const [activeTab, setActiveTab] = useState(0);
-
+    const [kodeActiveTab, setKodeActiveTab] = useState("statistik");
+    const [perusahaanId, setPerusahaanId] = useState<string>("");
+    const [userDataLocal, setUserDataLocal] = useState<TPegawai | null>(null);
+    const getUserData = async () => {
+        try {
+            const jsonValue = await AsyncStorage.getItem("user");
+            if (jsonValue != null) {
+                setPerusahaanId(JSON.parse(jsonValue).perusahaanId);
+                setUserDataLocal(JSON.parse(jsonValue));
+            }
+        } catch (e) {
+            console.log("Error loading user data", e);
+        }
+    };
     const tabs = [
         {
             kode: "statistik",
@@ -28,7 +43,9 @@ export default function KeuanganScreen() {
             name: "Transaksi",
         },
     ];
-
+    useEffect(() => {
+        getUserData();
+    }, []);
     return (
         <>
             <View
@@ -68,7 +85,10 @@ export default function KeuanganScreen() {
                                 borderTopWidth: activeTab === index ? 1 : 0,
                                 borderColor: getSecondaryColor(),
                             }}
-                            onPress={() => setActiveTab(index)}>
+                            onPress={() => {
+                                setKodeActiveTab(tabs[index].kode);
+                                setActiveTab(index);
+                            }}>
                             <Text
                                 style={{
                                     textAlign: "center",
@@ -95,13 +115,23 @@ export default function KeuanganScreen() {
                     animi quis alias eos, porro corporis quod esse quidem.
                 </Text> */}
                 {tabs[activeTab].kode === "statistik" && (
-                    <DetailKeuanganScreen />
+                    <DetailKeuanganScreen
+                        kodeActiveTab={kodeActiveTab}
+                        perusahaanId={perusahaanId as string}
+                    />
                 )}
                 {tabs[activeTab].kode === "pembukuan" && (
-                    <DetailPembukuanScreen />
+                    <DetailPembukuanScreen
+                        kodeActiveTab={kodeActiveTab}
+                        perusahaanId={perusahaanId as string}
+                    />
                 )}
                 {tabs[activeTab].kode === "transaksi" && (
-                    <DetailTransaksiScreen />
+                    <DetailTransaksiScreen
+                        kodeActiveTab={kodeActiveTab}
+                        perusahaanId={perusahaanId as string}
+                        userDataLocal={userDataLocal}
+                    />
                 )}
                 {/* </View> */}
             </View>

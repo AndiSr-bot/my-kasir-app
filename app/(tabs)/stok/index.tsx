@@ -117,7 +117,7 @@ export default function StokListScreen() {
         handleSearch();
     }, [searchQuery]);
     useEffect(() => {
-        fetchData();
+        if (perusahaanId) fetchData();
     }, [perusahaanId]);
     useFocusEffect(
         useCallback(() => {

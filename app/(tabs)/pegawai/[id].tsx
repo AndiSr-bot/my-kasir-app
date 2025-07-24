@@ -29,7 +29,7 @@ export default function EditPegawai() {
     const [jabatan, setJabatan] = useState("");
     const [role, setRole] = useState("");
     const [foto, setFoto] = useState("");
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [submitting, setSubmitting] = useState(false);
     const [userDataLocal, setUserDataLocal] = useState<TPegawai | null>(null);
 

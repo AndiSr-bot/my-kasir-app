@@ -266,4 +266,39 @@ export const globalStyles = StyleSheet.create({
         padding: 13,
         backgroundColor: getWhiteColor(),
     },
+    summary: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        marginBottom: 15,
+        padding: 10,
+        borderWidth: 1,
+        borderColor: "#ddd",
+        borderRadius: 8,
+        backgroundColor: "#f9f9f9",
+    },
+    summaryText: {
+        fontSize: 16,
+        marginBottom: 4,
+        fontWeight: "bold",
+    },
+    item: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        paddingVertical: 2,
+        borderBottomWidth: 1,
+        borderBottomColor: "#eee",
+    },
+    keterangan: {
+        fontSize: 16,
+        fontWeight: "500",
+    },
+    tanggal: {
+        fontSize: 12,
+        color: "#888",
+    },
+    nominal: {
+        fontSize: 16,
+        fontWeight: "bold",
+    },
 });

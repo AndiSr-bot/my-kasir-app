@@ -7,7 +7,6 @@ import {
 import { globalStyles } from "@/constants/styles";
 import { namaBulan } from "@/constants/time";
 import { db } from "@/services/firebase";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Picker } from "@react-native-picker/picker";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
@@ -18,17 +17,21 @@ import {
     Text,
     View,
 } from "react-native";
-
-export default function DetailKeuanganScreen() {
-    const [tanggal, setTanggal] = useState("1");
+interface Props {
+    kodeActiveTab: string;
+    perusahaanId: string;
+}
+export default function DetailKeuanganScreen({
+    kodeActiveTab,
+    perusahaanId,
+}: Props) {
+    const [tanggal, setTanggal] = useState("");
     const [bulan, setBulan] = useState("Januari");
     const [tahun, setTahun] = useState(new Date().getFullYear().toString());
-    const [refreshing, setRefreshing] = useState(false);
     const [loading, setLoading] = useState(false);
     const [totalSales, setTotalSales] = useState(0);
     const [jumlahTransaksi, setJumlahTransaksi] = useState(0);
     const [jumlahProduk, setJumlahProduk] = useState(0);
-    const [perusahaanId, setPerusahaanId] = useState("");
 
     const tanggalOptions = Array.from({ length: 31 }, (_, i) =>
         (i + 1).toString()
@@ -40,7 +43,7 @@ export default function DetailKeuanganScreen() {
 
     const getNow = () => {
         const now = new Date();
-        setTanggal(String(now.getDate()));
+        // setTanggal(String(now.getDate()));
         setBulan(namaBulan[now.getMonth()]);
         setTahun(String(now.getFullYear()));
     };
@@ -49,19 +52,14 @@ export default function DetailKeuanganScreen() {
         fetchData();
     }, [tanggal, bulan, tahun]);
     useEffect(() => {
-        getNow();
-        getUserData();
-    }, []);
-    const getUserData = async () => {
-        try {
-            const jsonValue = await AsyncStorage.getItem("user");
-            if (jsonValue != null) {
-                setPerusahaanId(JSON.parse(jsonValue).perusahaanId);
-            }
-        } catch (e) {
-            console.log("Error loading user data", e);
+        if (perusahaanId) fetchData();
+    }, [perusahaanId]);
+    useEffect(() => {
+        if (kodeActiveTab === "statistik") {
+            getNow();
+            fetchData();
         }
-    };
+    }, []);
     const fetchData = async () => {
         setLoading(true);
         try {
@@ -75,7 +73,7 @@ export default function DetailKeuanganScreen() {
             );
             const q = query(
                 transaksiRef,
-                where("tanggal", "==", tanggal),
+                where("tanggal", tanggal ? "==" : "!=", tanggal ?? null),
                 where("bulan", "==", bulan),
                 where("tahun", "==", tahun)
             );
@@ -101,11 +99,6 @@ export default function DetailKeuanganScreen() {
             setLoading(false);
         }
     };
-    const onRefresh = async () => {
-        setRefreshing(true);
-        await fetchData();
-        setRefreshing(false);
-    };
     return (
         <View>
             {/* Picker Tanggal/Bulan/Tahun */}
@@ -125,6 +118,7 @@ export default function DetailKeuanganScreen() {
                         selectedValue={tanggal}
                         onValueChange={(value) => setTanggal(value)}
                         style={globalStyles.picker}>
+                        <Picker.Item label={"Semua"} value={""} />
                         {tanggalOptions.map((t) => (
                             <Picker.Item key={t} label={t} value={t} />
                         ))}
@@ -169,8 +163,8 @@ export default function DetailKeuanganScreen() {
             <ScrollView
                 refreshControl={
                     <RefreshControl
-                        refreshing={refreshing}
-                        onRefresh={onRefresh}
+                        refreshing={loading}
+                        onRefresh={fetchData}
                     />
                 }
                 style={{ minHeight: "100%" }}>

@@ -36,7 +36,7 @@ export default function EditStokTab({
 }: Props) {
     const router = useRouter();
     const [submitting, setSubmitting] = useState(false);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [nama, setNama] = useState("");
     const [harga, setHarga] = useState("");
     const [stokAwal, setStokAwal] = useState("");

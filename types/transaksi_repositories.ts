@@ -18,6 +18,8 @@ export interface TPembukuan {
     id: string;
     tanggal: string;
     jenis: string;
+    jumlah: number;
+    harga: number;
     nominal: number;
     keterangan: string;
 }

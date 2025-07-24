@@ -64,6 +64,7 @@ export default function ScanScreen() {
         return `TR-${tahun}${bulan}${tanggal}${random}`;
     };
     const handleBayar = async () => {
+        if (!perusahaanId) return Alert.alert("Perusahaan belum dipilih.");
         try {
             setLoading(true);
             const now = new Date();

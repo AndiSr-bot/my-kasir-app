@@ -35,7 +35,7 @@ export default function RestockStokTab({
     const [nama, setNama] = useState("");
     const [harga, setHarga] = useState("");
     const [gambar, setGambar] = useState<string | null>(null);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
     const [dataRestock, setDataRestock] = useState<TRestock[]>([]);
     const [jumlah, setJumlah] = useState("");
@@ -182,7 +182,7 @@ export default function RestockStokTab({
                     !loading ? (
                         <Text style={globalStyles.emptyText}>
                             {perusahaanId
-                                ? "Belum ada produk"
+                                ? "Belum ada restock"
                                 : "Silahkan pilih perusahaan"}
                         </Text>
                     ) : (

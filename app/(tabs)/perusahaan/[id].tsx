@@ -24,7 +24,7 @@ export default function EditPerusahaan() {
     const [alamat, setAlamat] = useState("");
     const [telepon, setTelepon] = useState("");
     const [logo, setLogo] = useState("");
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [submitting, setSubmitting] = useState(false);
 
     useEffect(() => {
@@ -32,6 +32,7 @@ export default function EditPerusahaan() {
     }, []);
 
     const loadData = async () => {
+        setLoading(true);
         try {
             const docRef = doc(db, "perusahaan", String(id));
             const docSnap = await getDoc(docRef);

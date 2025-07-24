@@ -10,7 +10,6 @@ import { db } from "@/services/firebase";
 import { TPegawai } from "@/types/pegawai_repositories";
 import { TTransaksiGrouped } from "@/types/transaksi_repositories";
 import { Ionicons } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Picker } from "@react-native-picker/picker";
 import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
@@ -23,14 +22,19 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
-
-export default function DetailTransaksiScreen() {
-    const [perusahaanId, setPerusahaanId] = useState("");
-    const [userDataLocal, setUserDataLocal] = useState<TPegawai | null>(null);
-    const [tanggal, setTanggal] = useState("1");
+interface Props {
+    kodeActiveTab: string;
+    perusahaanId: string;
+    userDataLocal: TPegawai | null;
+}
+export default function DetailTransaksiScreen({
+    kodeActiveTab,
+    perusahaanId,
+    userDataLocal,
+}: Props) {
+    const [tanggal, setTanggal] = useState("");
     const [bulan, setBulan] = useState("Januari");
     const [tahun, setTahun] = useState(new Date().getFullYear().toString());
-    const [refreshing, setRefreshing] = useState(false);
     const [loading, setLoading] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
     const [transaksiGrouped, setTransaksiGrouped] = useState<
@@ -47,29 +51,22 @@ export default function DetailTransaksiScreen() {
     );
     const getNow = () => {
         const now = new Date();
-        setTanggal(String(now.getDate()));
+        // setTanggal(String(now.getDate()));
         setBulan(namaBulan[now.getMonth()]);
         setTahun(String(now.getFullYear()));
     };
-
+    useEffect(() => {
+        if (perusahaanId) fetchData();
+    }, [perusahaanId]);
     useEffect(() => {
         fetchData();
     }, [tanggal, bulan, tahun]);
     useEffect(() => {
-        getNow();
-        getUserData();
-    }, []);
-    const getUserData = async () => {
-        try {
-            const jsonValue = await AsyncStorage.getItem("user");
-            if (jsonValue != null) {
-                setPerusahaanId(JSON.parse(jsonValue).perusahaanId);
-                setUserDataLocal(JSON.parse(jsonValue));
-            }
-        } catch (e) {
-            console.log("Error loading user data", e);
+        if (kodeActiveTab === "transaksi") {
+            getNow();
         }
-    };
+    }, []);
+
     const fetchData = async () => {
         setLoading(true);
         try {
@@ -82,7 +79,7 @@ export default function DetailTransaksiScreen() {
             );
             const q = query(
                 transaksiRef,
-                where("tanggal", "==", tanggal),
+                where("tanggal", tanggal ? "==" : "!=", tanggal ?? null),
                 where("bulan", "==", bulan),
                 where("tahun", "==", tahun),
                 orderBy("created_at", "desc")
@@ -190,11 +187,6 @@ export default function DetailTransaksiScreen() {
             </View>
         </TouchableOpacity>
     );
-    const onRefresh = async () => {
-        setRefreshing(true);
-        await fetchData();
-        setRefreshing(false);
-    };
     return (
         <View>
             {/* Picker Tanggal/Bulan/Tahun */}
@@ -214,6 +206,7 @@ export default function DetailTransaksiScreen() {
                         selectedValue={tanggal}
                         onValueChange={(value) => setTanggal(value)}
                         style={[globalStyles.picker]}>
+                        <Picker.Item label={"Semua"} value={""} />
                         {tanggalOptions.map((t) => (
                             <Picker.Item key={t} label={t} value={t} />
                         ))}
@@ -266,13 +259,13 @@ export default function DetailTransaksiScreen() {
                     data={transaksiGrouped}
                     keyExtractor={(item) => item.kode || ""}
                     renderItem={renderItem}
-                    refreshing={refreshing}
-                    onRefresh={onRefresh}
+                    refreshing={loading}
+                    onRefresh={fetchData}
                     ListEmptyComponent={
                         !loading ? (
                             <Text style={globalStyles.emptyText}>
                                 {perusahaanId
-                                    ? "Belum ada produk"
+                                    ? "Belum ada transaksi"
                                     : "Silahkan pilih perusahaan"}
                             </Text>
                         ) : (

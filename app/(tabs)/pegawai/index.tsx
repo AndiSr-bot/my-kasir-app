@@ -119,7 +119,7 @@ export default function PegawaiTab() {
         handleSearch();
     }, [searchQuery]);
     useEffect(() => {
-        fetchData();
+        if (perusahaanId) fetchData();
     }, [perusahaanId]);
     useFocusEffect(
         useCallback(() => {
