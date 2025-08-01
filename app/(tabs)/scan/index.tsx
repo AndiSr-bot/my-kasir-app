@@ -13,6 +13,7 @@ import { TTransaksiCreate } from "@/types/transaksi_repositories";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Picker } from "@react-native-picker/picker";
+import { Audio } from "expo-av";
 import { CameraView } from "expo-camera";
 import {
     addDoc,
@@ -54,6 +55,19 @@ export default function ScanScreen() {
     const [editIndex, setEditIndex] = useState<number | null>(null);
     const [editJumlah, setEditJumlah] = useState("");
     const [refreshCamera, setRefreshCamera] = useState(true);
+    const [sounded, setSounded] = useState(false);
+    const playBeepSound = async () => {
+        try {
+            if (!sounded) {
+                const { sound } = await Audio.Sound.createAsync(
+                    require("@/assets/sounds/beep.mp3")
+                );
+                await sound.playAsync();
+            }
+        } catch (error) {
+            console.log("Gagal memutar suara beep:", error);
+        }
+    };
 
     const generateKodeTransaksi = () => {
         const now = new Date();
@@ -146,51 +160,64 @@ export default function ScanScreen() {
     };
 
     const handleBarCodeScanned = async ({ data }: { data: string }) => {
-        if (!scanned && perusahaanId) {
-            setSelectedStok(null);
-            setScanned(true);
-            setStokList([]);
-            setJumlah("");
-            const q = query(
-                collection(db, "perusahaan", perusahaanId, "stok"),
-                where("no_barcode", "==", data),
-                orderBy("nama", "asc")
-            );
-            const querySnapshot = await getDocs(q);
-            const stokResult: TStok[] = [];
-            querySnapshot.forEach((doc) => {
-                stokResult.push({
-                    id: doc.id,
-                    harga: doc.data().harga,
-                    perusahaanId: doc.data().perusahaanId || perusahaanId,
-                    nama: doc.data().nama,
-                    no_barcode: doc.data().no_barcode,
-                    stok_awal: doc.data().stok_awal,
-                    stok_sisa: doc.data().stok_sisa,
-                    stok_terjual: doc.data().stok_terjual,
-                    created_at: doc.data().created_at,
-                    gambar: doc.data().gambar,
-                    updated_at: doc.data().updated_at,
-                });
-            });
-
-            if (stokResult.length > 0) {
-                setModalVisible(true);
-                setStokList(stokResult);
-                setSelectedStok(stokResult[0]);
+        try {
+            if (!scanned && perusahaanId) {
+                setSelectedStok(null);
+                setScanned(true);
+                setStokList([]);
                 setJumlah("");
-            } else {
-                setRefreshCamera(true);
-                Alert.alert("Produk tidak ditemukan", `Barcode: ${data}`, [
-                    {
-                        text: "OK",
-                        onPress: () => {
-                            setScanned(false);
-                            setRefreshCamera(false);
+                const q = query(
+                    collection(db, "perusahaan", perusahaanId, "stok"),
+                    where("no_barcode", "==", data),
+                    orderBy("nama", "asc")
+                );
+                const querySnapshot = await getDocs(q);
+                const stokResult: TStok[] = [];
+                querySnapshot.forEach((doc) => {
+                    stokResult.push({
+                        id: doc.id,
+                        harga: doc.data().harga,
+                        perusahaanId: doc.data().perusahaanId || perusahaanId,
+                        nama: doc.data().nama,
+                        no_barcode: doc.data().no_barcode,
+                        stok_awal: doc.data().stok_awal,
+                        stok_sisa: doc.data().stok_sisa,
+                        stok_terjual: doc.data().stok_terjual,
+                        created_at: doc.data().created_at,
+                        gambar: doc.data().gambar,
+                        updated_at: doc.data().updated_at,
+                    });
+                });
+
+                if (stokResult.length > 0) {
+                    setSounded(true);
+                    await playBeepSound();
+                    setModalVisible(true);
+                    setStokList(stokResult);
+                    setSelectedStok(stokResult[0]);
+                    setJumlah("");
+                } else {
+                    setSounded(true);
+                    await playBeepSound();
+                    setRefreshCamera(true);
+                    Alert.alert("Produk tidak ditemukan", `Barcode: ${data}`, [
+                        {
+                            text: "OK",
+                            onPress: () => {
+                                setScanned(false);
+                                setRefreshCamera(false);
+                                setSounded(false);
+                            },
                         },
-                    },
-                ]);
+                    ]);
+                }
             }
+        } catch (error) {
+            console.log("Error scanning barcode:", error);
+        } finally {
+            setTimeout(() => {
+                setScanned(false);
+            }, 1000);
         }
     };
 
@@ -233,6 +260,7 @@ export default function ScanScreen() {
 
         setModalVisible(false);
         setScanned(false);
+        setSounded(false);
     };
 
     const handleHapusItem = (index: number) => {
@@ -561,6 +589,7 @@ export default function ScanScreen() {
                                     onPress={() => {
                                         setModalVisible(false);
                                         setScanned(false);
+                                        setSounded(false);
                                     }}>
                                     <Text
                                         style={{

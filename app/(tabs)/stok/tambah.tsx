@@ -7,6 +7,7 @@ import { TPerusahaan } from "@/types/perusahaan_repositories";
 import { TStokCreate, TStokUpdate } from "@/types/stok_repositories";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Picker } from "@react-native-picker/picker";
+import { Audio } from "expo-av";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
@@ -49,6 +50,7 @@ export default function TambahStokScreen() {
     const [userDataLocal, setUserDataLocal] = useState<TPegawai | null>(null);
     const [loading, setLoading] = useState(false);
     const [refreshCamera, setRefreshCamera] = useState(true);
+    const [sounded, setSounded] = useState(false);
     useEffect(() => {
         if (!permission) {
             requestPermission();
@@ -58,6 +60,18 @@ export default function TambahStokScreen() {
         fetchPerusahaan();
         getUserData();
     }, []);
+    const playBeepSound = async () => {
+        try {
+            if (!sounded) {
+                const { sound } = await Audio.Sound.createAsync(
+                    require("@/assets/sounds/beep.mp3")
+                );
+                await sound.playAsync();
+            }
+        } catch (error) {
+            console.log("Gagal memutar suara beep:", error);
+        }
+    };
     const fetchPerusahaan = async () => {
         try {
             const snapshot = await getDocs(
@@ -90,38 +104,67 @@ export default function TambahStokScreen() {
     };
 
     const handleBarCodeScanned = async ({ data }: { data: string }) => {
-        if (!scanned) {
-            setBarcode(data);
-            setScanned(true);
-            const getStokByBarcode = await getDocs(
-                query(
-                    collection(
-                        db,
-                        "perusahaan",
-                        perusahaanId as string,
-                        "stok"
-                    ),
-                    where("no_barcode", "==", data)
-                )
-            );
-            if (getStokByBarcode.docs.length > 0) {
-                Alert.alert(
-                    "Barcode Terdeteksi",
-                    `Data dengan kode ${data} sudah tersedia`,
-                    [
+        try {
+            if (!scanned) {
+                setBarcode(data);
+                setScanned(true);
+                const getStokByBarcode = await getDocs(
+                    query(
+                        collection(
+                            db,
+                            "perusahaan",
+                            perusahaanId as string,
+                            "stok"
+                        ),
+                        where("no_barcode", "==", data)
+                    )
+                );
+                if (getStokByBarcode.docs.length > 0) {
+                    setSounded(true);
+                    await playBeepSound();
+                    Alert.alert(
+                        "Barcode Terdeteksi",
+                        `Data dengan kode ${data} sudah tersedia`,
+                        [
+                            {
+                                text: "Restock",
+                                onPress: () => {
+                                    setNama(
+                                        getStokByBarcode.docs[0].data().nama
+                                    );
+                                    setHarga(
+                                        getStokByBarcode.docs[0]
+                                            .data()
+                                            .harga.toString()
+                                    );
+                                    setGambar(
+                                        getStokByBarcode.docs[0].data()
+                                            .gambar || null
+                                    );
+                                    setSounded(false);
+                                },
+                            },
+                            {
+                                text: "Scan Ulang",
+                                onPress: () => {
+                                    setScanned(false);
+                                    setRefreshCamera(false);
+                                    setNama("");
+                                    setHarga("");
+                                    setGambar("");
+                                    setSounded(false);
+                                },
+                            },
+                        ]
+                    );
+                } else {
+                    setSounded(true);
+                    await playBeepSound();
+                    Alert.alert("Barcode Terdeteksi", `Kode: ${data}`, [
                         {
-                            text: "Restock",
+                            text: "OK",
                             onPress: () => {
-                                setNama(getStokByBarcode.docs[0].data().nama);
-                                setHarga(
-                                    getStokByBarcode.docs[0]
-                                        .data()
-                                        .harga.toString()
-                                );
-                                setGambar(
-                                    getStokByBarcode.docs[0].data().gambar ||
-                                        null
-                                );
+                                setSounded(false);
                             },
                         },
                         {
@@ -132,27 +175,14 @@ export default function TambahStokScreen() {
                                 setNama("");
                                 setHarga("");
                                 setGambar("");
+                                setSounded(false);
                             },
                         },
-                    ]
-                );
-            } else {
-                Alert.alert("Barcode Terdeteksi", `Kode: ${data}`, [
-                    {
-                        text: "OK",
-                    },
-                    {
-                        text: "Scan Ulang",
-                        onPress: () => {
-                            setScanned(false);
-                            setRefreshCamera(false);
-                            setNama("");
-                            setHarga("");
-                            setGambar("");
-                        },
-                    },
-                ]);
+                    ]);
+                }
             }
+        } catch (error) {
+            console.log("Error scanning barcode:", error);
         }
     };
 
