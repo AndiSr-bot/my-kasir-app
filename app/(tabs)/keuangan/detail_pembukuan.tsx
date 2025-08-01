@@ -45,13 +45,19 @@ export default function DetailPembukuanScreen({
     const [tahun, setTahun] = useState<string>(
         new Date().getFullYear().toString()
     );
-    const [timestampAwalBulan, setTimestampAwalBulan] = useState<any>(null);
-
     const bulanOptions: string[] = namaBulan;
     const tahunOptions: string[] = Array.from({ length: 5 }, (_, i) =>
         (new Date().getFullYear() - i).toString()
     );
     const fetchData = async () => {
+        const awalBulan = new Date(
+            parseInt(tahun),
+            bulanOptions.indexOf(bulan),
+            1,
+            0,
+            1,
+            0
+        );
         setLoading(true);
         try {
             if (!perusahaanId) return;
@@ -93,7 +99,7 @@ export default function DetailPembukuanScreen({
 
             const stokRef = query(
                 collection(db, "perusahaan", perusahaanId, "stok"),
-                where("restocked_at", ">", timestampAwalBulan)
+                where("restocked_at", ">", Timestamp.fromDate(awalBulan))
             );
             const stokSnapshot = await getDocs(stokRef);
             let totalKeluar = 0;
@@ -108,7 +114,7 @@ export default function DetailPembukuanScreen({
                         (item) => item === bulan
                     );
                     if (indexBulan === month - 1 && year === parseInt(tahun)) {
-                        totalKeluar += restock.harga_beli;
+                        totalKeluar += restock.harga_beli * restock.jumlah;
                         pembukuanTEMP.push({
                             id: (pembukuanTEMP.length + 1).toString(),
                             tanggal: restock.tanggal,
@@ -144,15 +150,6 @@ export default function DetailPembukuanScreen({
         const now = new Date();
         setBulan(namaBulan[now.getMonth()]);
         setTahun(String(now.getFullYear()));
-        const awalBulan = new Date(
-            now.getFullYear(),
-            now.getMonth(),
-            1,
-            0,
-            1,
-            0
-        );
-        setTimestampAwalBulan(Timestamp.fromDate(awalBulan));
     };
 
     useEffect(() => {
@@ -252,7 +249,7 @@ export default function DetailPembukuanScreen({
                 <View>
                     <Text style={globalStyles.summaryText}>Uang Masuk</Text>
                     <Text style={globalStyles.summaryText}>Uang Keluar</Text>
-                    <Text style={globalStyles.summaryText}>Saldo</Text>
+                    <Text style={globalStyles.summaryText}>Saldo {bulan}</Text>
                 </View>
                 <View>
                     <Text style={globalStyles.summaryText}>:</Text>

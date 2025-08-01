@@ -13,7 +13,7 @@ import { TTransaksiCreate } from "@/types/transaksi_repositories";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Picker } from "@react-native-picker/picker";
-import { Audio } from "expo-av";
+import { useAudioPlayer } from "expo-audio";
 import { CameraView } from "expo-camera";
 import {
     addDoc,
@@ -41,6 +41,7 @@ import {
 } from "react-native";
 
 export default function ScanScreen() {
+    const player = useAudioPlayer(require("@/assets/sounds/beep.mp3"));
     const [scanned, setScanned] = useState(false);
     const [loading, setLoading] = useState(false);
     const [perusahaanId, setPerusahaanId] = useState("");
@@ -56,16 +57,15 @@ export default function ScanScreen() {
     const [editJumlah, setEditJumlah] = useState("");
     const [refreshCamera, setRefreshCamera] = useState(true);
     const [sounded, setSounded] = useState(false);
-    const playBeepSound = async () => {
+    const playBeepSound = () => {
         try {
             if (!sounded) {
-                const { sound } = await Audio.Sound.createAsync(
-                    require("@/assets/sounds/beep.mp3")
-                );
-                await sound.playAsync();
+                player.play();
             }
         } catch (error) {
             console.log("Gagal memutar suara beep:", error);
+        } finally {
+            player.seekTo(0);
         }
     };
 
@@ -191,14 +191,14 @@ export default function ScanScreen() {
 
                 if (stokResult.length > 0) {
                     setSounded(true);
-                    await playBeepSound();
+                    playBeepSound();
                     setModalVisible(true);
                     setStokList(stokResult);
                     setSelectedStok(stokResult[0]);
                     setJumlah("");
                 } else {
                     setSounded(true);
-                    await playBeepSound();
+                    playBeepSound();
                     setRefreshCamera(true);
                     Alert.alert("Produk tidak ditemukan", `Barcode: ${data}`, [
                         {

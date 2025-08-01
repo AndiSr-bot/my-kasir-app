@@ -7,7 +7,7 @@ import { TPerusahaan } from "@/types/perusahaan_repositories";
 import { TStokCreate, TStokUpdate } from "@/types/stok_repositories";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Picker } from "@react-native-picker/picker";
-import { Audio } from "expo-av";
+import { useAudioPlayer } from "expo-audio";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
@@ -37,6 +37,7 @@ import {
 export default function TambahStokScreen() {
     const router = useRouter();
     const [permission, requestPermission] = useCameraPermissions();
+    const player = useAudioPlayer(require("@/assets/sounds/beep.mp3"));
 
     const [nama, setNama] = useState("");
     const [harga, setHarga] = useState("");
@@ -60,16 +61,15 @@ export default function TambahStokScreen() {
         fetchPerusahaan();
         getUserData();
     }, []);
-    const playBeepSound = async () => {
+    const playBeepSound = () => {
         try {
             if (!sounded) {
-                const { sound } = await Audio.Sound.createAsync(
-                    require("@/assets/sounds/beep.mp3")
-                );
-                await sound.playAsync();
+                player.play();
             }
         } catch (error) {
             console.log("Gagal memutar suara beep:", error);
+        } finally {
+            player.seekTo(0);
         }
     };
     const fetchPerusahaan = async () => {
@@ -121,7 +121,7 @@ export default function TambahStokScreen() {
                 );
                 if (getStokByBarcode.docs.length > 0) {
                     setSounded(true);
-                    await playBeepSound();
+                    playBeepSound();
                     Alert.alert(
                         "Barcode Terdeteksi",
                         `Data dengan kode ${data} sudah tersedia`,
@@ -159,7 +159,7 @@ export default function TambahStokScreen() {
                     );
                 } else {
                     setSounded(true);
-                    await playBeepSound();
+                    playBeepSound();
                     Alert.alert("Barcode Terdeteksi", `Kode: ${data}`, [
                         {
                             text: "OK",
